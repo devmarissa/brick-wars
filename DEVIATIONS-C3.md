@@ -30,8 +30,62 @@ rather than a constant the storage depends on. The sandbox will instantiate some
 than either figure — its current world is 24 m across — and the real number wants a map, a frame
 budget and somebody watching it.
 
+**Marissa, 30 Jul:** *"we will have to see... we want large scale combat with aerial vehicles so
+who knows what testing will reveal works for player count scale and map scale."* Deferred
+deliberately, and the reasoning is worth keeping because it is new information rather than a
+shrug — the spec's range was written against a Great War sector a few hundred metres deep, and
+**aerial vehicles were not part of that framing.** `BUILD-ORDER` names a flying vehicle as a gate
+and `CORE-SPEC` §2 lists `flying` as a locomotion type, so aircraft are planned rather than
+speculative.
+
+That may push past the top of the range rather than somewhere inside it. At a biplane's 40 m/s an
+800 m map is twenty seconds corner to corner, and a fighting area that an aircraft crosses in
+twenty seconds is an aircraft with nowhere to go. If aerial combat is a real pillar, the honest
+options are a bigger deformable area, or a deformable core inside a larger non-deformable arena —
+which is a different shape of answer than a bigger number, and cheaper.
+
 **When it has to be decided:** before the settle queue's per-frame budget means anything, because
-"512 cells a frame" is a different promise over 400 m than over 800.
+"512 cells a frame" is a different promise over 400 m than over 800. Not before then, and it wants
+a real frame budget and a real aircraft rather than a guess.
+
+### A2. Pixel textures — Marissa's proposal, 30 Jul, and what it actually decides
+
+> *"i think we can use pixel textures like 16x16 or 32x32 to give it nice texture across all our
+> parts, maybe even pbr pixel textures? could be cool and look nice with shaders."*
+
+This is `ART-BIBLE` §8 being answered, which is the right milestone for it — §8 says prototype it
+during C3 when there is real ground to look at. Most of the proposal is compatible with everything
+already written, and one part of it is a genuine fork. Separating them is the whole of the answer.
+
+**Compatible, and arguably what §8 was reaching for.** A 16–32 px per-material detail map, tiled,
+is a *tighter* version of §8b's existing rule — "fixed resolution cap and fixed tiling scale,
+declared per material class". A pixel cap that low makes the texture-pack bound easy to enforce
+rather than a judgement call: a 4K photoscan is not rejected by review, it is unrepresentable.
+
+**PBR is mostly free.** Roughness, metallic and normal are not colour, so none of them touch the
+palette law. Wet clay reading differently from dry chalk, or sheet metal from timber, is exactly
+the "material read" §8 says Teardown gets from its textures. These can go in without deciding
+anything.
+
+**The fork is albedo.** `ART-BIBLE` §2's palette law says colour comes from a twenty-entry palette
+with bounded value and saturation, and §8b is explicit that a skin supplies *"a greyscale detail
+map that modulates the palette colour, never a full-colour texture that replaces it"* — because
+that is what makes the palette law survive contact with the workshop. So:
+
+- **Greyscale pixel textures modulating palette colour** — everything already written stands. The
+  palette law holds, texture packs work as designed, and the game still reads as one game with a
+  hundred packs in it.
+- **Full-colour pixel textures** — the palette law becomes advisory, and the property it exists to
+  protect goes with it. That is a change to what the game *is*, not how it is built.
+
+**Not the blocker it looks like:** "with shaders" is fine. §8b's hard line is about *pack-uploaded*
+shaders, and the reason is specific — a shader that disables depth testing is a wallhack in a game
+about hiding behind earthworks. Core shaders are how anything renders at all.
+
+**What happens next:** the side-by-side gets built during the meshing increment — flat, greyscale
+pixel detail, and full-colour pixel — on the same trench section, and Marissa picks by looking.
+§8 has always said the decision wants eyes rather than an argument, and this note exists so the
+argument is not had twice.
 
 ---
 
