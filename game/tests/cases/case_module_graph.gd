@@ -36,10 +36,17 @@ func _full_boot(t: TestContext) -> void:
 		for dep in k.modules[name].module_depends():
 			t.ok(at[dep] < at[name], "%s starts before %s that depends on it" % [dep, name])
 
-	# The number goes down once per milestone and never up, so it is worth being a literal:
-	# a module quietly flipping to non-stub because somebody put code in it, rather than
-	# because its milestone's done-condition was walked, is exactly the drift this catches.
-	t.eq(k.stub_names().size(), 9, "nine modules still honestly declare themselves stubs")
+	# Which modules are still stubs, by name rather than by count. The list shrinks once per
+	# milestone and never grows, and being a literal is the point: a module quietly flipping to
+	# non-stub because somebody put code in it, rather than because its milestone's
+	# done-condition was walked, is exactly the drift this catches.
+	#
+	# Named rather than counted because a count says "one of these is wrong" and leaves you to
+	# work out which. It was a count until C2 un-stubbed `rig`, and the failure it gave —
+	# `got 8, wanted 9` — is a sentence with no subject in it.
+	t.eq(",".join(ContentLoader.sorted_names(k.stub_names())),
+		"ai,audio,combat,earth,net,vehicle,verbs,vfx",
+		"exactly these modules still honestly declare themselves stubs")
 	t.ok(not k.stub_names().has(&"content"), "and `content` is not one of them as of C1")
 
 

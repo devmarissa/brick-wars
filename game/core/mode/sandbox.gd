@@ -12,9 +12,19 @@ extends Node3D
 ## map format is C7's problem — so `LAYOUT` is a table rather than a sequence of calls,
 ## which makes turning it into a file later a reader instead of a rewrite.
 ##
-## The plate, the sun, the sky and the camera are carried over from the greybox unchanged,
-## on purpose. They are the parts of the picture that are not being tested, and holding
-## them still is what makes the before-and-after screenshots comparable.
+## The sun, the sky and the camera were carried over from the greybox unchanged through C1, on
+## purpose: they are the parts of the picture that are not being tested, and holding them still is
+## what makes the before-and-after screenshots comparable. The floor stopped being one of those at
+## C2. A flat plate cannot show foot planting — every foot lands at y = 0 whether the solver works
+## or not — so the world is `TestGround` now, and the plate survives only as `make_ground()` for
+## the physics tests that still need something flat to be meaningful on.
+##
+## Swapping it is not free, and the cost is `_on_ground`. Every `LAYOUT` position was authored
+## against a floor at zero: the watchtower stood at y = 0 at (-5, -2.4), which on this ground is
+## inside the bowl where the surface is -0.358, and half the crates landed partly inside the
+## terrain. Rather than re-author nine hand-placed positions against a surface that will be
+## replaced again at C3 by the real earth field, each entry is lifted by the height of the ground
+## under it. The table still reads as "0.12 m above the floor, wherever the floor is".
 
 const GROUND_SIZE := Vector3(60, 1, 60)
 const GROUND_COLOUR := Color("5e5240")
@@ -47,7 +57,25 @@ const LAYOUT := [
 	{"id": "core:table_map", "at": Vector3(-1.6, DROP_HEIGHT, 4.2), "yaw": 15.0},
 ]
 
+## The two creatures C2 is judged by, and where they walk. Circles rather than straight lines,
+## because a screenshot has to catch them mid-stride and a walker heading due north leaves the map
+## while the tool is still settling. The radius is a consequence of the speed and the turn rate,
+## not a number of its own: at `WALK_SPEED` and this much yaw per second a walker comes round in
+## about two and a half metres, which fits between the props and the edge.
+##
+## Both centres are clear of the bowl and clear of everything in `LAYOUT`. The horse's is out on
+## the ramp on purpose — a creature walking across a slope is the whole of what foot planting buys,
+## and on flat ground it is indistinguishable from a creature with no solver at all.
+const DEMO_TURN := 0.9
+const WALKERS := [
+	{"id": "core:soldier", "around": Vector2(1.2, -4.2), "phase": 0.0},
+	{"id": "testpack:horse", "around": Vector2(5.8, -4.6), "phase": PI},
+]
+
 var spawned: Array[BuiltAsset] = []
+var walkers: Array[Walker] = []
+
+var _demo := 0.0
 
 
 ## Builds the world and returns what it put in it. Takes the content module rather than
@@ -65,10 +93,55 @@ func build(content: Module) -> Array[BuiltAsset]:
 			continue
 		built.transform = Transform3D(
 			Basis.from_euler(Vector3(0.0, deg_to_rad(float(entry.get("yaw", 0.0))), 0.0)),
-			entry["at"])
+			_on_ground(entry["at"]))
 		add_child(built)
 		spawned.append(built)
+	_add_walkers(content)
 	return spawned
+
+
+## A position authored against a flat floor, lifted onto the real surface. Off the map the height
+## is meaningless, so it stays where it was put and falls — which is the honest outcome and looks
+## like one, rather than a prop hovering at the height of the last valid sample.
+static func _on_ground(at: Vector3) -> Vector3:
+	if not TestGround.contains(at.x, at.z):
+		return at
+	return Vector3(at.x, at.y + TestGround.height_at(at.x, at.z), at.z)
+
+
+## The soldier and the horse, walking. This is the part of the sandbox that is not a still life,
+## and it is here rather than in a mode of its own because C2's done-condition is a sentence about
+## two creatures moving over uneven ground — so the world the milestone is judged in has to have
+## them in it.
+func _add_walkers(content: Module) -> void:
+	walkers.clear()
+	for entry in WALKERS:
+		var asset: ResolvedAsset = content.resolver.get_asset(String(entry["id"]))
+		if asset == null:
+			push_error("sandbox: no asset `%s` for a walker — its pack may be off" % entry["id"])
+			continue
+		var walker := Walker.of(asset, content.materials, content.palette)
+		for problem in walker.warnings:
+			push_warning("sandbox: %s: %s" % [entry["id"], problem])
+		var around: Vector2 = entry["around"]
+		walker.position = _on_ground(Vector3(around.x, DROP_HEIGHT, around.y - _radius()))
+		add_child(walker)
+		walkers.append(walker)
+
+
+## Drive the demo. Each walker is asked for a heading that turns at a constant rate, which walks
+## it round a circle it cannot leave — deterministic, and the same picture every capture.
+func _physics_process(delta: float) -> void:
+	_demo += delta
+	for i in walkers.size():
+		var heading := _demo * DEMO_TURN + float(WALKERS[i]["phase"])
+		walkers[i].wish = Vector2(cos(heading), sin(heading))
+
+
+## How wide a circle a walker at walking speed makes at `DEMO_TURN`. Stated as the arithmetic it
+## is, so that changing either number does not silently walk a creature into the watchtower.
+static func _radius() -> float:
+	return Walker.WALK_SPEED / DEMO_TURN
 
 
 ## One asset, built through the whole pipeline and handed back unparented and unplaced.
@@ -100,11 +173,17 @@ func report() -> String:
 		lines.append("  %-28s %3d bod%s  %8.1f kg%s" % [
 			built.asset_id, built.body_count(), "y " if built.body_count() == 1 else "ies",
 			built.mass, "  (declared)" if built.mass_declared else ""])
-	return "sandbox: %d asset(s)\n%s" % [spawned.size(), "\n".join(lines)]
+	for walker in walkers:
+		lines.append("  %-28s %s" % [walker.asset_id, walker.report()])
+	return "sandbox: %d asset(s), %d walker(s)\n%s" % [
+		spawned.size(), walkers.size(), "\n".join(lines)]
 
 
+## `TestGround` rather than the plate. C3 replaces this with the real earth field; until then it
+## is the only ground in the build with a slope, a step and a hole in it, which is the only kind a
+## foot-planting solver can be judged against.
 func _add_ground() -> void:
-	add_child(make_ground())
+	add_child(TestGround.make())
 
 
 ## The plate, with its top face at y = 0. Static and separate for the same reason
@@ -161,6 +240,10 @@ func _add_camera() -> void:
 	var cam := Camera3D.new()
 	cam.name = "Camera"
 	add_child(cam)
-	cam.global_position = Vector3(4.7, 2.6, 7.2)
-	cam.look_at(Vector3(-1.3, 1.3, 1.0))
+	# Pulled back and raised at C2. The C1 framing was chosen for a still life of props on a flat
+	# plate; the subject now is two creatures walking over ground with a slope, a step and a hole
+	# in it, and the walkers' circles reach four metres further from the camera than anything in
+	# `LAYOUT` does. A frame that crops them is a frame that shows none of what the milestone did.
+	cam.global_position = Vector3(8.4, 3.1, 2.4)
+	cam.look_at(Vector3(2.4, 1.0, -4.6))
 	cam.current = true
