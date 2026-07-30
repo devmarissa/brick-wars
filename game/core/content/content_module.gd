@@ -37,6 +37,18 @@ var data_ok := false
 var data_errors: Array[String] = []
 
 
+## Where packs are actually looked for this run: the two that ship, plus anything
+## `--pack-root` added. The extra ones come last for the same reason `user://packs` does —
+## a root handed over on the command line is the least authoritative thing in the list, and
+## it must not be able to quietly replace a shipped pack id.
+func pack_roots() -> Array[String]:
+	var out: Array[String] = PACK_ROOTS.duplicate()
+	for root in CLI.shared().pack_roots:
+		if not out.has(root):
+			out.append(root)
+	return out
+
+
 func module_name() -> StringName:
 	return &"content"
 
@@ -59,7 +71,7 @@ func module_init() -> void:
 	# Packs are discovered even when core's own data is broken. Their manifests do not
 	# depend on it, and a run that reports both problems at once is worth more than one
 	# that stops at the first.
-	installed.discover(PACK_ROOTS)
+	installed.discover(pack_roots())
 	for problem in installed.errors:
 		push_error("pack folder: " + problem)
 

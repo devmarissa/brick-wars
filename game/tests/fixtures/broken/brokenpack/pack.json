@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "brokenpack",
+  "name": "Deliberately Broken Pack",
+  "author": "Brick Wars",
+  "version": "0.1.0",
+  "core_version": ">=0.1.0",
+  "depends": [ { "id": "core", "version": ">=0.1.0" } ]
+}

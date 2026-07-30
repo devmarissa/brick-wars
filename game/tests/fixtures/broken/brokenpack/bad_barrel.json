@@ -1,0 +1,11 @@
+{
+  "format": 1,
+  "id": "bad_barrel",
+  "kind": "prop",
+  "name": "Barrel That Cannot Exist",
+  "class": "small_prop",
+  "parts": [
+    { "name": "shell", "offset": [0, 7, 0], "rotation": [0, 22, 0], "size": [10, 0.5, 10],
+      "material": "stainless_steel", "colour": "hot_pink" }
+  ]
+}

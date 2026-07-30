@@ -1,0 +1,128 @@
+class_name CLI
+extends RefCounted
+## The command line, parsed once and shared. FORMAT-SPEC §6's `--resolve` lives here.
+##
+## Everything here is a *diagnostic* flag, and that is a deliberate limit. The moment the
+## command line can change how the game plays, two people running the same build are running
+## different games and neither of them knows it. These three only ask the game questions:
+## which packs did you look at, what did this asset resolve to, and where did each field of
+## it come from.
+##
+##     godot --headless --path game -- --resolve core:crate_ammo
+##     godot --headless --path game -- --resolve core:barrel --part hoop
+##     godot --headless --path game -- --pack-root res://tests/fixtures/broken
+##
+## `--pack-root` is the one that earns its keep beyond authoring. A pack that fails has to
+## disable itself, say exactly why, and take nothing else down with it — and the only way to
+## be sure of that is to point the real game at a deliberately broken pack and watch the rest
+## of the world load anyway. That is a C1 done-condition, and without this flag it can only
+## be demonstrated by editing shipped content, which is a test nobody runs twice.
+##
+## Parsed from the arguments after `--`, because everything before it belongs to Godot.
+
+## Flags that take exactly one value. Anything else is a usage error rather than a silent
+## no-op, since a mistyped diagnostic that prints nothing looks identical to a clean result.
+const TAKES_VALUE := ["--resolve", "--part", "--pack-root"]
+
+static var _shared: CLI = null
+
+var resolve_id := ""                    ## `--resolve <pack:asset>`
+var part_name := ""                     ## `--part <name>`, narrows the dump to one part
+var pack_roots: Array[String] = []      ## `--pack-root <path>`, repeatable
+var errors: Array[String] = []          ## problems with the arguments themselves
+
+## Whether the last `resolve_report()` found what it was asked for. A dump that reports "no
+## such asset" is still a useful answer, but it is not a successful one, and a script driving
+## this needs the exit code to say so.
+var resolve_ok := false
+
+
+## The real command line, parsed on first use and remembered. Both `main.gd` and the content
+## module ask for this, and parsing twice would let them disagree about their own process.
+static func shared() -> CLI:
+	if _shared == null:
+		_shared = CLI.new()
+		_shared.parse(OS.get_cmdline_user_args())
+	return _shared
+
+
+## Replace what `shared()` hands out. For tests, which have their own command line and no
+## interest in it.
+static func use(cli: CLI) -> void:
+	_shared = cli
+
+
+func parse(args: PackedStringArray) -> void:
+	resolve_id = ""
+	part_name = ""
+	pack_roots.clear()
+	errors.clear()
+
+	var i := 0
+	while i < args.size():
+		var flag := String(args[i])
+		if not flag.begins_with("--"):
+			errors.append("`%s` is not a flag and nothing was expecting a bare value there" % flag)
+			i += 1
+			continue
+		if not TAKES_VALUE.has(flag):
+			errors.append("`%s` is not a flag this game knows. %s" % [flag, usage()])
+			# Swallow whatever followed it, if that was a value rather than the next flag.
+			# Otherwise one typo produces two complaints, and the second one — "`core:crate`
+			# is not a flag" — sends the reader looking at the part they got right.
+			i += 1 if i + 1 >= args.size() or String(args[i + 1]).begins_with("--") else 2
+			continue
+		if i + 1 >= args.size():
+			errors.append("`%s` needs a value after it" % flag)
+			i += 1
+			continue
+
+		var value := String(args[i + 1])
+		match flag:
+			"--resolve":
+				resolve_id = value
+			"--part":
+				part_name = value
+			"--pack-root":
+				pack_roots.append(value)
+		i += 2
+
+	if part_name != "" and resolve_id == "":
+		errors.append("`--part` narrows a `--resolve` dump, so it needs one to narrow")
+
+
+func wants_resolve() -> bool:
+	return resolve_id != ""
+
+
+static func usage() -> String:
+	return "Known: --resolve <pack:asset>, --part <name>, --pack-root <path>."
+
+
+## The dump the flag asks for, or a refusal that says which of the two things went wrong —
+## the pack is not loaded, or the pack is loaded and has no such asset. Those have different
+## fixes, and an author who is told only "not found" will go looking in the wrong file.
+func resolve_report(content: Module) -> String:
+	resolve_ok = false
+	var asset: ResolvedAsset = content.resolver.get_asset(resolve_id)
+	if asset == null:
+		return _no_such_asset(content)
+	resolve_ok = true
+	if part_name != "":
+		# No defaults dict: the validator writes FORMAT-SPEC §5's defaults into the part in
+		# place, so they are already in `data` and provenance reports them as `core (default)`
+		# on its own. A second table here would be a second answer to the same question.
+		return "%s   (%s)\n\n%s" % [asset.id, asset.path, asset.dump_part(part_name)]
+	return asset.dump()
+
+
+func _no_such_asset(content: Module) -> String:
+	var pack := resolve_id.get_slice(":", 0)
+	if resolve_id.contains(":") and content.installed.disabled.has(pack):
+		return "no `%s` — pack `%s` is disabled, so none of its assets exist: %s" % [
+			resolve_id, pack, content.installed.disabled[pack]]
+	if resolve_id.contains(":") and not content.installed.packs.has(StringName(pack)):
+		return "no `%s` — there is no pack called `%s` in %s" % [
+			resolve_id, pack, ", ".join(content.pack_roots())]
+	return "no `%s` — that pack is loaded and has no asset by that name. It has: %s" % [
+		resolve_id, ", ".join(content.index.ids_in(StringName(pack)))]

@@ -131,10 +131,24 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 - [x] **Pack-scoped failure**: a broken or unsatisfiable pack is disabled and reported,
       never half-loaded, never fatal to the game or to other packs — refusal runs in passes,
       because disabling a pack can invalidate an asset in one that extended it
-- [ ] **Validator `--resolve <asset_id>`**: prints the fully merged asset with per-field
-      provenance. Ships *with* the resolver, not after it — without it `extends` is a trap
-- [ ] Modding doc note: pack ids are claimed, pick a distinctive one; an asset others
-      extend is public surface and changing it is a breaking change
+- [x] **Validator `--resolve <asset_id>`**: prints the fully merged asset with per-field
+      provenance. Ships *with* the resolver, not after it — without it `extends` is a trap.
+      Landed as `core/cli.gd`: `--resolve <pack:asset>`, `--part <name>` to narrow the dump to
+      one part, and `--pack-root <path>` to load a folder of packs beside the shipped ones
+      without installing them. Every flag is diagnostic-only on purpose — a command line that
+      can change how the game *plays* means two people on the same build are playing different
+      games. A question the game can't answer exits 4, next to boot failure's 3
+- [x] **`--pack-root` is also how the C1 refusal is demonstrated** — `game/tests/fixtures/`
+      `broken` is two packs that are wrong on purpose (four bad fields in one part; an
+      `extends` onto an asset nobody publishes), kept separate because a missing base is
+      caught a pass earlier than a bad field. Point the real game at it and both are disabled
+      with reasons naming file, line, value and rule, while the shipped world boots untouched
+- [x] Modding doc note: pack ids are claimed, pick a distinctive one; an asset others
+      extend is public surface and changing it is a breaking change — written up as
+      **`MODDING.md`** at the repo root, the modder-facing companion to `FORMAT-SPEC`: id
+      claims and what renaming one costs, extended assets as public interface, the two
+      diagnostic commands with the broken fixture as a worked example, and the six rules that
+      catch a first upload
 
 ## 2 · Soldier: locomotion & body
 

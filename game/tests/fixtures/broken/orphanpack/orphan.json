@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "orphan",
+  "extends": "core:crate_of_holding",
+  "name": "Crate Of Holding, Reinforced",
+  "parts+": [
+    { "name": "strap", "offset": [0, 5, 0], "size": [12, 1, 12], "material": "steel" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "orphanpack",
+  "name": "Pack With A Missing Base",
+  "author": "Brick Wars",
+  "version": "0.1.0",
+  "core_version": ">=0.1.0",
+  "depends": [ { "id": "core", "version": ">=0.1.0" } ]
+}
