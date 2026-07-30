@@ -4,9 +4,10 @@
   "kind": "prop",
   "name": "Test Biped",
   "class": "small_prop",
-  "_note": "Two legs and a pelvis, authored so every number the locomotion driver derives can be worked out with a pencil. Like `leg.json` this is whole modules and right angles only: each bone points down its own -Z (ART-BIBLE §7), is sized `[thickness, thickness, length]`, and pivots at its own top end. It is a `prop` rather than a `character` because what is under test is arithmetic, and a kind with a slot would drag a stat block into it.",
-  "_bent": "The one thing that is NOT a straight line, and it is the point of the fixture: each shin's top sits 2 modules FORWARD of its thigh's bottom. That jog is what gives `Leg._bend` something to read — the knee is off the hip-to-ankle line, so the bend direction comes out FORWARD (-Z), which is what a human knee does. A shin hung straight below its thigh would leave `bend` a guess and collapse `reach` to `MIN_REACH`, which is the degenerate case `core:leg` is and this one deliberately is not. It is bent by geometry rather than by a `rest` angle so the rest pose is the authored pose and stays hand-checkable. The visible 0.2 m step at the knee is the cost, and on a box creature it is a fair price for exact numbers.",
-  "_derived": "Hip joint (-0.3, 2.4, 0); knee (-0.3, 1.2, -0.2); ankle (-0.3, 0, -0.2); sole (-0.3, 0, -0.8). span = 1.2 + 1.2 + 0.6 = 3.0. reach = 3.0 - sqrt(6.4) = 0.4702. drop = 3.0 - 2.4 = 0.6. stand = 0, because the soles sit at the asset's own origin — an asset stands on its origin.",
+  "_note": "Two legs and a pelvis, authored so every number the locomotion driver derives can be worked out with a pencil. Whole modules and right angles only: each bone points down its own -Z (ART-BIBLE §7), is sized `[thickness, thickness, length]`, and pivots at its own top end. It is a `prop` rather than a `character` because what is under test is arithmetic, and a kind with a slot would drag a stat block into it.",
+  "_bent_by_rest_angles": "The legs are bent by `rest` angles — thigh +30, knee -60, ankle +30 — and NOT by offsetting one bone from another. That distinction is the whole history of this file. It was authored with each shin's joint two modules forward of its thigh's tip, which is a cheap way to get a bend while keeping every offset on the grid, and it was wrong in a way that took a fortnight to see: a two-bone solver answers a question about two segments that *meet*, so a chain with a 0.2 m gap in it puts its foot 0.2 m from the ground, every frame, reporting no strain because nothing was out of reach. Every test in the suite passed throughout, because they all checked where `Footing` decided the foot should go and none of them read back where the rig actually put it. `Leg.MAX_CHAIN_GAP` now refuses to let it happen quietly. DEVIATIONS-C2 B5.",
+  "_why_thirty_degrees": "30 and 60 keep the arithmetic exact — sin 30 is a half and cos 30 is root-three-over-two — so the derived values below are closed forms rather than decimals read off a running rig. That is the same reason this fixture uses right angles everywhere else.",
+  "_derived": "Hip (-0.3, 2.4, 0); knee (-0.3, 2.4 - 0.6*sqrt(3), -0.6); ankle (-0.3, 2.4 - 1.2*sqrt(3), 0); sole (-0.3, 2.4 - 1.2*sqrt(3), -0.6). span = 1.2 + 1.2 + 0.6 = 3.0. reach = 3.0 - sqrt(4.68). drop = 3.0 - 2.4 = 0.6. stand = 1.2*sqrt(3) - 2.4, which is negative: the soles rest ABOVE the asset's origin, so the body rides below them. bend is exactly (0, 0, -1) — forward, like a knee.",
   "parts": [
     {
       "name": "pelvis",
@@ -21,15 +22,15 @@
       "rotation": [-90, 0, 0],
       "size": [2, 2, 12],
       "material": "plank",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 30, "pivot": [0, 0, 6] }
     },
     {
       "name": "shin_l",
       "parent": "thigh_l",
-      "offset": [0, 2, -12],
+      "offset": [0, 0, -12],
       "size": [2, 2, 12],
       "material": "plank",
-      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] }
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -60, "pivot": [0, 0, 6] }
     },
     {
       "name": "foot_l",
@@ -38,7 +39,7 @@
       "rotation": [90, 0, 0],
       "size": [2, 2, 6],
       "material": "plank",
-      "joint": { "type": "fixed", "pivot": [0, 0, 3] }
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": 30, "pivot": [0, 0, 3] }
     },
     {
       "name": "thigh_r",
@@ -47,15 +48,15 @@
       "rotation": [-90, 0, 0],
       "size": [2, 2, 12],
       "material": "plank",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 30, "pivot": [0, 0, 6] }
     },
     {
       "name": "shin_r",
       "parent": "thigh_r",
-      "offset": [0, 2, -12],
+      "offset": [0, 0, -12],
       "size": [2, 2, 12],
       "material": "plank",
-      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] }
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -60, "pivot": [0, 0, 6] }
     },
     {
       "name": "foot_r",
@@ -64,7 +65,7 @@
       "rotation": [90, 0, 0],
       "size": [2, 2, 6],
       "material": "plank",
-      "joint": { "type": "fixed", "pivot": [0, 0, 3] }
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": 30, "pivot": [0, 0, 3] }
     }
   ],
   "collider": [

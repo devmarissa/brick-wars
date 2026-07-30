@@ -185,59 +185,61 @@ Measuring it made it undeniable: 0.00714 m of world slide per frame against a bo
 0.01667, exactly `speed * (1/duty - 1) * dt`. Fixed, and `case_driver._a_planted_foot_stays_put`
 now pins it in world space against a moving body, which is the only place the claim is checkable.
 
-### D1. **A posed foot lands 0.2 m from the plant it was solved to.** Confirmed, and it blocks C2
+### D1. ~~A posed foot lands 0.2 m from the plant~~ — **found, diagnosed, fixed**
 
-This started as "the order-of-operations policy has no test" and turned into something worse while
-a test for it was being written. It is the reason C2 is **not** verified.
+Kept in full because the diagnosis was wrong twice before it was right, and the wrong turns are
+the useful part.
 
-**The reproduction**, on `core:quadruped`, flat ground, standing still, one step:
+**What it looked like.** A test written to pin the order-of-operations policy read back where a
+foot was actually *posed*, rather than where the driver decided it should go. It missed the plant
+by 0.2 m — on flat ground, standing still, with zero strain reported, on a target well inside the
+leg's reach. That looked like a defect in the IK solver, and it was written up here and reported
+as one.
 
-```
-REST  tip_of(last)=(-0.3, 0.0, -1.5)  home=(-0.3, 0.0, -1.5)  equal=true
-      upper=1.200 lower=1.200 trail=0.400  anchor=(-0.3, 2.4, -0.9)
-AFTER ankle=(-0.3, 0.548, -2.055) wanted=(-0.3, 0.4, -1.92)  off=0.2000  strain=0.0000
-      |anchor→wanted|=2.2451  upper+lower=2.4000  height=0.0000
-```
+**What it actually was.** The solver is correct. `core:biped` and `core:quadruped` were authored
+with each shin's joint two modules forward of its thigh's tip — a cheap way to get a bend at rest
+while keeping every offset on the grid, recorded in B5 below as a fixture convention with a
+cosmetic cost. It is not cosmetic. A two-bone solver answers a question about two segments that
+*meet*; a chain with a gap has a third length nobody told it about, and the gap arrives at the
+sole unchanged. The shipped content — `core:soldier` and `testpack:horse`, both bent by `rest`
+angles with their joints coincident — was measured at the same time and missed by **0.0000 m**.
 
-The first line rules out the measurement: at rest the posed sole read back through the rig is
-exactly `home`, to four decimals, so `Leg.tip_of` and the transform reconstruction are sound. The
-third is the finding. `Locomotion._solve` asked for the ankle at `target - hang * trail`, the
-solver returned an `end` **0.2 m away from that**, and reported `strain` of zero — on a target
-2.245 m from the anchor against a leg that is 2.4 m of upper plus lower, so comfortably reachable.
+So the engine was never wrong. Two test fixtures were unphysical, and the tests that should have
+noticed were asking the wrong question.
 
-**Why nothing caught it.** Every foot-planting assertion in the suite — including
-`case_walker`'s "on the surface to 2 mm" — reads `leg.plant`, which is `Footing`'s answer about
-where the foot *should* go. Nothing read back where the foot was actually *posed*. So the suite
-has been asserting the driver's intent rather than the rig's result, and the two differ by 20 cm.
-Earlier commit messages in this milestone claim feet planting to 2 mm; that claim is about
-`leg.plant` and does not survive contact with the pose.
+**Why nothing caught it, which is the part worth keeping.** Every foot-planting assertion in this
+milestone read `leg.plant` — `Footing`'s answer about where the foot *should* go. Not one read the
+rig back. The suite was asserting the driver's intention and never its result, so a 0.2 m gap
+between the two was invisible for as long as it existed.
 
-**Where to look**, in order of suspicion: `TwoBoneIK.solve` returning an `end` that is not `lower`
-away from its own `joint`, in which case `Rig.aim` reconstructs a different ankle than the solver
-intended and the error is the difference; or `_solve` aiming `chain[1]` at a point it cannot place
-because `aim` sets a direction while the bone keeps its own length. The 0.2 is suspiciously
-`trail / 2`, which may mean something or may be arithmetic coincidence on this fixture — check a
-second creature before reading anything into it.
+**What changed.** Both fixtures are re-authored bent by `rest` angles at 30° and 60°, which keeps
+every derived value an exact closed form (`2.4 - 1.2*sqrt(3)`, `3.0 - sqrt(4.68)`) and makes the
+knee and hock come out as exactly `(0, 0, -1)` and `(0, 0, 1)` rather than approximately.
+`Leg.MAX_CHAIN_GAP` refuses a disjointed chain in words at rig-build time, with the size of the
+gap in the message, and `core:disjointed` is the fixture that keeps that complaint alive.
+`case_body._the_foot_ends_up_where_it_was_solved_to` and its counterpart in `case_walker` ask the
+second question now.
 
-The test that found this is not in the suite, because it fails and the tree does not stay red. It
-is four lines and it belongs in `case_body.gd` the moment the defect is fixed: step the driver,
-rebuild the reported body transform as `Transform3D(out.basis, (at.x, out.height, at.z))`, and
-assert that `posed * Leg.tip_of(rig, leg.chain[-1])` is on `leg.plant["position"]` for every leg
-in stance.
+**And the original D1 is closed with it.** The pose-versus-plant assertion is exactly what pins
+the order-of-operations policy, in both places it appears: `tools/mutate.py` now reports *"the rig
+is solved against the body that came in, not the one going out"* and *"the walker poses the rig
+before moving the body"* as **caught**. The two earlier attempts that failed — world slide, which
+cannot see it, and the lean measurement, which passes for the wrong reason — are why this took
+three tries.
 
-**The original D1 still stands underneath this**, unresolved and now secondary: the
-order-of-operations policy in `Locomotion.step` and again in `Walker._physics_process` has no
-test, and `tools/mutate.py` reports the walker half as MISSED. The two earlier attempts at pinning
-it are worth not repeating — world slide cannot see it, because a stale transform advances by the
-same amount per frame as a current one; and the obvious lean measurement passes for the wrong
-reason, because `rig.root.basis.x.angle_to(RIGHT)` conflates roll with a frame of yaw error. The
-pose-versus-plant assertion above is the thing that would pin both, once it can pass.
-
-### D2. The hang lag's frame-rate independence has no test
+### D2. The hang lag's frame-rate independence has no test — **still open, and now self-reporting**
 
 `_solve` uses `1 − e^(−rate·dt)` rather than `rate · dt` precisely so that a fetlock does not lag
 further on a slow machine. `case_body.gd`'s `_same_answer_every_time` proves two identical runs
-agree, which is determinism and a different claim. The test would be that one step of `dt` and two
-of `dt/2` land on the same hang direction — exact for the exponential and visibly not for a lerp —
-and it needs a non-level body basis to have anything to converge toward, since with an identity
-basis the hang starts at its own target and never moves.
+agree, which is determinism and a different claim.
+
+This is the one thing in the rig system with no test that fails when you break it: `tools/mutate.py`
+carries the mutation and reports it **MISSED** on every run, so the gap announces itself rather
+than living only in this document. Everything else is 15 caught, 0 missed.
+
+The test would be that one step of `dt` and two of `dt/2` land on the same hang direction — exact
+for the exponential, visibly not for a lerp. What makes it awkward is isolation: the hang only
+moves when the body basis is not level, the basis comes from the ground under the feet, and the
+two runs diverge in phase after the first half-step, so the feet sample slightly different ground
+and the difference being measured is about the same size as the noise. It wants either a seam that
+lets the lag be driven directly, or a fixture whose ground is tilted and uniform.

@@ -25,6 +25,23 @@ extends RefCounted
 ## badly rather than freezing, and the validator complains about the same thing in words.
 const MIN_REACH := 0.05
 
+## How far a bone's joint may sit from its parent's tip before the leg stops being solvable.
+##
+## A two-bone solver answers a geometry question about two segments that *meet*: it places the
+## knee at `upper` from the hip and the ankle at `lower` from the knee, and the arithmetic that
+## makes the foot land on the target depends on those two facts. A chain with a gap in it has a
+## third length nobody told the solver about, and the gap propagates straight through to the
+## sole — the foot misses its plant by exactly the gap, every frame, and reports no strain
+## because nothing was out of reach.
+##
+## A millimetre, because the error is not damped anywhere downstream. This was found the
+## expensive way: `core:biped` and `core:quadruped` were authored with each shin's joint two
+## modules forward of its thigh's tip — a trick to get a bend at rest while keeping every offset
+## on the grid — and their feet missed by 0.2 m for as long as they existed. Nothing said a word,
+## because every test in the suite checked where `Footing` decided the foot should go rather than
+## where the rig actually put it.
+const MAX_CHAIN_GAP := 0.001
+
 const TINY := 0.000001
 
 var root := ""
@@ -84,6 +101,7 @@ static func measure(rig: Rig, entry: Dictionary, warnings: Array[String]) -> Leg
 		leg.passive.append(each)
 		leg.trail += each
 
+	_check_connected(rig, leg, warnings)
 	leg.home = tip_of(rig, leg.chain[leg.chain.size() - 1])
 	var anchor := rig.joint_position(leg.chain[0])
 	var span := leg.upper + leg.lower + leg.trail
@@ -94,6 +112,21 @@ static func measure(rig: Rig, entry: Dictionary, warnings: Array[String]) -> Leg
 	leg.drop = span - anchor.y
 	leg.bend = _bend(rig, leg, anchor, warnings)
 	return leg
+
+
+## Every bone's joint has to sit on its parent's tip, or the chain is not a chain and the solver
+## is answering a question about a different limb than the one on screen. Reported per gap rather
+## than once, because an author who closed one and left the other would otherwise think they were
+## done.
+static func _check_connected(rig: Rig, leg: Leg, warnings: Array[String]) -> void:
+	for i in range(1, leg.chain.size()):
+		var gap := tip_of(rig, leg.chain[i - 1]).distance_to(rig.joint_position(leg.chain[i]))
+		if gap <= MAX_CHAIN_GAP:
+			continue
+		warnings.append(("leg `%s`: `%s` starts %.3f m from where `%s` ends, so the chain has a" +
+			" gap in it. Its foot will miss the ground by that much and nothing will report a" +
+			" strain — a two-bone solver assumes the bones meet (RIG-SPEC §4)") % [
+			leg.root, leg.chain[i], gap, leg.chain[i - 1]])
 
 
 ## The bones from `root` down to `foot`, walked upward from the foot because a part knows its

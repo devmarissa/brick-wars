@@ -58,7 +58,11 @@ func _standing_still(t: TestContext, world: Dictionary) -> void:
 	t.eq(String(still["gait"]), "walk", "a creature standing still holds its slowest gait")
 	t.ok(not bool(still["blending"]), "and is not caught mid-transition")
 	t.near(float(still["phase"]), 0.0, EPSILON, "with a phase that has not advanced, having not moved")
-	t.near(float(still["height"]), 0.0, EPSILON, "standing at its own origin on flat ground")
+	# Not zero, and the number is the creature's own `stand`. Its bent legs put its soles above
+	# its origin, so the body rides below them by exactly that much — which is `Footing.support`
+	# doing its job, not the body sinking.
+	t.near(float(still["height"]), loco.stand, EPSILON,
+		"standing its own `stand` below its soles on flat ground")
 	t.ok((still["basis"] as Basis).is_equal_approx(Basis.IDENTITY), "and level")
 	t.eq(int(still["planted"]), 2, "with both legs in stance at the bottom of the cycle")
 	t.ok(not bool(still["unsupported"]), "which is not a creature standing on nothing")

@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "id": "core:disjointed",
+  "kind": "prop",
+  "name": "Test Leg With A Gap In It",
+  "class": "small_prop",
+  "_note": "Legal content that cannot be solved, which is why it is a fixture rather than a bug. Its shin's joint sits 2 modules forward of its thigh's tip — every offset is a whole number of modules, every joint has limits, the validator has nothing to say about it, and the leg is genuinely bent so `bend` and `reach` both come out fine.",
+  "_why_it_breaks": "A two-bone solver answers a geometry question about two segments that MEET: it puts the knee `upper` from the hip and the ankle `lower` from the knee, and the arithmetic that lands the foot on its target depends on both. A chain with a gap has a third length nobody told the solver about, so the foot misses its plant by exactly the gap — every frame, forever, reporting no strain because nothing was ever out of reach.",
+  "_it_actually_happened": "This is not a hypothetical. `core:biped` and `core:quadruped` were authored exactly like this, as a cheap way to get a bend at rest while keeping every offset on the grid, and their feet missed by 0.2 m for as long as they existed. The whole suite was green throughout, because every foot-planting assertion in it read `leg.plant` — where `Footing` decided the foot should go — and not one of them read the rig back to see where the foot actually went. `Leg.MAX_CHAIN_GAP` complains now, and this fixture is what proves the complaint still fires: a guard nobody has seen trip is a guard nobody knows still works.",
+  "parts": [
+    { "name": "hip", "offset": [0, 24, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "foot", "parent": "shin", "offset": [0, 3, -6], "rotation": [90, 0, 0],
+      "size": [2, 2, 6], "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 3] } }
+  ],
+  "collider": [{ "offset": [0, 12, 0], "size": [4, 28, 4] }],
+  "locomotion": {
+    "type": "legged",
+    "legs": [{ "root": "thigh", "foot": "foot", "phase": 0.0 }],
+    "gaits": [
+      { "name": "walk", "speed": [0, 3], "phases": [0.0], "stride": 1.2, "lift": 0.15, "duty": 0.7 }
+    ]
+  }
+}

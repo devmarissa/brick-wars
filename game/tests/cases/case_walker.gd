@@ -116,12 +116,24 @@ func _walks_and_sprints(t: TestContext, world: Dictionary, soldier: ResolvedAsse
 	# Feet still on the ground while moving, which is the failure planting exists to prevent:
 	# a creature at speed whose feet are a few centimetres into the surface looks fine in a
 	# screenshot and wrong in motion.
+	#
+	# Both questions, not just the first. `leg.plant` is where the driver decided the foot should
+	# go; `rig.root.global_transform * tip_of(...)` is where the foot actually is. The suite asked
+	# only the first for this whole milestone, and the two were 0.2 m apart the entire time. It is
+	# also what pins the order in `_physics_process`: pose the rig before moving the body and the
+	# rig is placed relative to a body that then moves out from under it by a frame of travel.
 	for leg in walker.locomotion.legs:
 		if not bool(leg.plant["planted"]):
 			continue
 		var at: Vector3 = leg.plant["position"]
 		t.near(at.y, TestGround.height_at(at.x, at.z), 0.002,
 			"a foot planted at sprint is still on the surface")
+		if not leg.stance:
+			continue
+		var sole: Vector3 = walker.rig.root.global_transform * Leg.tip_of(
+			walker.rig, leg.chain[leg.chain.size() - 1])
+		t.ok(sole.distance_to(at) < 0.005,
+			"and is where the rig actually put it: %.4f m out" % sole.distance_to(at))
 	walker.queue_free()
 
 

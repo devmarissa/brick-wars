@@ -22,8 +22,10 @@ const FIXTURES := "res://tests/fixtures/rig"
 
 const EPSILON := 0.0001
 
-## `biped.json`'s reach — what is left of the leg once it is standing. `case_leg.gd` pins it.
-const BIPED_REACH := 3.0 - 2.529822128
+## `biped.json`'s reach — what is left of the leg once it is standing — and where its soles rest.
+## Both closed forms; `case_leg.gd` pins them. The fixture bends at 30 and 60 so they stay exact.
+const BIPED_REACH := 0.8366692348     ## 3.0 - sqrt(4.68)
+const SOLE_Y := 0.3215390309          ## 2.4 - 1.2 * sqrt(3)
 
 
 func case_name() -> String:
@@ -40,6 +42,7 @@ func run(t: TestContext) -> void:
 	_never_drops_into_a_ditch(t, world)
 	_the_body_follows_the_ground(t, world)
 	_same_answer_every_time(t, world)
+	_the_foot_ends_up_where_it_was_solved_to(t, world)
 
 
 ## Down in the bowl, whose floor is further below the rim than a biped's leg is long. The feet
@@ -59,15 +62,17 @@ func _beyond_reach(t: TestContext, world: Dictionary) -> void:
 	for leg in loco.legs:
 		t.ok(not bool(leg.plant["planted"]),
 			"a foot over a hollow deeper than its leg does not plant")
-		t.near((leg.plant["position"] as Vector3).y, -BIPED_REACH, EPSILON,
+		# The bottom of its range, measured from where the sole was aimed rather than from zero:
+		# the foot is held at the body's origin plus `home.y` and can drop `reach` from there.
+		t.near((leg.plant["position"] as Vector3).y, SOLE_Y - BIPED_REACH, EPSILON,
 			"it hangs at the bottom of its range instead")
 	t.ok(bool(over["unsupported"]),
 		"and the creature is reported as standing on nothing, which is the driver's cue to act")
 	t.eq(int(over["planted"]), 2,
 		"while still being in stance on both legs — the gait does not know about the hole")
 
-	# Both feet at full stretch and equal, so the average and the lowest agree and the body ends
-	# up exactly a reach below its origin.
+	# Both feet at full stretch and equal, so the average and the lowest agree — and `stand` is
+	# exactly `-home.y`, so the two cancel and the body lands a clean reach below its origin.
 	t.near(float(over["height"]), -BIPED_REACH, EPSILON,
 		"so the body comes down to where the legs can still reach, rather than hovering")
 
@@ -108,10 +113,14 @@ func _never_drops_into_a_ditch(t: TestContext, world: Dictionary) -> void:
 				up = minf(up, y)
 		if down == INF:
 			continue
-		# How far below the lowest planted foot the body ended up, and how much lower a swinging
-		# foot was than that planted one. The first must stay inside the bob; the second is what
-		# makes the first worth asserting.
-		worst = maxf(worst, down - float(out["height"]))
+		# How far below where the lowest planted foot puts it the body ended up, and how much
+		# lower a swinging foot was than that planted one. The first must stay inside the bob;
+		# the second is what makes the first worth asserting.
+		#
+		# `+ stand` is not a fudge: the body is *meant* to ride `stand` from its feet, and this
+		# creature's is negative because its soles rest above its origin. Comparing the raw
+		# height against the plant would measure the stance rather than the policy.
+		worst = maxf(worst, (down + loco.stand) - float(out["height"]))
 		if up != INF:
 			lowest_gap = maxf(lowest_gap, down - up)
 
@@ -141,8 +150,13 @@ func _the_body_follows_the_ground(t: TestContext, world: Dictionary) -> void:
 	# to come up with it and tilt part of the way onto it, because `body_pitch` is 0.1 and not 1.
 	var on_ramp: Dictionary = loco.step(Transform3D(Basis.IDENTITY, Vector3(4.0, 0.5, 0.0)),
 		Vector3(0.0, 0.0, -1.0), 0.0, 0.1, ground)
-	t.ok(float(on_ramp["height"]) > 0.3,
-		"walking up a slope raises the body with it: %s" % on_ramp["height"])
+	# Against the flat rather than against zero, so the assertion is about the slope and not about
+	# where this particular creature's origin happens to sit relative to its soles.
+	var on_flat: Dictionary = loco.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -1.0), 0.0, 0.1,
+		ground)
+	t.ok(float(on_ramp["height"]) - float(on_flat["height"]) > 0.3,
+		"walking up a slope raises the body with it: %.3f on the ramp against %.3f on the flat" % [
+			on_ramp["height"], on_flat["height"]])
 	var tilt := rad_to_deg((on_ramp["basis"] as Basis).y.angle_to(Vector3.UP))
 	t.ok(tilt > 0.5 and tilt < 14.036,
 		"and tilts it part of the way onto the slope rather than all of it: %s degrees" % tilt)
@@ -194,3 +208,52 @@ func _same_answer_every_time(t: TestContext, world: Dictionary) -> void:
 	for i in first.legs.size():
 		t.ok(first.legs[i].hang.is_equal_approx(second.legs[i].hang),
 			"including each leg's hang, the one piece of state that survives a frame")
+
+
+## The assertion this whole milestone was missing, and the one that would have caught the worst
+## thing in it a fortnight earlier.
+##
+## Every other foot-planting check in the suite reads `leg.plant` — `Footing`'s answer about where
+## the foot *should* go. That is the driver's intention. Nothing read the rig back to see where the
+## foot actually *ended up*, so for as long as the fixtures had a gap at the knee they were 0.2 m
+## apart and the suite was green throughout, because it was only ever asking the first question.
+##
+## The two have to agree. The sole, posed by the IK, read back through the bone hierarchy and
+## carried into the world by the transform `step` just reported, lands on the plant it was solved
+## to. It is also what pins the order inside `step`: if `into` were built from the incoming body
+## rather than the outgoing one, the rig would be posed against a transform the result does not
+## agree with, and these two answers would separate.
+func _the_foot_ends_up_where_it_was_solved_to(t: TestContext, world: Dictionary) -> void:
+	var loco := FixtureWorld.driver(world, "core:quadruped")
+	if loco == null:
+		return
+	var ground := FixtureWorld.test_ground()
+
+	# Moving and turning over the ramp, because standing still on the flat is the one case where a
+	# stale body transform and a current one are the same transform.
+	var at := Transform3D(Basis(Vector3.UP, 0.4), Vector3(3.0, 0.5, 0.0))
+	var motion := Vector3(0.6, 0.0, -2.4)
+	var checked := 0
+	var worst := 0.0
+	for i in 40:
+		at.origin += motion * (1.0 / 60.0)
+		at.basis = Basis(Vector3.UP, 0.4 + i * 0.01)
+		var out: Dictionary = loco.step(at, motion, 0.6, 1.0 / 60.0, ground)
+		if out.is_empty():
+			continue
+		# The body the driver says it ended up as: its own basis, at its own height, over the
+		# horizontal position it was handed.
+		var posed := Transform3D(out["basis"] as Basis,
+			Vector3(at.origin.x, float(out["height"]), at.origin.z))
+		for leg in loco.legs:
+			if not leg.stance:
+				continue    # a swinging foot is lifted off its plant on purpose
+			var sole: Vector3 = posed * Leg.tip_of(loco.rig, leg.chain[leg.chain.size() - 1])
+			worst = maxf(worst, sole.distance_to(leg.plant["position"] as Vector3))
+			checked += 1
+
+	t.ok(checked > 80, "there were stance feet to check across the run: %d" % checked)
+	# A millimetre. The gap that hid here was 200 of them, and there is nothing downstream that
+	# damps it — a chain with a gap misses its plant by exactly the gap, forever.
+	t.ok(worst < 0.001,
+		"and every posed sole is on the plant it was solved to: %.5f m at worst" % worst)

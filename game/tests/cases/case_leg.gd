@@ -13,7 +13,7 @@ extends TestCase
 ## The section that matters most is `_knees_and_hocks`. RIG-SPEC §4 spends a paragraph on the
 ## claim that a human knee and a horse's hock are the same code with no field between them, and
 ## that is the kind of claim which is either true or has been quietly false for a month. The two
-## fixtures differ in one respect — which way their shins jog off the thigh — and the assertion
+## fixtures differ in one respect — the sign of their legs' `rest` angles — and the assertion
 ## is that the derived bend comes out opposite. Nothing else in the suite says that.
 ##
 ## What the driver does with these numbers frame by frame is `case_driver.gd`.
@@ -25,9 +25,17 @@ const FIXTURES := "res://tests/fixtures/rig"
 const EPSILON := 0.0001
 
 ## `biped.json`'s legs, straight out of the file: two 12-module bones, a 6-module foot, hip 24
-## modules up.
+## modules up, bent +30/-60/+30 by `rest` angles.
 const BIPED_SPAN := 3.0
 const BIPED_HIP := 2.4
+
+## Where a sole rests, and how far the hip is from it. Both closed forms, which is the whole
+## reason the fixture bends at 30 and 60: `2.4 - 1.2*sqrt(3)` and `3.0 - sqrt(4.68)` are exact,
+## and a decimal read off a running rig would agree with whatever the rig happened to do.
+const SOLE_Y := 0.3215390309          ## 2.4 - 1.2 * sqrt(3)
+const BIPED_REACH := 0.8366692348     ## 3.0 - sqrt(4.68)
+const FORE_REACH := 0.8366692348      ## the quadruped's front legs are the biped's
+const HIND_REACH := 0.6833988089      ## 2.8 - sqrt(4.48)
 
 
 func case_name() -> String:
@@ -72,13 +80,13 @@ func _measured_off_the_rest_pose(t: TestContext, world: Dictionary) -> void:
 
 	# The sole in the creature's own space. Every foot position the driver computes is this point
 	# plus a gait offset, so if it is wrong nothing above it can be right.
-	_vec(t, left.home, Vector3(-0.3, 0.0, -0.8), "the sole rests where the rest pose puts it")
-	_vec(t, loco.legs[1].home, Vector3(0.3, 0.0, -0.8), "and the other one mirrors it")
+	_vec(t, left.home, Vector3(-0.3, SOLE_Y, -0.6), "the sole rests where the rest pose puts it")
+	_vec(t, loco.legs[1].home, Vector3(0.3, SOLE_Y, -0.6), "and the other one mirrors it")
 	t.near(loco.legs[1].phase, 0.5, EPSILON, "carrying the pack's own phase offset")
 
 	# "How much further can this leg straighten": the span less the straight-line distance from
 	# hip to sole. The bend is what buys it, which is why a straight leg has none.
-	t.near(left.reach, BIPED_SPAN - sqrt(6.4), EPSILON,
+	t.near(left.reach, BIPED_REACH, EPSILON,
 		"reach is what is left of the leg once it is standing")
 	t.ok(left.reach > Leg.MIN_REACH * 2.0,
 		"and a bent leg has real room, not the floor a straight one falls back to")
@@ -91,28 +99,31 @@ func _the_whole_creature(t: TestContext, world: Dictionary) -> void:
 	var loco := FixtureWorld.driver(world, "core:biped")
 	if loco == null:
 		return
-	# The soles sit at the asset's own origin, so the body rides at its origin. An author retunes
-	# a stance by moving bones rather than by writing the same number twice.
-	t.near(loco.stand, 0.0, EPSILON, "a creature whose soles are at its origin stands on it")
+	# Negative, and that is the interesting case rather than an oversight. This creature's soles
+	# rest ABOVE its own origin — a bent leg is shorter than a straight one and the hip is at a
+	# whole number of modules — so the body rides *below* its feet, and `Footing.support` adds a
+	# negative `stand` to put the soles back on the ground. A fixture whose soles sat at zero
+	# could not tell that from a `stand` that had lost its sign.
+	t.near(loco.stand, -SOLE_Y, EPSILON, "a creature whose soles rest above its origin rides below them")
 	t.near(loco.drop, BIPED_SPAN - BIPED_HIP, EPSILON,
 		"and may put its lowest foot that far below itself")
 
-	# The quadruped's legs are deliberately unequal — forelegs drop 0.4, hind legs 0.6 — so this
+	# The quadruped's legs are deliberately unequal — forelegs drop 0.6, hind legs 0.4 — so this
 	# line can tell a minimum from a maximum. The most constrained leg is the one that decides
 	# how far the body may ride above the lowest foot.
 	var horse := FixtureWorld.driver(world, "core:quadruped")
 	if horse == null or horse.legs.size() != 4:
 		t.fail("core:quadruped did not set up four legs")
 		return
-	t.near(horse.legs[0].drop, 0.4, EPSILON, "a foreleg gives up 0.4 of itself below the body")
-	t.near(horse.legs[2].drop, 0.6, EPSILON, "a hind leg 0.6, because it is a different leg")
+	t.near(horse.legs[0].drop, 0.6, EPSILON, "a foreleg gives up 0.6 of itself below the body")
+	t.near(horse.legs[2].drop, 0.4, EPSILON, "a hind leg 0.4, because it is a different leg")
 	t.near(horse.drop, 0.4, EPSILON, "and the creature's `drop` is the least of them, not the most")
 
-	t.near(horse.stand, 0.0, EPSILON, "its stance is the mean of four soles, all of them at zero")
-	t.near(horse.legs[0].reach, 2.8 - sqrt(6.12), EPSILON, "a foreleg reaches by its own geometry")
-	t.near(horse.legs[2].reach, 2.6 - sqrt(4.16), EPSILON, "and a hind leg by its own, which differs")
-	_vec(t, horse.legs[0].home, Vector3(-0.3, 0.0, -1.5), "a forefoot rests ahead of the body")
-	_vec(t, horse.legs[2].home, Vector3(-0.3, 0.0, 0.5), "and a hind foot behind it")
+	t.near(horse.stand, -SOLE_Y, EPSILON, "its stance is the mean of four soles, all at one height")
+	t.near(horse.legs[0].reach, FORE_REACH, EPSILON, "a foreleg reaches by its own geometry")
+	t.near(horse.legs[2].reach, HIND_REACH, EPSILON, "and a hind leg by its own, which differs")
+	_vec(t, horse.legs[0].home, Vector3(-0.3, SOLE_Y, -1.5), "a forefoot rests ahead of the body")
+	_vec(t, horse.legs[2].home, Vector3(-0.3, SOLE_Y, 0.5), "and a hind foot behind it")
 
 
 ## RIG-SPEC §4's paragraph, as a handful of assertions. A human knee points forward and a horse's
@@ -127,14 +138,19 @@ func _knees_and_hocks(t: TestContext, world: Dictionary) -> void:
 
 	var knee := biped.legs[0].bend
 	t.ok(knee.z < 0.0, "a knee bent forward at rest reads as bending forward: %s" % knee)
-	t.ok(knee.dot(Vector3.FORWARD) > 0.99, "and almost exactly forward, not merely forward-ish")
+	# Exactly forward, not approximately. The fixture is mirrored about its own hip, so the
+	# perpendicular component the bend is read from lies purely on Z — which is worth asserting
+	# tightly, because it is the one number in the file that a mirrored pair must agree on
+	# perfectly for a creature not to walk crabwise.
+	t.ok(knee.is_equal_approx(Vector3.FORWARD), "and exactly forward: %s" % knee)
 	t.near(knee.length(), 1.0, EPSILON, "with a unit direction, which the solver requires")
 
 	var fore := horse.legs[0].bend
 	var hock := horse.legs[2].bend
 	t.ok(fore.z < 0.0, "the same creature's forelegs bend forward too: %s" % fore)
 	t.ok(hock.z > 0.0, "and its hind legs backward, which is what a hock is: %s" % hock)
-	t.ok(fore.dot(hock) < -0.98,
+	t.ok(hock.is_equal_approx(Vector3.BACK), "exactly backward, in fact: %s" % hock)
+	t.near(fore.dot(hock), -1.0, EPSILON,
 		"two opposite directions, read off two rest poses by one function with no field between them")
 
 	# A matched pair must agree, or the creature bends one knee inward and the other outward.
@@ -172,6 +188,18 @@ func _nothing_to_drive(t: TestContext, world: Dictionary) -> void:
 	# breaking the line and watching the suite stay green.
 	t.near(straight.stand, 0.4, EPSILON,
 		"a creature whose soles hang below its origin stands that far above them")
+
+	# A leg whose bones do not meet. Legal content — every offset whole, every joint limited, the
+	# validator silent — and unsolvable, because a two-bone solver assumes the segments touch. The
+	# foot misses its plant by exactly the gap and reports no strain. `core:biped` and
+	# `core:quadruped` were both authored this way and were wrong for a fortnight; this is what
+	# keeps the complaint alive now that nothing else in the repo trips it.
+	var gapped := FixtureWorld.driver(world, "core:disjointed")
+	if gapped != null:
+		var complaint := "\n".join(gapped.warnings)
+		t.ok(complaint.contains("has a gap in it"), "a chain with a gap is complained about: " + complaint)
+		t.ok(complaint.contains("0.200 m"), "with the size of the gap, which is the size of the error")
+		t.ok(complaint.contains("assumes the bones meet"), "and why it cannot be solved")
 
 	# No block at all, which is most assets. `core:leg` is rigged and declares no `locomotion`.
 	var plain := Locomotion.new()

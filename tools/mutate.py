@@ -84,6 +84,26 @@ MUTATIONS = [
      "if true:",
      "a walker never warns that its collision stops above its feet"),
 
+    # The guard that refuses a leg whose bones do not meet. It went in after two fixtures spent a
+    # fortnight with a 0.2 m gap at the knee and nothing said a word.
+    ("game/core/rig/leg.gd",
+     "\t\tif gap <= MAX_CHAIN_GAP:",
+     "\t\tif true:",
+     "a leg with a gap in its chain is never complained about"),
+
+    # The order inside `step` itself, which the pose-versus-plant assertion should now pin.
+    ("game/core/rig/locomotion.gd",
+     "var into := Transform3D(basis, Vector3(at.origin.x, height, at.origin.z)).affine_inverse()",
+     "var into := at.affine_inverse()",
+     "the rig is solved against the body that came in, not the one going out"),
+
+    # DEVIATIONS §D2: the hang lag is exponential so a fetlock does not lag further on a slow
+    # machine. A plain lerp is the wrong shape and is frame-rate dependent.
+    ("game/core/rig/locomotion.gd",
+     "var mixed := leg.hang.lerp(down, 1.0 - exp(-FOLLOW_RATE * delta))",
+     "var mixed := leg.hang.lerp(down, FOLLOW_RATE * delta)",
+     "the hang lag is a plain lerp rather than an exponential follow"),
+
     # The line that decides whether a planted foot slides. It was `stride * 0.5` until the slide
     # was measured against a moving body, and nothing in the suite noticed.
     ("game/core/rig/gait.gd",
