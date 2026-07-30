@@ -124,6 +124,21 @@ returns the volume rather than taking a destination: a cut that reaches bedrock 
 was asked for, and a caller that ignores the return has quietly deleted earth. Making that
 awkward is the point — the signature is the enforcement.
 
+### B4. Collision is a trimesh, not a heightfield
+
+§2 asks for "a Jolt heightfield collider per chunk", which is cheaper. `EarthTerrain` builds a
+`ConcavePolygonShape3D` from the mesh it just made instead.
+
+The reason is that a heightfield cannot hold the feature the whole design exists for. It has one
+height per cell, so a vertical skirt becomes a very steep ramp and a **tunnel cannot be
+represented at all** — §6 already concedes this by saying voids and tunnel roofs get box colliders
+on the side. Starting with the shape that is *correct* and moving to the one that is *cheap* when
+a frame budget says so is the right order; the other way round means discovering at C3b that the
+collision model cannot express spans.
+
+Revisit when there is a real map and a profiler. The mesh already exists either way, so a trimesh
+costs the shape build rather than a second traversal.
+
 ---
 
 ## C · Structural notes

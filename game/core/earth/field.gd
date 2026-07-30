@@ -143,6 +143,19 @@ func is_disturbed(cell: Vector2i) -> bool:
 	return chunk.is_disturbed(local.x, local.y)
 
 
+## Set a column outright, for **generating** a map rather than digging one.
+##
+## Deliberately separate from `carve` and `deposit`, and deliberately not logged: this creates and
+## destroys earth, which is exactly what §4 forbids of digging. A map is authored and then dug, and
+## conflating the two would mean either a generator that has to conserve volume against ground that
+## does not exist yet, or a dig path with a back door in it. Nothing calls this after the world is
+## up.
+func sculpt(cell: Vector2i, height_cm: int) -> void:
+	var chunk := chunk_for(cell)
+	var local := local_of(cell)
+	chunk.set_surface_cm(local.x, local.y, height_cm - chunk.base_cm)
+
+
 # ---------------------------------------------------------------- digging
 
 ## Take earth out of a column, and hand it back rather than destroying it.

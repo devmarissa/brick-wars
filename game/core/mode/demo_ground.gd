@@ -1,0 +1,85 @@
+class_name DemoGround
+extends RefCounted
+## The sandbox's starting terrain: `TestGround`'s shape, as a real diggable field, with a trench
+## cut into it. EARTH-SPEC §2.
+##
+## The shape is sampled from `TestGround.height_at` rather than invented, and that is the whole
+## point of it. C1's greybox swap held the camera, the sun and the sky still so the before-and-after
+## screenshots were comparable; this does the same thing one layer down. The ramp, the step and the
+## bowl are the same ramp, step and bowl the rig has been walking over since C2 — so a picture of
+## the earth field is a picture of *the field*, not of a different map that also has a hill in it.
+##
+## `TestGround` itself is not going anywhere. Every rig case asserts exact numbers against it as a
+## pure analytic function, and it stays the suite's surface (DEVIATIONS-C3 C1). What changes is what
+## the *sandbox* stands on.
+##
+## Map generation is C7's problem. This is a table of shapes, in the same spirit as `Sandbox.LAYOUT`
+## being a table rather than a sequence of calls: turning it into a file later is a reader rather
+## than a rewrite.
+
+## How far out the field is generated, in metres. `TestGround` is 24 m across and the walkers circle
+## inside it; a couple of metres of margin keeps them off the edge of the world.
+const EXTENT_M := 14.0
+
+## The trench, in world metres: where it runs, how wide, how deep. Deep enough to be past the
+## mesher's 87 cm cliff threshold, so it comes out with vertical walls rather than as a soft
+## depression — which is the entire thing C3's meshing increment is here to show.
+const TRENCH_X := -9.0
+const TRENCH_HALF_WIDTH := 0.6
+const TRENCH_FROM_Z := -6.0
+const TRENCH_TO_Z := 2.0
+const TRENCH_DEPTH_CM := 140
+
+## Where the trench runs, and it is out west of the props on purpose. The first attempt cut it
+## through the middle of the world and heaped its spoil on top of `core:wall_sandbag`, which
+## promptly collapsed — correct behaviour by the physics and a useless screenshot.
+##
+## Where the spoil goes. Digging is not deletion (§4), so the trench's own earth becomes the
+## parapet beside it — which is also why the parapet is `disturbed` and will stand less steeply
+## than the wall opposite once the settle queue arrives.
+const PARAPET_OFFSET_CELLS := -2
+
+## How many cells the spoil is spread over. Not cosmetic: three cells of 140 cm cut dumped onto two
+## cells is a 2.1 m parapet, which is a wall rather than something to fire over — and it read as a
+## slab of dark grey in the first screenshot because a 2 m vertical face away from the sun is
+## unlit. Spread over six it comes out around 70 cm, which is under the 87 cm cliff threshold, so
+## the parapet is a smooth mound and the cut is the sharp thing in frame. Both behaviours, one
+## picture.
+const PARAPET_CELLS := 6
+
+
+## Sculpt the starting ground, cut the trench, and hand back how much earth moved.
+static func make(field: EarthField) -> int:
+	var reach := int(EXTENT_M / EarthField.CELL_M)
+	for cz in range(-reach, reach + 1):
+		for cx in range(-reach, reach + 1):
+			var centre := EarthField.centre_of(Vector2i(cx, cz))
+			field.sculpt(Vector2i(cx, cz), roundi(TestGround.height_at(centre.x, centre.y) * 100.0))
+	return _cut_trench(field)
+
+
+## A trench, dug rather than sculpted: it carves real volume out and piles every centimetre of it
+## on the parapet, so the ground either side is `disturbed` and the field has as much earth in it
+## afterwards as before.
+static func _cut_trench(field: EarthField) -> int:
+	var moved := 0
+	var from_z := int(TRENCH_FROM_Z / EarthField.CELL_M)
+	var to_z := int(TRENCH_TO_Z / EarthField.CELL_M)
+	var centre_x := int(TRENCH_X / EarthField.CELL_M)
+	var half := int(TRENCH_HALF_WIDTH / EarthField.CELL_M)
+
+	for cz in range(from_z, to_z + 1):
+		var spoil := 0
+		for cx in range(centre_x - half, centre_x + half + 1):
+			spoil += field.carve(Vector2i(cx, cz), TRENCH_DEPTH_CM)
+		moved += spoil
+		# All of it onto one side, which is what gives a trench a parapet and a firing step rather
+		# than a symmetrical ditch. Spread rather than piled — see `PARAPET_CELLS`.
+		var lip := centre_x - half + PARAPET_OFFSET_CELLS
+		var each := spoil / PARAPET_CELLS
+		for i in PARAPET_CELLS:
+			# The last cell takes the remainder, so no centimetre of earth is lost to integer
+			# division. §4 means it, and a rounding leak is still a leak.
+			var share := each if i < PARAPET_CELLS - 1 else spoil - each * (PARAPET_CELLS - 1)
+			field.deposit(Vector2i(lip - i, cz), share)
+	return moved

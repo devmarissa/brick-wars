@@ -75,6 +75,11 @@ const WALKERS := [
 var spawned: Array[BuiltAsset] = []
 var walkers: Array[Walker] = []
 
+## The ground, as of C3 — a real column field rather than a fixed surface.
+var earth: EarthTerrain = null
+
+var _earth_moved := 0
+
 var _headings: Array[float] = []
 var _demo := 0.0
 
@@ -82,7 +87,7 @@ var _demo := 0.0
 ## Builds the world and returns what it put in it. Takes the content module rather than
 ## reaching for it, so this is callable straight from a test with no kernel around it.
 func build(content: Module) -> Array[BuiltAsset]:
-	_add_ground()
+	_add_ground(content)
 	_add_light()
 	_add_environment()
 	_add_camera()
@@ -104,10 +109,10 @@ func build(content: Module) -> Array[BuiltAsset]:
 ## A position authored against a flat floor, lifted onto the real surface. Off the map the height
 ## is meaningless, so it stays where it was put and falls — which is the honest outcome and looks
 ## like one, rather than a prop hovering at the height of the last valid sample.
-static func _on_ground(at: Vector3) -> Vector3:
-	if not TestGround.contains(at.x, at.z):
+func _on_ground(at: Vector3) -> Vector3:
+	if earth == null:
 		return at
-	return Vector3(at.x, at.y + TestGround.height_at(at.x, at.z), at.z)
+	return Vector3(at.x, at.y + earth.field.height_at(at.x, at.z), at.z)
 
 
 ## The soldier and the horse, walking. This is the part of the sandbox that is not a still life,
@@ -182,15 +187,27 @@ func report() -> String:
 			built.mass, "  (declared)" if built.mass_declared else ""])
 	for walker in walkers:
 		lines.append("  %-28s %s" % [walker.asset_id, walker.report()])
+	if earth != null:
+		lines.append("  " + earth.report())
+		lines.append("  trench cut: %d column-cm of earth moved, and all of it is still in the field"
+			% _earth_moved)
 	return "sandbox: %d asset(s), %d walker(s)\n%s" % [
 		spawned.size(), walkers.size(), "\n".join(lines)]
 
 
-## `TestGround` rather than the plate. C3 replaces this with the real earth field; until then it
-## is the only ground in the build with a slope, a step and a hole in it, which is the only kind a
-## foot-planting solver can be judged against.
-func _add_ground() -> void:
-	add_child(TestGround.make())
+## The real earth field, as of C3. `TestGround`'s shape — sampled from it rather than reinvented,
+## so the before-and-after screenshots compare the *ground*, not two different maps that both have
+## a hill — plus a trench cut into it, which is the thing slope-dependent meshing exists to show.
+##
+## `TestGround` itself stays exactly where it is: it is the suite's analytic surface and every rig
+## case asserts exact numbers against it. What changed is what the sandbox stands on.
+func _add_ground(content: Module) -> void:
+	var field := EarthField.flat(content.materials, 0)
+	var moved := DemoGround.make(field)
+	earth = EarthTerrain.of(field, content.palette, content.materials)
+	add_child(earth)
+	earth.build_all()
+	_earth_moved = moved
 
 
 ## The plate, with its top face at y = 0. Static and separate for the same reason
@@ -251,6 +268,9 @@ func _add_camera() -> void:
 	# plate; the subject now is two creatures walking over ground with a slope, a step and a hole
 	# in it, and the walkers' circles reach four metres further from the camera than anything in
 	# `LAYOUT` does. A frame that crops them is a frame that shows none of what the milestone did.
-	cam.global_position = Vector3(8.4, 3.1, 2.4)
-	cam.look_at(Vector3(2.4, 1.0, -4.6))
+	# Aimed along the trench at C3. The creatures are still in frame, but the subject is the ground
+	# now: a cut with vertical walls, its own spoil heaped beside it as a smooth parapet, and the
+	# ramp behind — one picture with both halves of the meshing rule in it.
+	cam.global_position = Vector3(1.4, 3.6, 4.8)
+	cam.look_at(Vector3(-7.2, -0.3, -2.8))
 	cam.current = true

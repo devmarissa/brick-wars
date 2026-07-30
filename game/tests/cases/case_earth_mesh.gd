@@ -34,6 +34,7 @@ func run(t: TestContext) -> void:
 	_a_trench_has_vertical_walls(t, world)
 	_a_slumped_trench_does_not(t, world)
 	_columns_agree_across_a_chunk_border(t, world)
+	_walls_face_outward(t, world)
 
 
 ## The degenerate case, and the one that catches a winding mistake: flat ground is a flat sheet,
@@ -177,3 +178,37 @@ func _world() -> Dictionary:
 	if not materials.load_core(palette):
 		return {}
 	return {"palette": palette, "materials": materials}
+
+
+## Which way a wall faces, which is not a detail: a skirt wound inside-out is a wall lit from
+## within the earth, and it renders black. Six of the first eight were, and the screenshot showed
+## a trench as a slab of dark grey — the geometry was right and the winding was not.
+##
+## The four skirt call sites hand their corners in in whatever order the top quad had them, so
+## rather than four hand-checked orderings the wall is told which way it must face and flips itself
+## if it disagrees. This is what says it still does.
+func _walls_face_outward(t: TestContext, world: Dictionary) -> void:
+	var field := EarthField.flat(world["materials"], 0)
+	field.carve(Vector2i(5, 5), 150)          # one column dropped, so it is walled on all four sides
+	var mesh := _mesh(field, world)
+	if mesh == null:
+		t.fail("a one-column hole produced no mesh")
+		return
+
+	var arrays := mesh.surface_get_arrays(0)
+	var points: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var hole := EarthField.centre_of(Vector2i(5, 5))
+	var walls := 0
+	var facing := 0
+	for i in range(0, normals.size(), 3):
+		if absf(normals[i].y) > 0.1:
+			continue
+		walls += 1
+		var middle := (points[i] + points[i + 1] + points[i + 2]) / 3.0
+		var toward := Vector3(hole.x - middle.x, 0.0, hole.y - middle.z).normalized()
+		if normals[i].dot(toward) > 0.5:
+			facing += 1
+
+	t.eq(walls, 8, "a single dropped column is walled on all four sides, two triangles each")
+	t.eq(facing, walls, "and every one of those faces into the hole rather than into the earth")

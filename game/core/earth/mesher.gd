@@ -121,16 +121,23 @@ static func _column(field: EarthField, cell: Vector2i, palette: Palette, materia
 			corner_cm(field, cell, corner_v) * 0.01,
 			centre.y + corner_v.y * HALF_CELL))
 
-	var colour := _colour_of(field, cell, palette, materials)
-	_quad(top[0], top[1], top[2], top[3], colour, vertices, normals, colours)
+	var base := _colour_of(field, cell, palette, materials)
+	# One shade per *vertex*, not per column (ART-BIBLE §6b). Keyed on the corner's own position in
+	# half-cells, so the four columns meeting at a corner all compute the same shade for it and the
+	# variation reads as mixed ground rather than as a chequerboard of 0.5 m tiles — which is
+	# exactly what per-column shading looked like.
+	var tint: Array[Color] = []
+	for corner in CORNERS:
+		tint.append(_shaded(base, cell * 2 + (corner as Vector2i)))
+	_quad(top[0], top[1], top[2], top[3], tint, Vector3.ZERO, vertices, normals, colours)
 
 	# A skirt to each of the two neighbours this column looks *down* on. Only two of the four, and
 	# only downhill: the uphill neighbour emits the other side of the same wall, so a wall built
 	# from both sides would be doubled and z-fight along its whole length.
-	_skirt(field, cell, Vector2i(1, 0), top[1], top[2], colour, vertices, normals, colours)
-	_skirt(field, cell, Vector2i(0, 1), top[3], top[2], colour, vertices, normals, colours)
-	_skirt(field, cell, Vector2i(-1, 0), top[3], top[0], colour, vertices, normals, colours)
-	_skirt(field, cell, Vector2i(0, -1), top[0], top[1], colour, vertices, normals, colours)
+	_skirt(field, cell, Vector2i(1, 0), top[1], top[2], base, vertices, normals, colours)
+	_skirt(field, cell, Vector2i(0, 1), top[3], top[2], base, vertices, normals, colours)
+	_skirt(field, cell, Vector2i(-1, 0), top[3], top[0], base, vertices, normals, colours)
+	_skirt(field, cell, Vector2i(0, -1), top[0], top[1], base, vertices, normals, colours)
 
 
 ## The vertical face between a column and a lower neighbour. Flat normals, because a trench wall
@@ -151,21 +158,39 @@ static func _skirt(field: EarthField, cell: Vector2i, toward: Vector2i, a: Vecto
 	var foot_b := Vector3(b.x, corner_cm(field, other, -toward - Vector2i(toward.y, toward.x)) * 0.01, b.z)
 	foot_a.y = mini(int(foot_a.y * 100.0), below) * 0.01
 	foot_b.y = mini(int(foot_b.y * 100.0), below) * 0.01
-	_quad(a, b, foot_b, foot_a, colour.darkened(0.08), vertices, normals, colours)
+	# Wound to face the neighbour it looks down on. The four call sites hand their corners in in
+	# whatever order the top quad had them, and half of them come out inside-out — which renders as
+	# a wall lit from within the earth, i.e. black. Rather than four hand-checked orderings, the
+	# wall is told which way it must face and `_quad` flips itself if it disagrees.
+	var facing := Vector3(toward.x, 0.0, toward.y)
+	var wall := colour.darkened(0.08)
+	_quad(a, b, foot_b, foot_a, [wall, wall, wall, wall] as Array[Color], facing,
+		vertices, normals, colours)
 
 
 ## Two triangles, wound so the front face points out, with one flat normal for the pair. Godot 4
 ## winds front faces clockwise: for triangle `a, b, c` the outward normal is `(c - a) × (b - a)`.
-static func _quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3, colour: Color,
-		vertices: PackedVector3Array, normals: PackedVector3Array,
+static func _quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3, tint: Array[Color],
+		facing: Vector3, vertices: PackedVector3Array, normals: PackedVector3Array,
 		colours: PackedColorArray) -> void:
 	var normal := (c - a).cross(b - a).normalized()
 	if normal.length_squared() < 0.5:
 		return                                  # degenerate: a wall of no height
-	for corner in [a, b, c, a, c, d]:
-		vertices.append(corner)
+	# `facing` is the direction this face is supposed to point. Given one, a quad that came out
+	# inside-out swaps its diagonal rather than being reordered at the call site.
+	if facing.length_squared() > 0.0 and normal.dot(facing) < 0.0:
+		var swap := b
+		b = d
+		d = swap
+		var swap_tint := tint[1]
+		tint = [tint[0], tint[3], tint[2], swap_tint] as Array[Color]
+		normal = (c - a).cross(b - a).normalized()
+	var order := [0, 1, 2, 0, 2, 3]
+	var points := [a, b, c, a, c, d]
+	for i in 6:
+		vertices.append(points[i])
 		normals.append(normal)
-		colours.append(colour)
+		colours.append(tint[order[i]])
 
 
 ## The span's material colour, with ART-BIBLE §6b's per-vertex variation folded in. Seeded off the
@@ -174,11 +199,17 @@ static func _colour_of(field: EarthField, cell: Vector2i, palette: Palette,
 		materials: MaterialSet) -> Color:
 	var material := field.material_at(cell)
 	var base := palette.colour(StringName(String(materials.get_def(material).get("colour", ""))))
-	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(cell)
-	var shade := 1.0 + rng.randf_range(-SHADE_RANGE, SHADE_RANGE)
 	if field.is_disturbed(cell):
 		# Dug ground reads darker and flatter — it is loose, it holds water, and §4 already says it
 		# behaves differently. Costing it a shade makes spoil visible before anybody stands on it.
-		shade *= 0.92
+		return Color(base.r * 0.92, base.g * 0.92, base.b * 0.92)
+	return base
+
+
+## One corner's shade. Keyed on the corner rather than the column so that the four columns meeting
+## there agree, which is the difference between mixed ground and a tiled floor.
+static func _shaded(base: Color, corner_key: Vector2i) -> Color:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(corner_key)
+	var shade := 1.0 + rng.randf_range(-SHADE_RANGE, SHADE_RANGE)
 	return Color(base.r * shade, base.g * shade, base.b * shade)
