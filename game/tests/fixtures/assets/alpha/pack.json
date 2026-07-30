@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "alpha",
+  "name": "Alpha",
+  "version": "0.2.0",
+  "core_version": "*",
+  "depends": []
+}

@@ -1,0 +1,8 @@
+{
+  "_": "Cross-pack extends into core with no declared dependency. Allowed, and only for core.",
+  "format": 1,
+  "id": "alpha:crate_reinforced",
+  "extends": "core:prop_crate",
+  "name": "Reinforced Crate",
+  "parts~": [ {"name": "slat", "material": "steel", "colour": "gunmetal"} ]
+}

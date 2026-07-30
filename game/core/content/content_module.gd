@@ -25,6 +25,8 @@ const PACK_ROOTS: Array[String] = ["res://packs", "user://packs"]
 var palette := Palette.new()
 var materials := MaterialSet.new()
 var installed := PackSet.new()
+var index := AssetIndex.new()
+var resolver := AssetResolver.new()
 
 ## True once both core data files loaded clean. Nothing downstream should half-run on a
 ## broken palette: a part that cannot resolve its colour is not a part that should be
@@ -58,6 +60,15 @@ func module_init() -> void:
 	installed.discover(PACK_ROOTS)
 	for problem in installed.errors:
 		push_error("pack folder: " + problem)
+
+	# Assets are read and their `extends` chains carried out once, here, and baked. Nothing
+	# resolves at runtime (FORMAT-SPEC §6), so a merge that was going to fail fails now,
+	# during boot, in front of whoever installed the pack — rather than in the middle of a
+	# round when somebody first spawns the thing.
+	index.scan(installed)
+	resolver.resolve_all(index, installed)
+
+	# Read after resolving, because resolving can disable more of them.
 	for id in installed.disabled:
 		push_warning("pack `%s` is disabled — %s" % [id, installed.disabled[id]])
 
@@ -86,7 +97,8 @@ func _load_core_data() -> bool:
 func summary() -> String:
 	if not data_ok:
 		return "content: core data FAILED, %d problem(s)" % data_errors.size()
-	return "content: %d colours (%d exempt), %d materials, %d pack(s)%s" % [
+	return "content: %d colours (%d exempt), %d materials, %d pack(s)%s, %d asset(s)" % [
 		palette.colours.size(), palette.exemptions.size(), materials.materials.size(),
 		installed.order.size(),
-		"" if installed.disabled.is_empty() else ", %d disabled" % installed.disabled.size()]
+		"" if installed.disabled.is_empty() else ", %d disabled" % installed.disabled.size(),
+		resolver.resolved.size()]

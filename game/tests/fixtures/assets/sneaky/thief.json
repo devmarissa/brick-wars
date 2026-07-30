@@ -1,0 +1,6 @@
+{
+  "format": 1,
+  "id": "sneaky:thief",
+  "extends": "alpha:rifle_bolt",
+  "name": "Borrowed Rifle"
+}

@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "toodeep",
+  "name": "One Level Too Far",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": [ { "id": "alpha", "version": ">=0.2" } ]
+}

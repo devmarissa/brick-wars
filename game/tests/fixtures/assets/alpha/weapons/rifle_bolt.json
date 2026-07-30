@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "id": "alpha:rifle_bolt",
+  "kind": "weapon",
+  "name": "Bolt Rifle",
+  "slot": "ranged_slow",
+  "parts": [
+    {"name": "receiver", "offset": [0, 3, 0],   "size": [3, 3, 12], "material": "steel"},
+    {"name": "barrel",   "offset": [0, 3, -14], "size": [3, 3, 22], "material": "steel", "colour": "gunmetal"},
+    {"name": "stock",    "offset": [0, 3, 8],   "size": [3, 4, 10], "material": "plank"}
+  ],
+  "collider": [{"offset": [0, 3, 0], "size": [3, 4, 40]}],
+  "stats": { "damage": 95, "velocity": 150, "cycle": 1.15, "capacity": 5 }
+}

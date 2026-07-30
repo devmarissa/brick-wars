@@ -1,0 +1,10 @@
+{
+  "_": "The list-replace row: `parts` with no suffix wipes the inherited list entirely.",
+  "format": 1,
+  "id": "alpha:rifle_carbine",
+  "extends": "alpha:rifle_bolt",
+  "name": "Carbine",
+  "parts": [
+    {"name": "receiver", "offset": [0, 3, 0], "size": [3, 3, 10], "material": "steel"}
+  ]
+}

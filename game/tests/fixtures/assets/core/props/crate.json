@@ -1,0 +1,14 @@
+{
+  "_": "The base every crate in the fixture set descends from. Named parts, because a part nobody named cannot be patched.",
+  "format": 1,
+  "id": "core:prop_crate",
+  "kind": "prop",
+  "name": "Small Crate",
+  "hollow": true,
+  "destructible": true,
+  "parts": [
+    {"name": "body",  "offset": [0, 3, 0],  "size": [6, 6, 6], "material": "plank", "jitter": 0.05},
+    {"name": "slat",  "offset": [0, 3, 3],  "size": [7, 1, 1], "material": "plank", "colour": "wood2"}
+  ],
+  "collider": [{"offset": [0, 3, 0], "size": [6, 6, 6]}]
+}

@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "id": "patchy:base",
+  "kind": "prop",
+  "name": "Base",
+  "parts": [
+    {"name": "body", "offset": [0, 1, 0], "size": [2, 2, 2], "material": "plank"},
+    {"offset": [0, 3, 0], "size": [2, 1, 2], "material": "plank"}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "_": "A patch entry with no `name` at all.",
+  "format": 1,
+  "id": "patchy:nameless",
+  "extends": "patchy:base",
+  "parts~": [ {"size": [4, 4, 4]} ]
+}

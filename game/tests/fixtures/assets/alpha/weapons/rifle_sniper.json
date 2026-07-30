@@ -1,0 +1,10 @@
+{
+  "_": "One of every row of the merge table: scalar replace, object deep merge, list patch, list append.",
+  "format": 1,
+  "id": "alpha:rifle_sniper",
+  "extends": "alpha:rifle_bolt",
+  "name": "Scoped Rifle",
+  "stats": { "zoom": 4.0, "damage": 105 },
+  "parts~": [ {"name": "barrel", "size": [3, 3, 30]} ],
+  "parts+": [ {"name": "scope", "shape": "cylinder", "offset": [0, 5, -2], "size": [3, 3, 10], "material": "steel", "colour": "gunmetal"} ]
+}

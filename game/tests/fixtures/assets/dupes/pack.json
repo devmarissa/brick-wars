@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "dupes",
+  "name": "Two Files, One Id",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": []
+}

@@ -20,6 +20,11 @@ extends RefCounted
 
 const MANIFEST := Pack.MANIFEST
 
+## The pack every other pack is built on. It is a pack like any other — same manifest, same
+## folder shape, same loader — and the only thing special about it is that it always loads
+## first, because everything else assumes its materials and palette are already there.
+const CORE_ID := &"core"
+
 var packs: Dictionary = {}            ## StringName -> Pack, every pack that parsed
 var order: Array[StringName] = []     ## enabled packs, in load order
 var disabled: Dictionary = {}         ## StringName -> reason
@@ -47,6 +52,20 @@ func discover(roots: Array[String]) -> bool:
 	_resolve_order()
 
 	return disabled.is_empty() and errors.is_empty()
+
+
+## Disable a pack after `discover` has already run, and put the set back in order around it.
+##
+## The resolver needs this: an asset that extends one its author deleted is not something a
+## manifest can predict, so the refusal arrives late. Cascading and re-sorting from here
+## rather than leaving `order` stale is the difference between a disabled pack and a
+## disabled pack whose dependents are still queued to load.
+func refuse(id: StringName, reason: String) -> void:
+	if not packs.has(id) or disabled.has(id):
+		return
+	_disable(id, reason)
+	_cascade()
+	_resolve_order()
 
 
 func get_pack(id: StringName) -> Pack:
@@ -191,6 +210,17 @@ func _resolve_order() -> void:
 	for id in live:
 		incoming[id] = 0
 		dependents[id] = []
+
+	# Core is everybody's dependency whether they wrote it down or not. `core_version` on the
+	# manifest is that declaration, which is why `extends core:...` needs nothing in
+	# `depends` — and it has to be true of load order too, or a pack can be handed a content
+	# set core has not filled in yet.
+	if live.has(CORE_ID):
+		for id in live:
+			if id != CORE_ID:
+				incoming[id] += 1
+				dependents[CORE_ID].append(id)
+
 	for id in live:
 		for dep in (packs[id] as Pack).depends:
 			var dep_id: StringName = dep["id"]

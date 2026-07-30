@@ -1,0 +1,7 @@
+{
+  "_": "A patch naming a part the base does not have.",
+  "format": 1,
+  "id": "patchy:mistaken",
+  "extends": "patchy:base",
+  "parts~": [ {"name": "lid", "size": [4, 4, 4]} ]
+}

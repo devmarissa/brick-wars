@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "ouroboros",
+  "name": "A Ring Of Two",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": []
+}

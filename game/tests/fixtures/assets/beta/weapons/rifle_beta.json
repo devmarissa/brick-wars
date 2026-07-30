@@ -1,0 +1,8 @@
+{
+  "_": "Cross-pack extends with the dependency declared. Bare reference, resolved in own pack first, then core.",
+  "format": 1,
+  "id": "beta:rifle_issue",
+  "extends": "alpha:rifle_bolt",
+  "name": "Issue Rifle",
+  "stats": { "capacity": 10 }
+}

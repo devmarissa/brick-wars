@@ -1,0 +1,8 @@
+{
+  "_": "Third level: bolt -> sniper -> marksman. Legal, and exactly at the cap.",
+  "format": 1,
+  "id": "alpha:rifle_marksman",
+  "extends": "alpha:rifle_sniper",
+  "name": "Marksman Rifle",
+  "stats": { "zoom": 8.0 }
+}
