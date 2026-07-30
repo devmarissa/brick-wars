@@ -149,6 +149,15 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       claims and what renaming one costs, extended assets as public interface, the two
       diagnostic commands with the broken fixture as a worked example, and the six rules that
       catch a first upload
+- [x] **C1 closed, 30 Jul** — the done-condition walked in its own order against the shipped
+      game. `packs/core/table.json` is a prop that entered the game as one file and nothing
+      else (7 assets → 8, no code touched). `packs/core/table_map.json` is a variant of it in
+      five lines. `--resolve` attributes every field of the result to the file that set it.
+      `--pack-root res://tests/fixtures/broken` disables two bad packs and boots the other
+      nine assets regardless. `content` stops declaring itself a stub; nine of thirteen
+      modules still do. `case_cli.gd` asserts all of it so it stays true.
+      **Worth your eye — the two tables are new shipped content I authored to close the
+      milestone, and they stayed in the sandbox rather than being deleted afterwards**
 
 ## 2 · Soldier: locomotion & body
 

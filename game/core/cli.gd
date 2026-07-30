@@ -22,7 +22,7 @@ extends RefCounted
 
 ## Flags that take exactly one value. Anything else is a usage error rather than a silent
 ## no-op, since a mistyped diagnostic that prints nothing looks identical to a clean result.
-const TAKES_VALUE := ["--resolve", "--part", "--pack-root"]
+const TAKES_VALUE := ["--resolve", "--part", "--pack-root", "--shot", "--settle"]
 
 static var _shared: CLI = null
 
@@ -30,6 +30,14 @@ var resolve_id := ""                    ## `--resolve <pack:asset>`
 var part_name := ""                     ## `--part <name>`, narrows the dump to one part
 var pack_roots: Array[String] = []      ## `--pack-root <path>`, repeatable
 var errors: Array[String] = []          ## problems with the arguments themselves
+
+## `tools/screenshot.sh`, which boots the real `main.gd` inside a scene of its own. Its two
+## arguments live here rather than in that scene because a process has one command line, and
+## two parsers reading it disagree the moment either grows a flag. They were positional until
+## the parser above existed, which meant a fumbled invocation quietly wrote a picture to a
+## file named `--rendering-driver`.
+var shot_path := ""                     ## `--shot <path>`, relative to `game/`
+var settle_seconds := 0.0               ## `--settle <seconds>`, 0 meaning the tool's default
 
 ## Whether the last `resolve_report()` found what it was asked for. A dump that reports "no
 ## such asset" is still a useful answer, but it is not a successful one, and a script driving
@@ -57,6 +65,8 @@ func parse(args: PackedStringArray) -> void:
 	part_name = ""
 	pack_roots.clear()
 	errors.clear()
+	shot_path = ""
+	settle_seconds = 0.0
 
 	var i := 0
 	while i < args.size():
@@ -85,6 +95,12 @@ func parse(args: PackedStringArray) -> void:
 				part_name = value
 			"--pack-root":
 				pack_roots.append(value)
+			"--shot":
+				shot_path = value
+			"--settle":
+				if not value.is_valid_float():
+					errors.append("`--settle` wants a number of seconds, not `%s`" % value)
+				settle_seconds = maxf(0.0, value.to_float())
 		i += 2
 
 	if part_name != "" and resolve_id == "":
@@ -96,7 +112,8 @@ func wants_resolve() -> bool:
 
 
 static func usage() -> String:
-	return "Known: --resolve <pack:asset>, --part <name>, --pack-root <path>."
+	return ("Known: --resolve <pack:asset>, --part <name>, --pack-root <path>, "
+		+ "--shot <path>, --settle <seconds>.")
 
 
 ## The dump the flag asks for, or a refusal that says which of the two things went wrong —

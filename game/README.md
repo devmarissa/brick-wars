@@ -12,12 +12,23 @@ Open `game/` in Godot and press play, or from the repo root:
     ./tools/check.sh                                     # run the whole gate
     ./tools/screenshot.sh docs/c1_sandbox.png            # take a picture of it
 
+and three diagnostic flags, which go after `--` because everything before it is Godot's:
+
+    godot --headless --path game -- --resolve core:table_map      # every field, and who set it
+    godot --headless --path game -- --resolve core:barrel --part hoop
+    godot --headless --path game -- --pack-root res://tests/fixtures/broken
+
 There is still nothing to *do*. What there is, is a world made entirely out of files: a
-sandbag wall, a watchtower, three crates and a barrel from `packs/core`, plus a cairn and a
-reinforced crate from `packs/testpack` — every one of them read, resolved, validated and
-built through the same path a workshop upload would take. The HUD counts bricks and how
-many are still awake; that second number reaching zero and staying there is inherited from
-C0 and still the cheapest proof the physics is behaving.
+sandbag wall, a watchtower, three crates, a barrel and two tables from `packs/core`, plus a
+cairn and a reinforced crate from `packs/testpack` — every one of them read, resolved,
+validated and built through the same path a workshop upload would take. The HUD counts
+bricks and how many are still awake; that second number reaching zero and staying there is
+inherited from C0 and still the cheapest proof the physics is behaving.
+
+The two tables are there because they are what closed the milestone. `core:table` was added
+to the game by writing one JSON file and touching nothing else, and `core:table_map` is that
+table with a canvas sheet on it, in five lines of `extends`. Neither needed a line of code,
+which was the entire question C1 was asked.
 
 ![the C1 sandbox](docs/c1_sandbox.png)
 
@@ -35,8 +46,10 @@ Modules talk to each other through `use()`, and `use()` refuses any module the c
 not declare in `module_depends()`. That refusal is the point: declaring a dependency is a
 deliberate act visible in a diff, and reaching for a global is not.
 
-Ten of the thirteen modules are stubs. They say so — `module_is_stub()` returns true and
-the test suite prints the count — so a skeleton is never mistaken for a core.
+Nine of the thirteen modules are stubs. They say so — `module_is_stub()` returns true and
+the boot log prints the count — so a skeleton is never mistaken for a core. `content` came
+off that list at C1, and the bar for coming off it is the milestone's own done-condition
+rather than "has code in it now".
 
 ## What's real at C1
 
@@ -54,9 +67,17 @@ the test suite prints the count — so a skeleton is never mistaken for a core.
   rewrite.
 - **`ui`** — two numbers in the corner.
 
+`core/cli.gd` is the command line, and everything in it is a *diagnostic*. That is a policy,
+not an accident: the moment a flag can change how the game plays, two people running the
+same build are running different games and neither of them knows it. `--resolve` prints an
+asset as the game sees it with every field attributed to the document that set it, which is
+what stops `extends` being a trap. `--pack-root` loads a pack folder beside the shipped ones
+without installing it — the authoring loop, and also how `tests/fixtures/broken` proves that
+a pack which is wrong gets disabled with a reason and takes nothing else down with it.
+
 Each module gets one line in the boot log via `summary()`, which is the cheapest diagnostic
-in the project. If the palette loses a colour or the sandbox builds six assets instead of
-seven, it shows up there rather than in a screenshot somebody has to squint at — and the
+in the project. If the palette loses a colour or the sandbox builds eight assets instead
+of nine, it shows up there rather than in a screenshot somebody has to squint at — and the
 mass column is how the 540 kg sandbag got caught.
 
 ## Rules that are enforced, not suggested

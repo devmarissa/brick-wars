@@ -34,9 +34,16 @@ fi
 
 mkdir -p "game/$(dirname "$OUT")"
 
-RUN=("$GODOT" --path game res://tools/screenshot.tscn -- "$OUT" "$SETTLE")
+# Godot's own flags go before `--`; everything after it is the game's, and `core/cli.gd`
+# parses it. That split is why `--rendering-driver` is inserted rather than appended: on the
+# far side of `--` it was being handed to the game, which quite rightly did not know it.
+GODOT_ARGS=(--path game res://tools/screenshot.tscn)
 if [ -z "${DISPLAY:-}" ] && [ "$(uname)" != "Darwin" ] && command -v xvfb-run >/dev/null 2>&1; then
-  RUN=(xvfb-run -a -s "-screen 0 1440x900x24" "${RUN[@]}" --rendering-driver opengl3)
+  GODOT_ARGS+=(--rendering-driver opengl3)
+  RUN=(xvfb-run -a -s "-screen 0 1440x900x24" "$GODOT" "${GODOT_ARGS[@]}")
+else
+  RUN=("$GODOT" "${GODOT_ARGS[@]}")
 fi
+RUN+=(-- --shot "$OUT" --settle "$SETTLE")
 
 "${RUN[@]}"

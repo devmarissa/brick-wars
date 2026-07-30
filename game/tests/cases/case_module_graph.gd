@@ -36,7 +36,11 @@ func _full_boot(t: TestContext) -> void:
 		for dep in k.modules[name].module_depends():
 			t.ok(at[dep] < at[name], "%s starts before %s that depends on it" % [dep, name])
 
-	t.eq(k.stub_names().size(), 10, "ten modules still honestly declare themselves stubs")
+	# The number goes down once per milestone and never up, so it is worth being a literal:
+	# a module quietly flipping to non-stub because somebody put code in it, rather than
+	# because its milestone's done-condition was walked, is exactly the drift this catches.
+	t.eq(k.stub_names().size(), 9, "nine modules still honestly declare themselves stubs")
+	t.ok(not k.stub_names().has(&"content"), "and `content` is not one of them as of C1")
 
 
 ## Two kernels, same manifest, same order — every time, on every machine.

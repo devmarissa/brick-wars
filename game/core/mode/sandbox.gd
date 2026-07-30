@@ -33,13 +33,18 @@ const DROP_HEIGHT := 0.12
 ## represented deliberately: the last two lines come from TESTPACK, so a screenshot of this
 ## world is a screenshot of a non-core pack putting objects into the game.
 const LAYOUT := [
-	{"id": "core:wall_sandbag", "at": Vector3(0.0, DROP_HEIGHT, 0.0)},
-	{"id": "core:watchtower", "at": Vector3(-8.2, 0.0, -3.2), "yaw": 20.0},
-	{"id": "core:crate", "at": Vector3(2.4, DROP_HEIGHT, 1.9), "yaw": -15.0},
-	{"id": "core:crate_ammo", "at": Vector3(3.2, DROP_HEIGHT, 3.3), "yaw": 30.0},
-	{"id": "core:barrel", "at": Vector3(1.0, DROP_HEIGHT, 3.0), "yaw": 45.0},
-	{"id": "testpack:cairn", "at": Vector3(-2.9, DROP_HEIGHT, 3.0)},
-	{"id": "testpack:crate_reinforced", "at": Vector3(4.3, DROP_HEIGHT, 1.5), "yaw": 10.0},
+	{"id": "core:wall_sandbag", "at": Vector3(0.4, DROP_HEIGHT, -0.8)},
+	{"id": "core:watchtower", "at": Vector3(-5.0, 0.0, -2.4), "yaw": 20.0},
+	{"id": "core:crate", "at": Vector3(2.6, DROP_HEIGHT, 1.2), "yaw": -15.0},
+	{"id": "core:crate_ammo", "at": Vector3(3.4, DROP_HEIGHT, 3.2), "yaw": 30.0},
+	{"id": "core:barrel", "at": Vector3(1.3, DROP_HEIGHT, 2.4), "yaw": 45.0},
+	{"id": "testpack:cairn", "at": Vector3(-3.2, DROP_HEIGHT, 1.5)},
+	{"id": "testpack:crate_reinforced", "at": Vector3(4.6, DROP_HEIGHT, 1.0), "yaw": 10.0},
+	# The two that verified C1's first two clauses, kept in the world rather than deleted
+	# after the demonstration. `core:table` was a new prop added as one JSON file and nothing
+	# else; `core:table_map` is that prop plus a canvas sheet, in five lines of `extends`.
+	{"id": "core:table", "at": Vector3(-4.3, DROP_HEIGHT, 3.4), "yaw": -70.0},
+	{"id": "core:table_map", "at": Vector3(-1.6, DROP_HEIGHT, 4.2), "yaw": 15.0},
 ]
 
 var spawned: Array[BuiltAsset] = []
@@ -156,6 +161,6 @@ func _add_camera() -> void:
 	var cam := Camera3D.new()
 	cam.name = "Camera"
 	add_child(cam)
-	cam.global_position = Vector3(5.6, 2.5, 7.0)
-	cam.look_at(Vector3(-2.2, 1.2, 0.4))
+	cam.global_position = Vector3(4.7, 2.6, 7.2)
+	cam.look_at(Vector3(-1.3, 1.3, 1.0))
 	cam.current = true

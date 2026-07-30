@@ -57,8 +57,15 @@ func module_milestone() -> String:
 	return "C1"
 
 
+## No longer a stub as of C1. The bar for flipping this was not "has code in it" — it was
+## BUILD-ORDER's C1 sentence: a new prop is a JSON file and nothing else, a variant of it
+## costs five lines, and a pack that is wrong is disabled with a reason instead of taking
+## the game down. All three are demonstrable against this module, so it stops apologising.
+##
+## What it still does not do is C2's problem and later: nothing here rigs, animates or
+## spawns on demand, and the map is still code in `mode/sandbox.gd` rather than data.
 func module_is_stub() -> bool:
-	return true
+	return false
 
 
 func module_depends() -> Array[StringName]:

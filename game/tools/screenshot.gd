@@ -15,13 +15,11 @@ const DEFAULT_SETTLE := 4.0
 
 
 func _ready() -> void:
-	var out := DEFAULT_OUT
-	var settle := DEFAULT_SETTLE
-	var extra := OS.get_cmdline_user_args()
-	if extra.size() > 0:
-		out = extra[0]
-	if extra.size() > 1:
-		settle = float(extra[1])
+	# Same parser the game uses — see `core/cli.gd`. Anything it could not make sense of has
+	# already been reported by `main.gd`, which quits before we get here.
+	var cli := CLI.shared()
+	var out := cli.shot_path if cli.shot_path != "" else DEFAULT_OUT
+	var settle := cli.settle_seconds if cli.settle_seconds > 0.0 else DEFAULT_SETTLE
 
 	var game := Node.new()
 	game.name = "Game"

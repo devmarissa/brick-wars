@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "core:table_map",
+  "extends": "core:table",
+  "name": "Map Table",
+  "parts+": [
+    { "name": "map", "offset": [0, 8, 0], "size": [12, 1, 5], "material": "canvas", "colour": "tan" }
+  ]
+}

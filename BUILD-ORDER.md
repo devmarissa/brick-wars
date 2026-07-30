@@ -193,6 +193,15 @@ a variant of that prop costs five lines via `extends` and `--resolve` shows me w
 field came from; and a deliberately broken pack fails with a message that says exactly
 why, without taking anything else down with it.
 
+**Done, 30 Jul.** Walked in that order, against the shipped game rather than a harness.
+`packs/core/table.json` went in as one file and the asset count went 7 → 8 with no code
+touched. `packs/core/table_map.json` is five lines of `extends` on top of it, and
+`--resolve core:table_map` prints all forty-odd fields with `← core:table` or
+`← core:table_map` against each. `--pack-root res://tests/fixtures/broken` disables two
+packs that are wrong on purpose — naming file, line, value and rule, all four of one pack's
+problems at once — while the other nine assets boot untouched. `content` stops reporting
+itself a stub here; nine of thirteen modules still do.
+
 ### C2 · Rigs, IK & the soldier
 
 The kinematic rig system, joint types with limits, the two-bone IK solver, foot planting,

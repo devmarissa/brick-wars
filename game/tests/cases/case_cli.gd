@@ -31,6 +31,33 @@ func run(t: TestContext) -> void:
 	_refusals(t)
 	_a_broken_pack_takes_nothing_with_it(t)
 	_the_provenance_dump(t)
+	_the_milestones_own_two_files(t)
+
+
+## C1's first two clauses, kept runnable. `core:table` was added to the game by writing one
+## JSON file and nothing else, and `core:table_map` is that table plus a canvas sheet in five
+## lines of `extends`. Asserting it here means the day either stops being true is the day the
+## suite says so, rather than the day somebody re-reads BUILD-ORDER and wonders.
+func _the_milestones_own_two_files(t: TestContext) -> void:
+	var resolver: AssetResolver = _boot_with("")["resolver"]
+
+	var table: ResolvedAsset = resolver.get_asset("core:table")
+	t.ok(table != null, "a prop that is only a JSON file is in the game")
+	if table == null:
+		return
+
+	var variant: ResolvedAsset = resolver.get_asset("core:table_map")
+	t.ok(variant != null, "and so is the five-line variant of it")
+	if variant == null:
+		return
+
+	var dump := variant.dump()
+	t.ok(_row(dump, "parts[map].material").contains("core:table_map"),
+		"the one part the variant adds is attributed to the variant")
+	t.ok(_row(dump, "parts[top].material").contains("core:table"),
+		"and the seven it inherited to the file that wrote them")
+	t.ok(_row(dump, "class").contains("core:table"),
+		"including the budget class, which a variant does not restate")
 
 
 func _parsing(t: TestContext) -> void:
@@ -47,6 +74,17 @@ func _parsing(t: TestContext) -> void:
 	# Repeatable, and in the order given: two mod folders is the normal case, not the odd one.
 	cli.parse(PackedStringArray(["--pack-root", "res://a", "--pack-root", "res://b"]))
 	t.eq(cli.pack_roots, ["res://a", "res://b"] as Array[String], "`--pack-root` accumulates")
+
+	# `tools/screenshot.sh`'s two, which live in this parser rather than in the screenshot
+	# scene because a process has one command line. They were positional until this existed,
+	# which meant a fumbled invocation wrote a picture to a file called `--rendering-driver`.
+	cli.parse(PackedStringArray(["--shot", "docs/x.png", "--settle", "3"]))
+	t.eq(cli.shot_path, "docs/x.png", "`--shot` takes a path")
+	t.near(cli.settle_seconds, 3.0, 0.001, "`--settle` takes seconds")
+	t.eq(cli.errors.size(), 0, "and neither is a complaint")
+
+	cli.parse(PackedStringArray(["--settle", "soon"]))
+	t.eq(cli.errors.size(), 1, "`--settle` refuses something that is not a number")
 
 	cli.parse(PackedStringArray([]))
 	t.ok(not cli.wants_resolve(), "no arguments asks for nothing")
@@ -105,8 +143,13 @@ func _a_broken_pack_takes_nothing_with_it(t: TestContext) -> void:
 	t.ok(packs.is_enabled(&"testpack"), "and so did the pack that depends on core")
 	t.eq(packs.order.size(), 2, "exactly the two that ship are enabled")
 
+	# Against the same boot without the broken root, rather than against a number written
+	# here. A literal would have to be edited every time content is added, and the day it is
+	# edited carelessly is the day it stops meaning "the cascade ate nothing".
 	var resolver: AssetResolver = world["resolver"]
-	t.eq(resolver.resolved.size(), 7, "and all seven shipped assets resolved")
+	var clean: AssetResolver = _boot_with("")["resolver"]
+	t.eq(resolver.resolved.size(), clean.resolved.size(),
+		"and every shipped asset resolved — exactly as many as with no broken root at all")
 	t.ok(resolver.get_asset("core:wall_sandbag") != null, "including the wall")
 	t.ok(resolver.get_asset("testpack:crate_reinforced") != null,
 		"and the cross-pack variant, which is the one a cascade would have eaten")
