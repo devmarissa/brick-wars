@@ -174,10 +174,17 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
 ## 2 · Soldier: locomotion & body
 
-- [ ] Walk / sprint speeds & acceleration feel — **retuned from scratch**, not ported
+- [~] Walk / sprint speeds & acceleration feel — **retuned from scratch**, not ported
       (BUILD-ORDER §1b; the old WALK 12 / SPRINT 22 were set early and never revisited,
-      and locomotion now has to feel right alongside foot planting and mounts)
-- [ ] Jump (height, gravity, air control) — same, retuned
+      and locomotion now has to feel right alongside foot planting and mounts).
+      **In the game as of C2**: `Walker` does walk 2.2 / sprint 5.4 m/s and `core:soldier`'s
+      gait table hands over between them at 2.6. Every number is a first pass and none of it
+      has been felt by anybody holding a key down — the tests assert that the speeds and the
+      gait table *agree*, which is a different claim from either being right. `[~]` until
+      Marissa has driven it.
+- [~] Jump (height, gravity, air control) — same, retuned. Jump 6 m/s against 22 m/s² of
+      gravity, a little over 0.8 m of clearance: enough for a crater lip, not for a wall.
+      No air control at all yet, which is a decision nobody has made rather than one made.
 - [ ] Explosion knockback
 - [ ] Mantle / vault (against real terrain slope and trench walls, not a fixed step height)
 - [ ] Crouch (lower profile, slower move)
@@ -193,6 +200,30 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 - [ ] Ragdoll or brick-burst death
 - [ ] Environmental hazard framework (gas, fire, drowning — one system, packs configure)
 - [ ] Character customisation scope decision (the Roblox audience expects some)
+
+### C2 progress — rigs, IK and the soldier
+
+- [~] **The soldier is data.** `packs/core/soldier.json`, 15 parts (ART-BIBLE §2's own soldier
+      standard), 1.8 m, `kind: character` in the `infantry` slot, no helmet or kit or faction
+      colour. Bent by `rest` angles rather than by geometry, because `offset` must be whole
+      modules and a bone pivots half its own length — so any rotation off the 90° grid puts a
+      joint where no legal offset reaches it.
+- [~] **A four-legged creature walks on the same system**, out of a non-core pack:
+      `packs/testpack/horse.json`. Its forelegs bend like knees and its hind legs like hocks,
+      from one function reading two rest poses with no field between them (RIG-SPEC §4).
+- [~] **`--rig <asset>`** prints the bone hierarchy and every number the rig system derived —
+      span, sole, reach, drop, stand, and which way each knee bends in words. Built before the
+      soldier because it is the instrument the soldier was authored with.
+- [~] **The sandbox stands on uneven ground.** `TestGround` replaces the flat plate, since a
+      plate cannot show planting: every foot lands at zero whether the solver works or not.
+      Screenshot: `game/docs/c2_walkers.png`.
+- [ ] **Feel-check the locomotion** — the one thing above that needs Marissa rather than a test.
+- [ ] Measure the two constraint budgets, and write the animation style guide (#68). RIG-SPEC §2
+      and §6 assert the budgets exist and state no numbers, which is why
+      `AssetValidator.DORMANT` announces them at boot rather than pretending to enforce them.
+- [ ] Two policy lines are still untested and named in `DEVIATIONS-C2.md` §D rather than left
+      quiet: the order inside `Locomotion.step`, and the hang lag's frame-rate independence.
+      Both block C2 being honestly called *verified*.
 
 ## 3 · Combat core
 
