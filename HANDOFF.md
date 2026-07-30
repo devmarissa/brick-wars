@@ -1,267 +1,168 @@
-# HANDOFF — Brick Wars, mid-C2
+# HANDOFF — Brick Wars, start of C3
 
-Written 30 July 2026, at commit `81b3522`. This is everything a fresh agent needs to pick
-the build up without re-deriving it. Read `VISION.md` and `BUILD-ORDER.md` first if you
-have not; this file assumes them and only covers what is *not* written down elsewhere.
+Rewritten 30 July 2026. This is everything a fresh agent needs to pick the build up without
+re-deriving it. Read `VISION.md` and `BUILD-ORDER.md` first if you have not; this file assumes
+them and covers what is *not* written down elsewhere.
 
 ---
 
 ## 1 · Where the build actually is
 
-`BUILD-ORDER.md` splits the core into nine milestones, C0 through C8. **C0 and C1 are
-closed and signed off.** C2 is roughly two-thirds done.
+`BUILD-ORDER.md` splits the core into nine milestones, C0 through C8. **C0, C1 and C2 are closed
+and signed off.** C3 is one increment in.
 
-C1 closed at commit `7a7f85a` — the content pipeline end to end: pack discovery with
-semver ranges and deterministic ordering, the `extends` resolver with provenance, the
-validator enforcing every `FORMAT-SPEC` §10 rule pack-scoped, the builder turning part
-tables into meshes and colliders, `packs/core` authored as real data, and a `--resolve`
-CLI that prints where every field of a resolved asset came from. That milestone was
-delivered, playtested and marked.
+**C2 — rigs, IK and the soldier — closed 30 July**, signed off by Marissa after she watched it,
+ran the gate and cleared the deviations. Its done-condition holds: a soldier defined entirely in
+data walks, sprints and jumps over uneven ground with its feet planting, and a four-legged
+creature does the same through the same system out of a *non-core pack* with zero core changes.
+The pieces: `Rig`, `TwoBoneIK`, `Footing`, `Gait`, `Leg`, `Locomotion`, `Walker`,
+`LocomotionRules`/`GaitRules`, `--rig` as an inspector CLI, `core:soldier`, `testpack:horse`, and
+`ANIMATION-SPEC.md`.
 
-C2 is "Rigs, IK & the soldier". Its task list runs #60–#69:
+**C3 — the earth — increment 1 done.** `EarthSpan`, `EarthChunk`, `EarthField`, `EarthLog`: the
+column-span field, digging with conservation of volume, and the event log. Nothing is meshed or
+drawn yet, on purpose.
 
-| # | Task | State |
-|---|---|---|
-| 60 | Rig format: `parent`, `joint`, and the rules that police them | done |
-| 61 | Rig runtime: build the hierarchy, pose it, keep colliders separate | done |
-| 62 | Two-bone IK solver | done |
-| 63 | Test ground: uneven greybox to plant feet on before C3 exists | done |
-| 64 | Foot planting and body tilt | done |
-| 65 | Procedural locomotion driver: gaits from data | **code written, untested** |
-| 66 | Author `core:soldier` as data, plus a four-legged test creature | not started |
-| 67 | Tests, and a `--rig <id>` inspector CLI | not started |
-| 68 | Measure the two constraint budgets; write the animation style guide | not started |
-| 69 | Verify C2 done-conditions, screenshot, push | not started |
-
-**#65 is the live edge and it is in a specific, honest state:** `game/core/rig/locomotion.gd`
-and `game/core/rig/leg.gd` are written, they parse, they are committed, and **nothing
-exercises them**. No test case instantiates `Locomotion`. No fixture declares a
-`locomotion` block. The `locomotion` field is listed in `AssetRules.KNOWN_FIELDS` and is
-therefore accepted by the validator **entirely unvalidated** — a pack can write any
-garbage under that key today and nothing complains. That is the first thing to fix.
-
-The gate is green as of this commit:
-
-```
-[1] no source file over 300 lines   ok   largest is game/tests/cases/case_rig.gd (300 lines)
-[2] every core module is in the manifest   ok   13 modules, all listed
-[3] headless test suite   ok   TEST_DONE cases=15 passed=15 failed=0 checks=684
-[4] blast feel matches the reference capture   skip  dormant until C5
-```
-
-Green here means "nothing is broken". It does not mean #65 works.
+Gate is green: **22 cases, 947 checks**, no source file over 300 lines, 8 of 13 modules still
+honestly stubs.
 
 ---
 
 ## 2 · The working agreement with Marissa
 
-This is the part most easily lost in a handoff, and it matters more than any technical
-detail below.
+The part most easily lost in a handoff, and it matters more than any technical detail below.
 
-**She approves checklist items, not technical tasks.** Her words: *"i dont want to be
-interrupted with technical tasks, only approving checklist items as you do them and
-providing guidance at each item if necessary."* Do not ask her which library, which file
+**She approves checklist items, not technical tasks.** Do not ask her which library, which file
 layout, or whether to refactor. Decide, do it, and record why in the code.
 
-**Check in at milestone boundaries, not inside them.** Run the whole milestone end to end,
-then come back with the thing working, a screenshot, and what it cost. The one exception
-is a genuine design fork — a decision that changes what the game *is* rather than how it
-is built. Those get a question. Everything else does not.
+**Check in at milestone boundaries, not inside them.** The one exception is a genuine design fork
+— a decision that changes what the game *is* rather than how it is built. Those get a question.
 
-**The repo is the channel.** She keeps a private GitHub repo (`devmarissa/brick-wars`) and
-her Mac only ever pulls. Push every milestone. She does not want to run build commands.
+**The repo is the channel.** Push every milestone; her Mac only pulls. She does not want to run
+build commands beyond `./tools/check.sh`.
 
-**Nothing gets checked `[x]` in `CHECKLIST.md` until she says it *feels* right.** `[~]`
-means in the game but rough. That distinction is load-bearing — it is how the project
-avoids declaring victory on things nobody has played.
+**Nothing gets `[x]` in `CHECKLIST.md` until she says it feels right.** `[~]` means in the game
+but rough. C2's line is `[x]` because she said so, in those words.
 
----
-
-## 3 · Environment facts that will otherwise cost you an hour each
-
-These were all learned the expensive way.
-
-**Godot is 4.7.1.stable.official.a13da4feb** on both her Mac (`godot`) and the build
-container (`godot47`). Keep parity; a version drift silently changes physics.
-
-**`godot --headless --path game` never exits.** Always pass `--quit-after 400`. The one
-exception, and the fastest way to see a parse error, is running the test scene directly:
-`godot --headless --path game res://tests/test_main.tscn` — that exits on its own.
-
-**Adding a file with a new `class_name` requires `godot --headless --path game --import`**
-before any script referencing it will parse. Skip it and you get a confusing "identifier
-not declared" on a class you can see on disk.
-
-**User arguments go after `--`.** `godot --headless --path game --quit-after 400 --
---resolve core:crate_ammo`. Godot's own flags go before it.
-
-**GDScript warnings are errors in this project.** Two specific traps: `var x :=
-some_callable.call(...)` is a hard parse failure, so every `Callable.call` result needs an
-explicit type (`var under: Dictionary = probe.call(ideal)`); and every Dictionary lookup
-used as a typed value needs a cast (`var pos: Vector3 = p["position"]`).
-
-**`String()` in Godot 4 only accepts string-ish types.** `String(some_array)` throws at
-runtime. Use `str()`.
-
-**No source file may exceed 300 lines.** `tools/check.sh` globs `*.gd`, `*.tscn`, `*.sh`
-under `game` and `tools`; JSON and Markdown are exempt. The test is `n > 300`, so exactly
-300 passes. Several files are at or near the cap — `case_rig.gd` is at 300 exactly and
-`case_validator.gd` at 299, which means **new assertions cannot go in either file.** When
-something does not fit, split it along a real conceptual seam rather than trimming the
-prose comments; the comments are the design record and are the reason this codebase can be
-handed over at all. `leg.gd` exists because of exactly this pressure and is a good example
-of the seam being genuine rather than arbitrary.
-
-**Run `./tools/check.sh` before every push.** It is the whole gate.
-
-**The GitHub REST API is blocked from the build container** (403 at the proxy). Git over
-HTTPS works fine. You cannot poll CI status; do not waste calls trying.
+**Stay in plan order.** This was learned the hard way: mid-C2 I built a player-input layer so she
+could feel the locomotion, and she stopped it — input is C4's. *"i dont want you to make stuff out
+of order... we already have a dev plan."* It was reverted. If something seems missing, check
+`BUILD-ORDER.md` for which milestone owns it before building it.
 
 ---
 
-## 4 · What #65 needs next, in order
+## 3 · The lesson C2 paid for, which applies to everything after it
 
-The design decisions below are already made and are embedded in the committed code with
-their reasoning. **Do not relitigate them** — implement against them.
+**Test the result, not the intention.**
 
-1. **Get it under test.** Write `game/tests/cases/case_driver.gd`, add it to the `CASES`
-   array in `game/tests/test_runner.gd` (cases are listed, never discovered — a test that
-   silently stops running is worse than no test), `--import`, run. Follow `case_footing.gd`
-   for style: assert numbers, not vibes.
+Every foot-planting assertion in C2 read `leg.plant` — where `Footing` *decided* a foot should go.
+Not one read the rig back to see where the foot actually ended up. Two test fixtures had a 0.2 m
+gap at the knee, so their feet missed the ground by 0.2 m for a fortnight, and the entire suite was
+green throughout. Worse, I reported it to Marissa as an engine defect before measuring the shipped
+content, which was correct all along.
 
-2. **Write `game/core/rig/locomotion_rules.gd`** (`class_name LocomotionRules`), modelled
-   exactly on `rig_rules.gd`: a `check(asset, at)` that fills `errors` and `warnings`,
-   hooked into `validator.gd`'s `_validate` right beside `RigRules` and collected with
-   `_collect(...)`. It must be its own file — `RigRules` is 228 lines and `AssetRules` 232,
-   neither has room. What it checks: the block is an object; `type` is present and in
-   `Locomotion.TYPES`; for `legged`, `legs` is a non-empty array whose entries name real
-   `root` and `foot` parts with `foot` descending from `root`, and `phase` in [0,1);
-   `gaits` entries have `name`, `speed` as `[low, high]` with `low < high`, `phases` sized
-   to the leg count, `stride > 0`, `lift >= 0`, `duty` in (0,1); a leg straight at rest
-   gets the "give its upper joint a `rest` angle" complaint; a non-`legged` type that
-   declares `legs` or `gaits` gets a warning.
+Two habits came out of it and both are now load-bearing:
 
-3. **Add fixtures.** Valid `biped.json` and `quadruped.json` go under
-   `game/tests/fixtures/rig/core/`, following `leg.json`'s conventions exactly — `kind:
-   "prop"`, `class: "small_prop"`, bones pointing down their own −Z, sized `[thickness,
-   thickness, length]`, pivot at the bone's own top end, and **legs bent at rest** so
-   `bend` and `reach` are derivable. Each carries a `locomotion` block in `RIG-SPEC` §5's
-   shape. **Broken fixtures cannot go under `fixtures/rig/`** — `case_rig.gd` asserts
-   nothing there is refused. Put them under a new root
-   `game/tests/fixtures/locomotion/broken/` with its own `pack.json`.
+**`tools/mutate.py`** — break one policy line, confirm a test goes red, put it back. It reports
+**15 caught, 1 missed** today, and the miss (the hang lag's frame-rate independence,
+`DEVIATIONS-C2.md` §D2) is an entry in the harness rather than a note in a document, so it
+announces itself every run. Run it after adding a policy line. It found the sliding-foot bug that
+every existing test agreed with.
 
-4. **Mutation-test the load-bearing policy lines**, as was done for `Footing` at #64: break
-   one line, confirm a test goes red, put it back. A policy line with no test that fails
-   when you break it is decoration.
-
-5. **Then #66**, which is where the milestone's done-condition actually gets met: author
-   `core:soldier` as pure data and a four-legged test creature, retune walk/sprint/jump
-   from scratch (do not port the old build's numbers), and **swap the sandbox world over to
-   `TestGround`**. That last part has a trap noted below.
-
-6. **Un-stub `game/core/rig/rig_module.gd`** before C2 closes. It still returns
-   `module_is_stub() -> true`. `content_module.gd`'s un-stubbing docstring is the pattern:
-   justify it against `BUILD-ORDER`'s C2 sentence in prose.
+**Measure before believing.** Marissa said the hooves "slip a bit backwards". Straight-line tests
+all passed; measuring a *turn* showed 0.022 m per frame against a body covering 0.033. Predicted
+numbers matching to five decimals is a different kind of evidence than "looks about right", and it
+is what turned three separate suspicions into one-line fixes this milestone.
 
 ---
 
-## 5 · Design decisions already made, and why
+## 4 · Environment facts that will otherwise cost you an hour each
 
-**A leg's bend direction is derived, not declared.** A human knee points forward and a
-horse's hock points backward. That difference could have been a `bend` field in the format
-— one more thing to document, validate, and get silently wrong in a mod. Instead it is
-read off the rest pose: the component of the hip→knee vector perpendicular to the hip→ankle
-line *is* the bend direction. An author who bent the leg has already said which way. A leg
-drawn straight has said nothing, and that is the case that warns and falls back to forward.
-This is why the validator has to ask for a `rest` angle, and why the fixtures must be
-authored bent.
-
-**Reach and stance height are derived too.** `reach = max(span − distance(anchor, home),
-MIN_REACH)` — literally "how much further can this leg straighten". `stand` is the negated
-mean of the legs' resting sole heights. Both come off the rest pose, so an author retunes a
-creature's stance by moving its bones rather than by writing the same number twice in two
-places that can disagree.
-
-**`chain[0]` and `chain[1]` are solved by IK; everything past them is passive.** A fetlock
-or pastern hangs and lags, which is what makes a horse read as a horse rather than a stick
-creature, and it costs almost nothing. The IK pair is therefore solved to where the *ankle*
-must be for the passive segments to put the sole on the target — not to the target itself.
-The lag is `1 − e^(−rate·dt)`, frame-rate independent on purpose: a fetlock that lagged
-further on a slow machine is one more thing two clients would disagree about.
-
-**Order inside `step()` is load-bearing.** Feet are planted against the transform that came
-in, the new body height and tilt are computed from where they landed, and only then are the
-world foot targets brought into the *new* body's space to be solved. The other way round
-costs exactly one frame of lag — invisible standing still, and read as skating feet the
-moment the creature turns.
-
-**Body height uses stance feet only; tilt uses every foot.** A swinging foot's plant is the
-ground under it, which is the right thing to tilt to and the wrong thing to stand on. A
-creature stepping over a ditch must not drop into it halfway through the stride.
-
-**A gait's `phases` replace a leg's own `phase`; they do not add.** A pack that writes both
-has said the same thing twice, and adding them turns a trot into a shuffle the moment
-somebody tunes one of the two.
-
-**`step()` returns the body's height and orientation rather than writing them.** The caller
-owns the body — it is a physics object with a collider, and a driver that moved it directly
-would be a kinematic system arguing with a simulated one. The *rig* is posed as a side
-effect, because that is the part nothing else can do.
-
-**A rig is not a collider** (`RIG-SPEC` §3). `Rig` builds meshes and nothing else.
-Collision stays the one to four hand-fitted boxes the asset declared. A horse gets a body
-box and maybe a head box, not eight leg colliders — partly for cost, mostly because a rig
-that collides with itself fights its own solver, and the fight is visible.
+- **Godot is 4.7.1.stable.official.a13da4feb.** Keep parity; a version drift silently changes
+  physics.
+- **`godot --headless --path game` never exits.** Pass `--quit-after 400`. The fastest way to see a
+  parse error is `godot --headless --path game res://tests/test_main.tscn`, which exits by itself.
+- **A new `class_name` needs `godot --headless --path game --import`** before anything referencing
+  it will parse. This also bites right after a `git pull` that brings new files.
+- **User arguments go after `--`.** Godot's own flags go before it.
+- **GDScript warnings are errors here.** `var x := some_callable.call(...)` is a hard parse
+  failure — every `Callable.call` result needs an explicit type. Dictionary lookups used as typed
+  values need a cast.
+- **No source file over 300 lines.** When something does not fit, split it on a real conceptual
+  seam — do **not** trim the prose comments; they are the design record and the reason this
+  codebase can be handed over at all. Several files sit at exactly 300.
+- **`--pack-root` *adds* to the default roots.** Pointing it at a fixture tree whose `pack.json`
+  claims `id: core` collides with the real core pack and disables both. Use a test that calls
+  `FixtureWorld.load_root` instead.
+- **Run `./tools/check.sh` before every push.** A pre-push hook runs it too.
 
 ---
 
-## 6 · Traps
+## 5 · What C3 needs next, in order
 
-**Do not swap the sandbox world to `TestGround` casually.** `core:watchtower` spawns at
-y=0 at (−5, ·, −2.4), which is inside the test bowl where the ground is ≈ −0.358; several
-crates land partly inside the terrain too. Every `LAYOUT` entry needs lifting by
-`TestGround.height_at(x, z)` and the camera reframing. That is #66 work.
-
-**`Sandbox.make_ground()` and `Sandbox.DROP_HEIGHT` must stay** even after the swap —
-`case_bricks_fall.gd` needs a flat plate to be meaningful.
-
-**"Leaked instance dependency" and "Pages in use exist at exit" warnings at test exit are
-pre-existing** — 78 of them on HEAD. They are not yours. Do not chase them.
-
-**`ContentLoader` strips any dictionary key starting with `_`.** That is how prose comments
-(`_note`) go into fixture JSON without tripping the unknown-field warning. Use it.
-
-**`core` is itself a pack** (`res://packs/core`, its own `pack.json`). Core *data* lives at
-`game/core/data/`. Those are different things and the distinction bites.
-
-**A part's `offset` is the centre of its box.** This is what forced `joint.pivot` to exist,
-and it is the single most common source of "why is the leg attached to the middle of the
-thigh" confusion.
-
-**Godot 4 winds front faces clockwise.** For triangle `a, b, c` the outward normal is
-`(c − a).cross(b − a)`. The suite measures this rather than trusting memory.
+1. **Meshing** — slope-dependent, `EARTH-SPEC` §2: triangulate smoothly between column centres
+   below the 60° cliff threshold with smoothed normals; above it, emit the upper column's edge and
+   a **vertical skirt** with flat normals. The same field then gives rolling organic ground *and*
+   knife-edge trench walls, decided by the terrain rather than by an authoring mode. This is the
+   increment where C3 becomes something to look at.
+2. **The texture side-by-side** — build it during meshing, on the same trench section: flat colour,
+   greyscale pixel detail modulating palette colour, and full-colour pixel. `DEVIATIONS-C3.md` A2
+   has the argument; Marissa picks by looking. Do not decide it in prose.
+3. **Chunked Jolt heightfield collision**, rebuilt with the mesh.
+4. **The angle-of-repose settle queue** (§3) — the actual slumping. Event-driven, ≤512 cells a
+   frame, and **integer arithmetic only**: §5's entire netcode saving is that slumping is never
+   replicated because every client derives it identically.
+5. **Water level** (§8), then the sandbox onto the real field.
 
 ---
 
-## 7 · Still open, beyond C2
+## 6 · Design decisions already made, and why
 
-Deferred deliberately, each with a home: the audio direction doc and the animation style
-guide (the latter is #68); the pack-material resolver from `MATERIAL-SPEC` §8, which is
-what would let the validator enforce derived-material multipliers — currently one of three
-rules `AssetValidator.DORMANT` declares but does not enforce, and it announces that at boot
-rather than pretending; ice, glass and water material numbers; and a review of the 26-slot
-archetype registry, which lands at C4.
+**Spans are the primitive, from line one.** `spans_at` is the API and `surface_cm` sits on it, not
+the other way round. `EARTH-SPEC` §1 says retrofitting spans onto a flat heightfield is a rewrite.
+Nothing splits a column until C3b; the point is that tunnels are then a longer array in code that
+already reads spans.
 
-`DEVIATIONS-C1.md` records where the C1 build knowingly diverged from spec and why. Read it
-before assuming a mismatch is a bug.
+**No floats anywhere in the earth.** Heights are integer centimetres. This is not a storage detail
+— §5 stakes the netcode on it. There is no way to test "no floats", so what is tested is the
+property that would break: identical events give byte-identical ground, via `rolling_hash`.
+
+**`carve` returns the volume it moved** rather than taking a destination, so ignoring it is
+visibly deleting earth. That signature is the enforcement of §4's "digging is not deletion".
+
+**`TestGround` is not going anywhere.** Every rig case asserts exact numbers against it as an
+analytic function. The real field replaces it *in the sandbox*, not in the suite.
+
+**A planted foot latches.** `Leg.anchor` holds a foot's world position from footfall to lift, with
+only the height re-probed. Without it a turning creature drags its feet; with it, zero slide.
+
+**A leg's bend direction is derived, not declared** — read off the rest pose, which is what makes a
+knee and a hock one function with no field between them. Shipped rigs are bent by `rest` angles
+with joints coincident; `Leg.MAX_CHAIN_GAP` refuses a chain whose bones do not meet.
+
+---
+
+## 7 · Open, and owed to Marissa
+
+- **`DEVIATIONS-C3.md` A1 — the playable deformable area.** Specced as a *range*, 400–800 m.
+  Deferred deliberately, and her reason is new information: aerial vehicles were not in the spec's
+  framing, and at 40 m/s an 800 m map is twenty seconds corner to corner. May want a deformable
+  core inside a larger non-deformable arena rather than a bigger number. Must be settled before
+  "512 cells a frame" means anything.
+- **`DEVIATIONS-C3.md` A2 — pixel textures.** Her proposal. Greyscale detail maps and PBR
+  roughness/normal/metallic are compatible with everything written; **full-colour albedo is the
+  fork**, because it retires the palette law. Show her, do not argue it.
+- **Creature-vs-creature collision** (`CHECKLIST.md` §2) — "they fling out then continue back on
+  their paths". Head-on is measured clean in both body and meshes; not yet tried are glancing
+  meetings and one creature catching the top edge of the other's lower collider box.
+- **Horse gait realism** — trot/walk patterns want tuning to read as a real horse. Feel work; needs
+  input, which is C4's.
+- **The locomotion feel-check** — `CHECKLIST.md` §2's first two items are `[~]` until C4, not until
+  she finds ten minutes. Nothing in the build reads a keyboard.
 
 ---
 
 ## 8 · Security
 
-**The fine-grained GitHub token in the previous session's chat history should be revoked.**
-It is scoped to `brick-wars` alone, so the blast radius is one game repo, but it exists in
-plain text in a transcript. Revoke it and issue a fresh one when the next agent needs push
-access. In the build container it only ever lived at `/root/.bw_token` and
-`/root/.git-credentials`, both `chmod 600`, both destroyed with the session. It must never
-be echoed into command output, written into a tracked file, or committed.
+The fine-grained GitHub token from the original Cowork session is still in that transcript in
+plain text. It is scoped to `brick-wars` alone, but it should be revoked and reissued.
