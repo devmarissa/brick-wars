@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "id": "too_new_core",
+  "name": "Needs A Core That Does Not Exist Yet",
+  "version": "1.0.0",
+  "core_version": ">=9.0"
+}

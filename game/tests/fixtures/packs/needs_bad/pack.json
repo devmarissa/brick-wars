@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "needs_bad",
+  "name": "Depends On A Pack That Is Itself Refused",
+  "version": "1.0.0",
+  "core_version": "*",
+  "depends": [ { "id": "too_new_core", "version": ">=1.0" } ]
+}

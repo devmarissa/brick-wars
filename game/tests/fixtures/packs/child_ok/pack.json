@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "child_ok",
+  "name": "Extends The Base",
+  "version": "1.0.0",
+  "core_version": ">=0.1",
+  "depends": [ { "id": "base_ok", "version": ">=0.3 <0.5" } ]
+}

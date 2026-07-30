@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "ring_b",
+  "name": "Ring B",
+  "version": "1.0.0",
+  "core_version": "*",
+  "depends": [ { "id": "ring_c", "version": "*" } ]
+}

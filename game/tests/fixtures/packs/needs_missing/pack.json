@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "needs_missing",
+  "name": "Depends On Something Nobody Installed",
+  "version": "1.0.0",
+  "core_version": ">=0.1",
+  "depends": [ { "id": "napoleonic", "version": ">=2.0" } ]
+}

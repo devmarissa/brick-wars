@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "needs_newer",
+  "name": "Built Against A Base That Has Since Moved",
+  "version": "1.0.0",
+  "core_version": ">=0.1",
+  "depends": [ { "id": "base_ok", "version": ">=0.9" } ]
+}

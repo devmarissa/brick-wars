@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "grandchild_ok",
+  "name": "Extends The Child",
+  "version": "0.0.1",
+  "core_version": "*",
+  "depends": [ { "id": "child_ok", "version": ">=1.0" } ],
+  "mystery_field": true
+}

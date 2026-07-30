@@ -17,8 +17,14 @@ extends Module
 ## and the builder that turns a part table into bricks.
 
 
+## Where packs are looked for, in order. `res://packs` is what ships; `user://packs` is
+## where a workshop subscription or a hand-installed mod lands, and it comes second so a
+## local copy of a pack id loses to the shipped one rather than silently replacing it.
+const PACK_ROOTS: Array[String] = ["res://packs", "user://packs"]
+
 var palette := Palette.new()
 var materials := MaterialSet.new()
+var installed := PackSet.new()
 
 ## True once both core data files loaded clean. Nothing downstream should half-run on a
 ## broken palette: a part that cannot resolve its colour is not a part that should be
@@ -45,6 +51,16 @@ func module_depends() -> Array[StringName]:
 
 func module_init() -> void:
 	data_ok = _load_core_data()
+
+	# Packs are discovered even when core's own data is broken. Their manifests do not
+	# depend on it, and a run that reports both problems at once is worth more than one
+	# that stops at the first.
+	installed.discover(PACK_ROOTS)
+	for problem in installed.errors:
+		push_error("pack folder: " + problem)
+	for id in installed.disabled:
+		push_warning("pack `%s` is disabled — %s" % [id, installed.disabled[id]])
+
 	if not data_ok:
 		# Core's own data failing is a different kind of event from a pack failing. A bad
 		# pack gets disabled and the game carries on without it; bad core data means every
@@ -70,5 +86,7 @@ func _load_core_data() -> bool:
 func summary() -> String:
 	if not data_ok:
 		return "content: core data FAILED, %d problem(s)" % data_errors.size()
-	return "content: %d colours (%d exempt), %d materials" % [
-		palette.colours.size(), palette.exemptions.size(), materials.materials.size()]
+	return "content: %d colours (%d exempt), %d materials, %d pack(s)%s" % [
+		palette.colours.size(), palette.exemptions.size(), materials.materials.size(),
+		installed.order.size(),
+		"" if installed.disabled.is_empty() else ", %d disabled" % installed.disabled.size()]

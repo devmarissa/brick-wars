@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "id": "base_ok",
+  "name": "A Base Pack",
+  "version": "0.3.2",
+  "author": "the test suite",
+  "core_version": ">=0.1",
+  "depends": [],
+  "factions": ["allied", "central"]
+}

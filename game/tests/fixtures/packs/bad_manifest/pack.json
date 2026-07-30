@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "Bad Manifest",
+  "version": "one point oh",
+  "core_version": "^0.1",
+  "depends": [ { "id": "base_ok" } ],
+  "factions": ["red", "green", "blue"]
+}
