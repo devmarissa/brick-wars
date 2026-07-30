@@ -84,8 +84,12 @@ func _validate(asset: ResolvedAsset, index: AssetIndex, materials: MaterialSet,
 	rules.check_names(asset, asset_at)
 	_check_format(asset, index, asset_at, rules)
 
+	# The rig is checked against the whole part table at once — a cycle in `parent` is not a
+	# property of any single part — so it runs beside the per-part loop rather than inside it.
+	var rig_rules := RigRules.new()
+	rig_rules.check(asset, asset_at)
+
 	var parts := asset.parts()
-	var names := asset.part_names()
 	var part_rules := PartRules.new()
 	for i in parts.size():
 		if typeof(parts[i]) != TYPE_DICTIONARY:
@@ -100,10 +104,11 @@ func _validate(asset: ResolvedAsset, index: AssetIndex, materials: MaterialSet,
 		var key := part_name if part_name != "" else str(i)
 		var label := "part `%s`" % part_name if part_name != "" else "part %d" % (i + 1)
 		part_rules.check(part, label, _part_at(asset, index, part_name, key),
-			names, materials, palette)
+			materials, palette)
 
 	_collect(asset, rules.errors, rules.warnings, problems)
 	_collect(asset, part_rules.errors, part_rules.warnings, problems)
+	_collect(asset, rig_rules.errors, rig_rules.warnings, problems)
 
 
 ## FORMAT-SPEC §11. Not a §10 rule, but it decides whether the rest of the checks mean

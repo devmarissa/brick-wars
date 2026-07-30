@@ -1,0 +1,12 @@
+{
+  "format": 1,
+  "id": "broken:looped",
+  "kind": "prop",
+  "name": "A Chain With No End",
+  "_note": "Three parts, each parented to the next, which is what a copy-paste of a leg produces when the last `parent` is the one that does not get edited. Nothing about any single part is wrong here — it is only wrong seen all at once, which is why `_check_graph` exists and why it reports the whole ring rather than the part it happened to notice first.",
+  "parts": [
+    { "name": "hip", "parent": "foot", "offset": [0, 2, 0], "size": [2, 2, 2], "material": "plank" },
+    { "name": "knee", "parent": "hip", "offset": [0, 2, 0], "size": [2, 2, 2], "material": "plank" },
+    { "name": "foot", "parent": "knee", "offset": [0, 2, 0], "size": [2, 2, 2], "material": "plank" }
+  ]
+}

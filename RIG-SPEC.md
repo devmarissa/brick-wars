@@ -63,19 +63,45 @@ A natural extension of the part table. Parts gain an optional parent and a joint
   "name": "foreleg_l_upper",
   "parent": "chest",
   "shape": "block",
-  "offset": [0.3, -0.2, 0.6],
-  "size": [0.2, 0.7, 0.2],
+  "offset": [3, -2, 6],
+  "size": [2, 7, 2],
   "colour": "leather",
-  "joint": { "type": "hinge", "axis": "x", "limits": [-1.2, 0.4], "rest": 0.0 }
+  "joint": {
+    "type": "hinge", "axis": "x", "limits": [-70, 25], "rest": 0,
+    "pivot": [0, 3, 0]
+  }
 }
 ```
 
 - **Joint types (kinematic)**: `hinge` (one axis), `ball` (two/three axis with cone
   limits), `slider` (linear travel), `fixed` (rigid weld, the default).
-- Joints pivot at the child's origin, which sits on the module grid like everything else
-  (ART-BIBLE §1). No off-grid pivots.
+- Every distance here is **whole modules** and every angle is **degrees**, exactly as in
+  `FORMAT-SPEC` §3 — a rigged part is a part first. Slider limits are modules of travel;
+  everything else's are degrees.
+- **`pivot`** is where the joint turns, as an offset in whole modules from the part's own
+  origin. Default `[0, 0, 0]`.
 - Limits are mandatory. An unlimited joint is a bug — it's how you get legs bending
   backwards through the body.
+
+### Why `pivot` exists — added at C2
+
+The rule this replaces read "joints pivot at the child's origin, which sits on the module
+grid like everything else. No off-grid pivots." The second half survives; the first half
+turned out not to be workable, and building the rig rules is what surfaced it.
+
+A part's origin is the **centre of its box** — `PartGeometry.mesh_for` sizes a part in
+metres and centres it on its own origin. So a bone that pivots at its origin pivots about
+its own middle, and a leg that bends halfway up the thigh is not a leg. There is nowhere
+else to put the correction: in this format a part is its own bone *and* its own geometry,
+with no separate node to offset one from the other the way an imported skeleton would have.
+
+`pivot` is that offset, in whole modules like every other distance in the format, which
+keeps the guarantee that actually mattered — **pivots land on the grid** — while making a
+knee possible. In the example above the thigh is 7 modules long and hangs from a hip 3
+modules above its centre, which is the top of the bone.
+
+`RigRules` enforces the grid rule on the field: a `pivot` of `[0, 3.5, 0]` is refused,
+because half a module up a bone is not a place a joint can be.
 - **A rig is not a collider.** Rigged parts are visual. Collision stays the 1–4
   hand-fitted compound boxes (`CORE-SPEC` §2, ART-BIBLE §7). A horse gets a body box and
   maybe a head box, not eight leg colliders.
@@ -120,9 +146,9 @@ How a modder gets a gait without animating a frame. All data:
     {"root": "hindleg_r_upper", "foot": "hoof_br", "phase": 0.0}
   ],
   "gaits": [
-    {"name": "walk",   "speed": [0, 4],   "phases": [0.0, 0.5, 0.25, 0.75], "stride": 1.2, "lift": 0.25},
-    {"name": "trot",   "speed": [4, 9],   "phases": [0.0, 0.5, 0.5, 0.0],   "stride": 2.0, "lift": 0.45},
-    {"name": "gallop", "speed": [9, 20],  "phases": [0.0, 0.1, 0.5, 0.6],   "stride": 3.4, "lift": 0.8}
+    {"name": "walk",   "speed": [0, 4],   "phases": [0.0, 0.5, 0.25, 0.75], "stride": 1.2, "lift": 0.25, "duty": 0.7},
+    {"name": "trot",   "speed": [4, 9],   "phases": [0.0, 0.5, 0.5, 0.0],   "stride": 2.0, "lift": 0.45, "duty": 0.5},
+    {"name": "gallop", "speed": [9, 20],  "phases": [0.0, 0.1, 0.5, 0.6],   "stride": 3.4, "lift": 0.8,  "duty": 0.35}
   ],
   "body_bob": 0.12, "body_pitch": 0.08, "lean_into_turn": 0.3
 }
@@ -131,6 +157,21 @@ How a modder gets a gait without animating a frame. All data:
 The core owns: gait blending by speed, phase-driven step cycles, IK targets, foot
 planting, body bob/pitch/lean, and turn-in-place. Packs own: how many legs, where they
 attach, phase offsets, stride and lift, and the tuning numbers.
+
+**`duty`** — added at C2, when the step cycle was actually built — is the fraction of a
+leg's cycle spent on the ground. It is what separates a walk from a gallop more than
+stride length does: at `0.7` a quadruped has three feet down at any moment and reads as
+unhurried, and at `0.35` the whole animal is briefly airborne. Without the field every
+gait was a walk with longer steps, which reads as a horse skating. It is optional and
+defaults to `0.66`, the safe end — a gallop with a walk's duty looks laboured, a walk with
+a gallop's looks broken.
+
+**Blending is the overlap.** Two gaits whose speed ranges overlap blend across the overlap,
+so an author who writes walk `[0, 4]` and trot `[3, 9]` has said "take a whole unit of
+speed to change gait" — more control than a dedicated field would give. Ranges that merely
+touch, as the example above does, blend across a tenth of the narrower range rather than
+snapping. Phase offsets blend the short way round a circle, so a leg going from `0.9` to
+`0.1` steps a fifth of a cycle forward rather than four fifths backwards.
 
 **Locomotion types in the core**: `wheeled` · `tracked` · `legged` · `flying` ·
 `floating` · `static`. Adding `legged` alongside the existing three is what makes

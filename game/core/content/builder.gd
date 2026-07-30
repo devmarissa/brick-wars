@@ -71,7 +71,7 @@ func build(asset: ResolvedAsset, materials: MaterialSet, palette: Palette) -> Bu
 			out.add_child(body)
 			out.mass += body.mass
 	else:
-		var body := _single_body(asset, placed, hollow, materials, palette)
+		var body := _single_body(asset, out, placed, hollow, materials, palette)
 		out.bodies.append(body)
 		out.add_child(body)
 		out.mass = body.mass
@@ -87,18 +87,31 @@ func build(asset: ResolvedAsset, materials: MaterialSet, palette: Palette) -> Bu
 
 
 ## Every part of the asset in one body, colliding as the boxes the author declared.
-func _single_body(asset: ResolvedAsset, placed: Array, hollow: bool,
+func _single_body(asset: ResolvedAsset, out: BuiltAsset, placed: Array, hollow: bool,
 		materials: MaterialSet, palette: Palette) -> RigidBody3D:
 	var body := RigidBody3D.new()
 	body.name = "body"
 	body.add_to_group(&"bricks")
 
+	# A rigged asset gets a hierarchy instead of a flat table of baked transforms, because the
+	# point of a rig is that posing one bone moves everything below it. Only the meshes move:
+	# the colliders below are the same declared boxes an unrigged asset gets, sitting still on
+	# the body, exactly as RIG-SPEC §3 requires.
+	var rigged := Rig.is_rigged(asset)
+	if rigged:
+		var rig := Rig.new()
+		body.add_child(rig.build(asset, func(part: Dictionary, index: int) -> MeshInstance3D:
+			return _mesh_of(asset, part, index, palette)))
+		warnings.append_array(rig.warnings)
+		out.rig = rig
+
 	var total := 0.0
 	for entry in placed:
 		var part: Dictionary = entry["part"]
-		var mesh := _mesh_of(asset, part, entry["index"], palette)
-		mesh.transform = entry["transform"] * mesh.transform
-		body.add_child(mesh)
+		if not rigged:
+			var mesh := _mesh_of(asset, part, entry["index"], palette)
+			mesh.transform = entry["transform"] * mesh.transform
+			body.add_child(mesh)
 		total += _mass_of(part, hollow, materials)
 
 	for shape in _declared_colliders(asset, placed):

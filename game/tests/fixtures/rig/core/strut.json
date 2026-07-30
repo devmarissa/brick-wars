@@ -1,0 +1,15 @@
+{
+  "format": 1,
+  "id": "core:strut",
+  "kind": "prop",
+  "name": "Test Strut",
+  "class": "small_prop",
+  "_note": "Uses `parent` and declares no joint, which is the case that must NOT become a rig. Parenting is a convenience for placing parts relative to one another; a rig is what you get when something articulates. This asset is here to prove the flat baked-transform path is still the path an ordinary multi-part prop takes.",
+  "parts": [
+    { "name": "post", "offset": [0, 6, 0], "size": [2, 12, 2], "material": "plank" },
+    { "name": "arm", "parent": "post", "offset": [0, 6, -4], "size": [2, 2, 8], "material": "plank" }
+  ],
+  "collider": [
+    { "offset": [0, 6, -2], "size": [2, 12, 10] }
+  ]
+}

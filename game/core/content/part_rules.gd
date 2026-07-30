@@ -4,20 +4,23 @@ extends RefCounted
 ##
 ## Two jobs, deliberately in one place. It refuses a part that breaks a rule — off-grid
 ## sizes, an unknown material, a colour the material does not permit, a shape outside the
-## five, a joint with no limits — and for a part that passes, it writes in the defaults the
-## author left out, so everything downstream reads a complete part and no builder ever has
-## to know that `shape` was optional.
+## five — and for a part that passes, it writes in the defaults the author left out, so
+## everything downstream reads a complete part and no builder ever has to know that `shape`
+## was optional.
 ##
 ## They belong together because the defaults are only safe once the checks have passed: a
 ## colour defaulted from a material that does not exist is a colour of nothing, and a
 ## `jitter` forced to zero on a shape nobody recognised is a decision made about a part that
 ## should not load at all.
 ##
+## What this file does *not* check is the rig: `parent` and `joint` are `RigRules`, because
+## half of what a hierarchy needs checking for is a property of the whole part table rather
+## than of any one part, and one part is all this file ever sees.
+##
 ## Every message names the file, the line, and the rule. The file is the one that *wrote*
 ## the value, which after an `extends` chain is often not the asset being validated.
 
 const SHAPES := ["block", "wedge", "corner_wedge", "cylinder", "sphere"]
-const JOINT_TYPES := ["hinge", "ball", "slider", "fixed"]
 const NAME_PATTERN := "^[a-z][a-z0-9_]*$"
 
 ## ART-BIBLE §3: 0.0 machined, 0.04–0.08 built by soldiers, 0.10–0.15 natural or ruined.
@@ -39,7 +42,7 @@ var warnings: Array[String] = []
 
 ## Check one part and fill in its defaults in place. `at` is a callable taking (field) and
 ## returning `file:line` for wherever that field was actually written.
-func check(part: Dictionary, label: String, at: Callable, names: Array[String],
+func check(part: Dictionary, label: String, at: Callable,
 		materials: MaterialSet, palette: Palette) -> void:
 	var shape := String(part.get("shape", "block"))
 	if not SHAPES.has(shape):
@@ -69,8 +72,6 @@ func check(part: Dictionary, label: String, at: Callable, names: Array[String],
 	var material := _check_material(part, label, at, materials)
 	_check_colour(part, label, at, material, materials, palette)
 	_check_jitter(part, shape, label, at)
-	_check_parent(part, label, at, names)
-	_check_joint(part, label, at)
 
 	for key in part:
 		if not KNOWN_FIELDS.has(String(key)):
@@ -175,7 +176,7 @@ func _check_material(part: Dictionary, label: String, at: Callable,
 	if not materials.has(material):
 		errors.append("%s — %s: `%s` is not a material.%s (MATERIAL-SPEC §5)" % [
 			at.call("material"), label, material,
-			_suggest(String(material), materials.names())])
+			suggest(String(material), materials.names())])
 		return &""
 	return material
 
@@ -193,7 +194,7 @@ func _check_colour(part: Dictionary, label: String, at: Callable, material: Stri
 		return
 	if not palette.has(StringName(colour)):
 		errors.append("%s — %s: `%s` is not in the palette.%s (ART-BIBLE §2)" % [
-			at.call("colour"), label, colour, _suggest(colour, palette.names())])
+			at.call("colour"), label, colour, suggest(colour, palette.names())])
 		return
 	if material == &"":
 		return
@@ -221,57 +222,6 @@ func _check_jitter(part: Dictionary, shape: String, label: String, at: Callable)
 			at.call("jitter"), label, shape])
 
 
-func _check_parent(part: Dictionary, label: String, at: Callable,
-		names: Array[String]) -> void:
-	if not part.has("parent"):
-		return
-	var parent := String(part["parent"])
-	if not names.has(parent):
-		errors.append("%s — %s: `parent` is `%s`, and no part in this asset is called that.%s" % [
-			at.call("parent"), label, parent, _suggest(parent, names)])
-	elif not part.has("name"):
-		errors.append("%s — %s: a parented part needs a `name` of its own (FORMAT-SPEC §5)" % [
-			at.call("parent"), label])
-
-
-func _check_joint(part: Dictionary, label: String, at: Callable) -> void:
-	if not part.has("joint"):
-		return
-	if typeof(part["joint"]) != TYPE_DICTIONARY:
-		errors.append("%s — %s: `joint` should be an object (RIG-SPEC §3)" % [
-			at.call("joint"), label])
-		return
-	var joint: Dictionary = part["joint"]
-	var type := String(joint.get("type", "fixed"))
-
-	if not JOINT_TYPES.has(type):
-		errors.append("%s — %s: `%s` is not a joint type: %s. %s (RIG-SPEC §3)" % [
-			at.call("joint"), label, type, ", ".join(JOINT_TYPES),
-			"Packs cannot invent one; core's solvers are what drive them"])
-		return
-	if not part.has("parent"):
-		errors.append("%s — %s: a joint needs a `parent` to pivot from (RIG-SPEC §3)" % [
-			at.call("joint"), label])
-	if type == "fixed":
-		return
-
-	if not joint.has("limits"):
-		errors.append("%s — %s: a `%s` joint needs `limits`. %s (RIG-SPEC §3)" % [
-			at.call("joint"), label, type,
-			"An unlimited joint is how you get a leg bending backwards through a body"])
-		return
-	var limits: Variant = joint["limits"]
-	if typeof(limits) != TYPE_ARRAY or (limits as Array).size() != 2:
-		errors.append("%s — %s: `limits` should be `[low, high]` in degrees (RIG-SPEC §3)" % [
-			at.call("joint"), label])
-	elif float(limits[0]) >= float(limits[1]):
-		errors.append("%s — %s: `limits` are %s, and the low one has to be below the high one" % [
-			at.call("joint"), label, ResolvedAsset.value_text(limits)])
-	if type == "hinge" and not joint.has("axis"):
-		errors.append("%s — %s: a hinge needs an `axis` to turn about (RIG-SPEC §3)" % [
-			at.call("joint"), label])
-
-
 static var _name_re := RegEx.create_from_string(NAME_PATTERN)
 
 
@@ -282,7 +232,10 @@ static func _is_name(text: String) -> bool:
 ## ` Did you mean `steel`?` — or nothing, when nothing is close. A near-miss on a name is
 ## the commonest mistake in a hand-written pack and the one that is most maddening to find
 ## by eye, because `stell` and `steel` look identical at a glance.
-static func _suggest(wrong: String, among: Array) -> String:
+##
+## Public because `RigRules` needs it too, and a second copy of a similarity threshold is a
+## second thing to tune.
+static func suggest(wrong: String, among: Array) -> String:
 	var best := ""
 	var score := 0.72
 	for candidate in among:

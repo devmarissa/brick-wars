@@ -32,6 +32,7 @@ func run(t: TestContext) -> void:
 
 	_the_good_ones_load(t, world)
 	_part_rules(t, world)
+	_rig_rules(t, world)
 	_asset_rules(t, world)
 	_warnings_load_anyway(t, world)
 	_scoped_and_cascading(t, world)
@@ -89,11 +90,40 @@ func _part_rules(t: TestContext, world: Dictionary) -> void:
 
 	var hinged := _about(world, "broken:hinged")
 	t.ok(hinged.contains("needs `limits`"), "a joint with no limits: " + hinged)
-	t.ok(hinged.contains("leg bending backwards"), "and says what that costs")
+	t.ok(hinged.contains("leg bending backward"), "and says what that costs")
 
 	var colour := _about(world, "broken:wrongcolour")
 	t.ok(colour.contains("may not be gunmetal"), "a colour its material forbids: " + colour)
 	t.ok(colour.contains("wood, wood2"), "and it is told which ones it can have")
+
+
+## The three RigRules checks that are about more than one field at a time. They were the last
+## of the rig rules to get a fixture, and the reason is instructive: each of them is invisible
+## in the part you are looking at. `body` sits on the asset and the joint sits on a part; a
+## cycle is nowhere at all until the whole table is laid out; and an off-grid pivot looks fine
+## next to an offset that is off-grid in exactly the same way and legal.
+func _rig_rules(t: TestContext, world: Dictionary) -> void:
+	# A hinge whose `axis` is a vector rather than a letter — the natural mistake, because every
+	# other direction in the format is three numbers. It is also the value that used to take the
+	# validator down with a script error on its way to reporting itself.
+	t.ok(_about(world, "broken:hinged").contains("an `axis` of x, y or z"),
+		"a hinge with no usable axis: " + _about(world, "broken:hinged"))
+
+	var bricked := _about(world, "broken:bricked")
+	t.ok(bricked.contains("`body` is `bricks` and its parts have joints"),
+		"an articulated asset that also wanted to come apart: " + bricked)
+	t.ok(bricked.contains("bricks come apart, which is the opposite"),
+		"and is told which of the two it has to pick")
+	t.ok(bricked.contains("`pivot` is [0, 1.5, 0]") and bricked.contains("on the grid"),
+		"a pivot half a module up a bone: " + bricked)
+
+	# Named end to end, and named against the first part alphabetically rather than once per
+	# member: three copies of one mistake in the boot log is three times the reading.
+	var looped := _about(world, "broken:looped")
+	t.ok(looped.contains("foot → knee → hip → foot"),
+		"a parent cycle is reported as the whole ring: " + looped)
+	t.ok(looped.contains("part `foot`") and not looped.contains("part `knee`"),
+		"once, against one part, not once per link")
 
 
 func _asset_rules(t: TestContext, world: Dictionary) -> void:

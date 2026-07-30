@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "id": "broken:bricked",
+  "kind": "prop",
+  "name": "A Rig That Wanted To Be A Pile",
+  "_note": "Two rig rules at once, and they are here together because they are the two an author hits while converting a static prop into an articulated one. `body: \"bricks\"` was fine on the prop and is a contradiction the moment a joint appears, and a pivot measured off a drawing rather than off the module grid lands on a half.",
+  "body": "bricks",
+  "parts": [
+    { "name": "frame", "offset": [0, 1, 0], "size": [6, 2, 6], "material": "plank" },
+    { "name": "arm", "parent": "frame", "offset": [0, 4, 0], "size": [2, 4, 2], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-45, 45], "pivot": [0, 1.5, 0] } },
+    { "name": "cap", "parent": "arm", "offset": [0, 3, 0], "size": [2, 2, 2], "material": "plank" }
+  ]
+}

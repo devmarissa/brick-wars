@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "core",
+  "name": "Rig Fixtures",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": []
+}
