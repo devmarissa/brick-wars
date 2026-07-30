@@ -241,6 +241,13 @@ doesn't assume gunpowder.
 **Done when:** a weapon defined in data fires, a bow and a rifle are the same code path,
 and TESTPACK's bow works with zero core changes.
 
+**Carried here from C1: review the 26-slot archetype registry.** `core/data/slots.json` was
+authored at C1 from FORMAT-SPEC §7's description of what a slot *is* — the spec never named
+one — and it decides what shapes of thing the game can contain at all. Only the prop slots
+have been exercised by anything. This is the milestone where the weapon and emplacement slots
+start carrying real numbers, so it is the first point at which reviewing them is about numbers
+rather than about words. Deferred deliberately on 30 Jul 2026, not inherited by accident.
+
 ### C5 · Destruction & physics
 
 Blast model ported against the §1e fixture, **material behaviour switched on** — the six

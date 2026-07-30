@@ -25,6 +25,7 @@ func run(t: TestContext) -> void:
 	_versions(t)
 	_ranges(t)
 	_the_messy_folder(t)
+	_refusing_core_takes_everything_with_it(t)
 	_duplicate_ids(t)
 	_manifest_rules(t)
 
@@ -132,6 +133,27 @@ func _cascade(t: TestContext, installed: PackSet) -> void:
 	t.ok(why.contains("too_new_core"), "a pack whose dependency is disabled is disabled too")
 	t.ok(why.contains("is disabled"), "and inherits the reason rather than being blamed: " + why)
 	t.ok(_reason(installed, &"child_ok").is_empty(), "nothing cascaded onto the good chain")
+
+
+## The one edge in the graph that nobody declares. `core_version` on a manifest *is* the
+## dependency on core, which is why `extends core:...` needs nothing in `depends` — and the
+## cascade has to know that too, or a refused core leaves every pack enabled and each one
+## fails later at resolution with "no enabled pack publishes `core:...`". That message sends
+## an author to look at their own file for a problem that is nowhere near it.
+##
+## Unreachable in the shipped game, because a core that will not load is its own fatal path.
+## Asserted anyway: the cascade should be true on its own terms rather than because nothing
+## happens to exercise it.
+func _refusing_core_takes_everything_with_it(t: TestContext) -> void:
+	var installed := PackSet.new()
+	installed.discover(["res://packs"] as Array[String])
+	t.ok(installed.is_enabled(&"testpack"), "a pack that extends core loads normally")
+
+	installed.refuse(&"core", "pretend the sky fell")
+	var why := _reason(installed, &"testpack")
+	t.ok(why.contains("`core` is disabled"), "and is disabled with core: " + why)
+	t.ok(why.contains("sky fell"), "inheriting core's reason rather than being blamed itself")
+	t.eq(installed.order.size(), 0, "with nothing at all left enabled")
 
 
 func _duplicate_ids(t: TestContext) -> void:

@@ -97,30 +97,38 @@ identity; ad-hoc colours are how a world starts looking like a toy bin. If an as
 genuinely needs a colour that doesn't exist, it gets added to the palette *file*
 in a review, with a name, and then it's available to everyone.
 
-### Core (era-neutral) — currently in `main.gd`
+### Core (era-neutral) — shipped in `core/data/palette.json`
+
+Names are lowercase snake_case, matching §7's own naming rule and FORMAT-SPEC's examples.
+This table was originally written in GDScript-constant abbreviations (`SBAG`, `GUN`, `PACK`)
+against that rule; amended 30 Jul 2026 to match the file, which is the normative one.
+
+One name changed meaningfully rather than cosmetically: **ART-BIBLE's `PACK` is `webbing`**,
+because a colour called `pack` sitting next to `pack.json` and pack ids is a trap somebody
+falls into.
 
 | Name | Hex | Use |
 |---|---|---|
-| `MUD` | `#5e5240` | primary earth, trench walls |
-| `MUD2` | `#6a5c47` | earth variation, spoil |
-| `CLAY` | `#74604a` | subsoil, deep digs, crater interiors |
-| `WOOD` | `#6a5138` | timber, duckboards, revetment |
-| `WOOD2` | `#584431` | timber shadow/variation |
-| `SBAG` | `#9a8a68` | sandbags |
-| `SBAG2` | `#8b7c5e` | sandbag variation |
-| `STONE` | `#7d7a70` | masonry, ruins, roads |
-| `STONE2` | `#6e6b62` | masonry variation |
-| `GRY` | `#767468` | neutral grey, mechanical |
-| `LGY` | `#8f8c7c` | light grey, highlights |
-| `BLK` | `#232019` | deepest value — tyres, openings, iron |
-| `GUN` | `#2b2a24` | gunmetal |
-| `TAN` | `#8a7a58` | canvas, leather, rope |
-| `CANVAS` | `#7d7460` | tarpaulin, tenting |
-| `WIRE` | `#4a4440` | barbed wire, chain, cable |
-| `SKIN` | `#c4a26e` | exposed skin |
-| `PACK` | `#584c39` | webbing, packs, straps |
-| `GRN` | `#5a5c42` | vegetation |
-| `BLU` | `#5c6660` | desaturated cool accent |
+| `mud` | `#5e5240` | primary earth, trench walls |
+| `mud2` | `#6a5c47` | earth variation, spoil |
+| `clay` | `#74604a` | subsoil, deep digs, crater interiors |
+| `wood` | `#6a5138` | timber, duckboards, revetment |
+| `wood2` | `#584431` | timber shadow/variation |
+| `sandbag` | `#9a8a68` | sandbags |
+| `sandbag2` | `#8b7c5e` | sandbag variation |
+| `stone` | `#7d7a70` | masonry, ruins, roads |
+| `stone2` | `#6e6b62` | masonry variation |
+| `grey` | `#767468` | neutral grey, mechanical |
+| `grey_light` | `#8f8c7c` | light grey, highlights |
+| `black` | `#232019` | deepest value — tyres, openings, iron |
+| `gunmetal` | `#2b2a24` | gunmetal |
+| `tan` | `#8a7a58` | canvas, leather, rope |
+| `canvas` | `#7d7460` | tarpaulin, tenting |
+| `wire` | `#4a4440` | barbed wire, chain, cable |
+| `skin` | `#c4a26e` | exposed skin |
+| `webbing` | `#584c39` | webbing, packs, straps |
+| `green` | `#5a5c42` | vegetation |
+| `blue` | `#5c6660` | desaturated cool accent |
 
 ### Faction colours (per era)
 
@@ -132,8 +140,24 @@ that faction readability code never changes.
 ### Palette laws
 
 - **Value range is narrow and mid.** Nothing brighter than `#a5a5a5`, nothing darker
-  than `#1a1a16`, except for emissive VFX. Saturation stays under ~35%. This is what
+  than `#1a1a16`, except for emissive VFX. Saturation stays under 35%. This is what
   makes it read as *weathered materiel* instead of plastic.
+
+  That "35%" used to read "~35%", and the tilde was doing a lot of quiet work: six of the
+  twenty entries above are over it. So the law is now an exact number in `palette.json`
+  (`saturation_max: 0.35`, `value_max: 0.647`, `value_min: 0.102`) and the tilde has been
+  turned into a list of names. **Every entry that breaks a law carries `exempt` and a
+  written `why`, and an entry that breaks one without a `why` is refused.** An exception you
+  have to name and defend in the file is a different thing from a limit nobody checks.
+
+  The exemptions as they stand: `clay`, `tan` and `webbing` are rounding, all within
+  0.012 of the line. `skin` is the only entry breaking two laws — 0.439 saturation and
+  0.769 value — because faces have to read at range against every terrain colour we ship.
+  `wood` at **0.472** is the large one and the one most worth arguing about; it was argued
+  on 30 Jul 2026 and kept, on the grounds that timber desaturated to 0.35 stops reading as
+  wood and starts reading as dirt, and duckboards over mud have to be a different material
+  at a glance. `wood2` at 0.443 follows it, because a shadow tone less saturated than its
+  parent inverts the relationship and looks like a stain rather than shade.
 - **Saturated colour is a signal, not decoration.** Bright red, orange, and cyan are
   reserved for fire, tracers, flares, blood decision, and UI. If a prop is bright,
   the player will read it as gameplay-relevant — so only make it bright if it is.

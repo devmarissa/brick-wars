@@ -148,12 +148,36 @@ is forward, always (ART-BIBLE §7).
 
 Note there's no `mass`. **Mass is derived from volume × the material's density**
 (`MATERIAL-SPEC` §2), so a stone crate is heavy because stone is heavy rather than because
-somebody typed a number. `hollow: true` applies a shell approximation for containers;
-an explicit `mass` field still exists as an override for the genuinely odd case, but
-reaching for it usually means the material is wrong.
+somebody typed a number.
+
+`hollow: true` applies a shell approximation for containers. **The shell is exactly one
+module thick** — 0.1 m — because one module is the thinnest wall the grid can express. That
+is a consequence of §3's unit, not a tunable, and it is the reason the next paragraph exists.
+
+An explicit `mass` field overrides the derived figure. For a solid object, reaching for it
+usually means the material is wrong. **For a hollow one it usually doesn't:** a real packing
+crate has walls far thinner than 0.1 m, so a derived hollow crate at plank density lands
+around 167 kg where the object should be nearer 30. Every hollow asset core ships declares
+its own mass for this reason, and the boot log prints `(declared)` beside each so the
+substitution is never silent. Decided 30 Jul 2026: the module size stays at 0.1 m and
+declared mass is the sanctioned answer, rather than shrinking the unit or introducing a
+sub-module wall thickness. Revisit if C4 shows that declared masses make collapse feel wrong.
 
 `kind` is one of: `prop` · `structure` · `weapon` · `vehicle` · `buildable` · `character`
 · `emplacement`. Each kind adds its own stat block (§7).
+
+**`class`** names the asset's part-budget class from `budgets.json` — `small_prop` and its
+siblings — and is what ART-BIBLE §5's budget is enforced against. It is **optional**: an asset
+that omits it is held to the widest range across every class its `kind` allows, and the
+under-budget note is suppressed, since nobody declared what "under" would mean. Declaring it
+is how a seven-part table asserts that it means to be a small prop rather than drifting into
+structure territory over a year of edits, and it is the only way to get told you have gone
+under. A variant does not restate it; it inherits it, and `--resolve` will say so.
+
+**`body`** decides whether the asset builds as one rigid body or many. Default is one.
+`core:wall_sandbag` is 114 bodies because a wall that cannot come apart in courses is a
+painted backdrop; `core:crate` is one because a crate that sheds boards under its own weight
+is a bug. This is a physics decision the author has to make and the format cannot infer.
 
 **Colliders are declared separately from parts** and are always blocks — never derived
 from the visual parts. This is the compound-collider lesson from the tank, written into
@@ -328,6 +352,7 @@ packs/great_war/
 
 A pack fails to load, with a message naming the file, the line, and the rule, when it:
 
+- omits `format`, or carries a `format` this build doesn't read (§11)
 - uses a hex colour, or a named colour outside ART-BIBLE §2 bounds
 - omits `material` on any part, or names a material that doesn't exist
 - gives a part a colour outside its material's declared colour set

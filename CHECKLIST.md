@@ -158,6 +158,19 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       modules still do. `case_cli.gd` asserts all of it so it stays true.
       **Worth your eye — the two tables are new shipped content I authored to close the
       milestone, and they stayed in the sandbox rather than being deleted afterwards**
+- [x] **Spec reconciliation, 30 Jul** — every place the build and the specs disagreed at C1,
+      written up as **`DEVIATIONS-C1.md`** and walked rather than carried. Thirty items:
+      four forks decided by Marissa (the 0.1 m module and declared mass stay; the `wood`
+      palette exemption at 0.472 stays; the 26-slot registry is reviewed at C4 where the
+      combat slots first carry numbers; `class` and `body` stay and get specced), seven
+      places the spec text was wrong or behind the code and is now amended, fifteen calls
+      recorded where the specs were silent, and four deliberate deferrals with what each is
+      waiting on. Touched FORMAT-SPEC §6 and §10, MATERIAL-SPEC §5, ART-BIBLE §2,
+      EARTH-SPEC §8, RIG-SPEC §2, MODDING.md and `palette.json`.
+      **One of the fifteen turned out to be a live bug rather than a note:** `PackSet`'s
+      disable cascade could not see the implicit pack→core edge, so a refused core would have
+      left every pack enabled to fail later with a message pointing authors at their own
+      files. Fixed, and asserted from both ends in `case_pack_order.gd` and `case_validator.gd`
 
 ## 2 · Soldier: locomotion & body
 

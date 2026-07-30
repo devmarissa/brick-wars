@@ -27,7 +27,7 @@
       "ART-BIBLE §2's palette laws, as numbers the registry can actually enforce.",
       "",
       "The spec says 'saturation stays under ~35%'. The tilde is doing a lot of quiet",
-      "work: seven of the twenty entries below are over the line. So the threshold here",
+      "work: six of the twenty entries below are over the line. So the threshold here",
       "is exact and the tilde has been turned into a list of names — every entry that",
       "breaks a law carries `exempt` and a `why`, and anything without one is refused.",
       "An exception you have to name is a different thing from a limit nobody checks."

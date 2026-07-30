@@ -46,6 +46,14 @@ simulated. Expensive, nondeterministic, and does not replicate cheaply.
 Physical constraints are **budgeted**: a per-object cap and a per-scene cap, enforced by
 the pack validator. A pack cannot ship a 200-joint creature and tank the server.
 
+**The two numbers are not written down yet, and the validator rule that would enforce them
+is dormant and says so at every boot.** Both caps have to come out of measurement — the
+per-object one from the horse, which is the formal extensibility target and the densest
+rig we intend to allow, and the per-scene one from a full sandbox with vehicles in it.
+Guessing them here would mean either a cap so generous it protects nothing or one so tight
+the horse fails its own test. **They land at the end of C2**, alongside the animation style
+guide, and this sentence is the marker that they are owed rather than forgotten.
+
 ## 3 · Kinematic rigs — the format
 
 A natural extension of the part table. Parts gain an optional parent and a joint:

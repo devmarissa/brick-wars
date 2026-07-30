@@ -178,6 +178,16 @@ duckboards and drainage are pack-level answers to a core-level problem.
 Full water simulation is explicitly **not** in scope. A level, a fill rule and a wetness
 multiplier get 90% of the feel for 5% of the work.
 
+**On the `ice`, `glass` and `water` material numbers.** `MATERIAL-SPEC` §5 lists all three
+under "Other" and points here for their figures, and this section has never supplied them.
+That is now a deliberate deferral rather than an oversight: **they arrive with the first
+era pack or map that needs them, and not before.** Writing a hardness and a failure mode for
+ice from a desk produces numbers nobody has ever seen an object made of, and the one thing
+worse than a missing figure is a made-up one that six assets have already been balanced
+against. `water` in particular is not a material an asset can be built from under the rule
+above — it is a level and a fill state — so its row in §5 may end up being deleted rather
+than filled in. Recorded 30 Jul 2026.
+
 ## 9 · Performance budgets
 
 Written down now so they're targets rather than surprises:

@@ -204,10 +204,17 @@ func _defaults(t: TestContext, world: Dictionary) -> void:
 ## Core failing its own rules, which is a different event from a pack failing.
 ##
 ## Nobody declares `depends` on core — `core_version` on the manifest is that declaration —
-## so the manifest graph cannot see the edge from a pack to core and its cascade does not
-## follow it. Every pack in the game is nonetheless built on core, and this is the one path
-## where the validator's own cascade is the only thing standing between a refused base and a
-## variant of it loading as though the base were fine.
+## so the edge from a pack to core is implicit, and for a while `PackSet._cascade()` walked
+## straight past it. That left the validator's own asset-level cascade as the only thing
+## standing between a refused base and a variant of it loading as though the base were fine,
+## which is a lot of weight on the later of the two passes.
+##
+## `_cascade()` knows about the edge now, so it fires first and a dependent pack is told the
+## thing it can actually act on: core is off, and here is the file and line that turned it
+## off. Naming which of core's assets the pack happened to extend was more precise and less
+## useful — a modder cannot fix `core:prop_crate` and does not need to know they touched it.
+## The validator's cascade is still there underneath and still correct; it is a backstop now
+## rather than the only guard.
 func _when_core_is_the_broken_one(t: TestContext) -> void:
 	var world := _load(FIXTURES_CORE)
 	if world.is_empty():
@@ -223,8 +230,14 @@ func _when_core_is_the_broken_one(t: TestContext) -> void:
 
 	t.ok(not packs.is_enabled(&"rider"),
 		"a pack extending core goes down with it, having declared no dependency to cascade along")
-	t.ok(String(packs.disabled.get(&"rider", "")).contains("core:prop_crate"),
-		"and is told which asset it was built on: " + String(packs.disabled.get(&"rider", "")))
+
+	# The reason it gets is core's, not its own. An author whose pack went down because core
+	# broke has done nothing to fix, and the useful thing to hand them is the file and line
+	# that actually broke — not a note about which core asset they happened to extend.
+	var why := String(packs.disabled.get(&"rider", ""))
+	t.ok(why.contains("`core` is disabled"), "and told the cause is core, not itself: " + why)
+	t.ok(why.contains("bad.json"), "with the file that broke, which is the actionable part")
+	t.ok(not why.contains("rider"), "and is not blamed for anything of its own")
 	t.ok((world["resolver"] as AssetResolver).resolved.is_empty(),
 		"nothing at all is left resolved, because everything descended from core")
 

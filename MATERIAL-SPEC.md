@@ -203,8 +203,16 @@ over if you push them. That combination is why every era from Vauban to Helmand 
 
 **Other** — `ice`, `glass`, `water` (`EARTH-SPEC` §8).
 
-Thirty materials covers ancient through modern. If an era genuinely needs a thirty-first,
-that's a core change request and it's a small one.
+**Thirty-three materials, as shipped at C1.** This section was written saying "thirty", as a
+discipline device rather than a count, and building the thing overran it by three before any
+era pack existed. Amended 30 Jul 2026 to say the real number, because a limit that quietly
+slides is not a limit.
+
+The discipline it was reaching for still stands, and now has a mechanism instead of a
+sentence: **adding a material is a core change request and needs a written justification in
+`materials.json`, the same way a palette entry over the saturation law needs a `why`.** The
+bar is that an era needs a behaviour the existing thirty-three cannot express — not that it
+needs a different-looking version of one of them. Colour is not a material.
 
 ## 6 · Two loops this system produces for free
 

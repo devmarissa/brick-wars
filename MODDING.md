@@ -75,3 +75,33 @@ primitives are for the things that are genuinely round or genuinely wedge-shaped
 
 `ART-BIBLE.md` explains why each of those exists. Arguing with them is allowed and the specs
 name their own sections so you know what you are arguing with.
+
+## Two fields worth understanding before you need them
+
+**`class`** is your asset's part budget — `small_prop` and its siblings, from `budgets.json`.
+It is optional, and an asset that leaves it out is held to the widest range its `kind` allows,
+which usually means nothing complains until you are well past sensible. Declaring it is how
+you tell the validator what you meant to build, and it is the only way to be told you have
+come in *under* budget as well as over. A variant inherits it from its base and should not
+restate it; `--resolve` will show you which file it came from.
+
+**`body`** decides whether your asset is one rigid body or many. One is the default and is
+what you want for anything that should hold together — a crate that sheds boards under its
+own weight is a bug, not detail. Many is for things whose whole point is coming apart:
+`core:wall_sandbag` is 114 bodies because a wall that cannot fall in courses is a painted
+backdrop. This is a judgement the format cannot make for you, and getting it wrong is the
+most common reason a good-looking asset feels wrong to play with.
+
+## Why your hollow crate weighs two hundred kilos
+
+Mass is derived from volume × the material's density, which is right almost always and
+notably wrong for containers. `hollow: true` hollows your asset out, but the shell it leaves
+is **one module thick** — 0.1 m — because one module is the thinnest wall the grid can
+express. A real packing crate has walls a fifth of that, so a derived hollow crate at plank
+density lands near 167 kg where the object should be nearer 30.
+
+The sanctioned answer is to **declare `mass` in the file**. Every hollow asset core ships does
+exactly this, and the boot log prints `(declared)` beside each one so the substitution is
+never invisible. It is not a hack you are getting away with; it is the documented behaviour
+for the one case where the density model and the module size disagree. Do not reach for it on
+a *solid* object — there, a mass that feels wrong almost always means the material is wrong.

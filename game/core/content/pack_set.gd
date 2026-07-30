@@ -186,6 +186,20 @@ func _cascade() -> void:
 		for id in ContentLoader.sorted_names(packs.keys()):
 			if disabled.has(id):
 				continue
+
+			# Core's edge is implicit — `core_version` on the manifest is the declaration, so
+			# it is not in `depends` and the loop below would walk straight past it. Without
+			# this, a refused core leaves every pack enabled and each one fails later at
+			# resolution with "no enabled pack publishes `core:...`", which sends an author to
+			# look at their own file for a problem that is nowhere near it. Unreachable today,
+			# because a core that will not load is its own fatal path — but the cascade should
+			# be true on its own terms rather than because nothing currently tests it.
+			if id != CORE_ID and disabled.has(CORE_ID):
+				_disable(id, "`core` is disabled, so nothing can load (%s)" % [
+					disabled[CORE_ID].get_slice("\n", 0)])
+				changed = true
+				continue
+
 			for dep in (packs[id] as Pack).depends:
 				var dep_id: StringName = dep["id"]
 				if disabled.has(dep_id):
