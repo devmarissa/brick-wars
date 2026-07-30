@@ -185,33 +185,53 @@ Measuring it made it undeniable: 0.00714 m of world slide per frame against a bo
 0.01667, exactly `speed * (1/duty - 1) * dt`. Fixed, and `case_driver._a_planted_foot_stays_put`
 now pins it in world space against a moving body, which is the only place the claim is checkable.
 
-### D1. The order-of-operations policy has no test, in either of the two places it appears
+### D1. **A posed foot lands 0.2 m from the plant it was solved to.** Confirmed, and it blocks C2
 
-`Locomotion.step`'s docstring emphasises this hardest of anything in the file: feet are planted
-against the transform that came in, the new body height and tilt are computed from where they
-landed, and only then are the world foot targets brought into the *new* body's space to be solved.
-`Walker._physics_process` makes the same claim one level up — move the body, then pose the rig
-against where it ended up. Doing either the other way round costs exactly one frame of lag.
+This started as "the order-of-operations policy has no test" and turned into something worse while
+a test for it was being written. It is the reason C2 is **not** verified.
 
-Nothing fails if either is reversed, and the walker one is confirmed rather than suspected:
-`tools/mutate.py`'s "the walker poses the rig before moving the body" comes back MISSED.
+**The reproduction**, on `core:quadruped`, flat ground, standing still, one step:
 
-Two attempts at pinning it, and why neither worked, so the next person does not repeat them:
+```
+REST  tip_of(last)=(-0.3, 0.0, -1.5)  home=(-0.3, 0.0, -1.5)  equal=true
+      upper=1.200 lower=1.200 trail=0.400  anchor=(-0.3, 2.4, -0.9)
+AFTER ankle=(-0.3, 0.548, -2.055) wanted=(-0.3, 0.4, -1.92)  off=0.2000  strain=0.0000
+      |anchor→wanted|=2.2451  upper+lower=2.4000  height=0.0000
+```
 
-- **World slide of a stance foot** does not discriminate. A stale body transform advances by the
-  same `speed * dt` each frame as a current one, and the swing advances identically, so the
-  per-frame delta is unchanged. The wrong order produces a *constant* offset of about 3.7 cm at a
-  walk — the rig trailing its own collider — not a growing one.
-- **Lean into a turn** looks like it should work, because the yaw rate only exists after the body
-  has moved, and a faithful swap has none to lean by. But the obvious measurement,
-  `rig.root.basis.x.angle_to(Vector3.RIGHT)`, conflates the roll with the *yaw error* — and the
-  wrong order leaves the rig a whole frame of turning behind, which at `TURN_RATE` is 8.6°. So the
-  assertion passes for the wrong reason. `case_walker` keeps that lean test because it does pin
-  something real, that the controller wires `lean_into_turn` through at all; it just does not pin
-  the order.
+The first line rules out the measurement: at rest the posed sole read back through the rig is
+exactly `home`, to four decimals, so `Leg.tip_of` and the transform reconstruction are sound. The
+third is the finding. `Locomotion._solve` asked for the ankle at `target - hang * trail`, the
+solver returned an `end` **0.2 m away from that**, and reported `strain` of zero — on a target
+2.245 m from the anchor against a leg that is 2.4 m of upper plus lower, so comfortably reachable.
 
-What would work is isolating the roll about the creature's own forward axis, or comparing the
-posed sole to the plant it was solved to in world space. Both need a helper that does not exist.
+**Why nothing caught it.** Every foot-planting assertion in the suite — including
+`case_walker`'s "on the surface to 2 mm" — reads `leg.plant`, which is `Footing`'s answer about
+where the foot *should* go. Nothing read back where the foot was actually *posed*. So the suite
+has been asserting the driver's intent rather than the rig's result, and the two differ by 20 cm.
+Earlier commit messages in this milestone claim feet planting to 2 mm; that claim is about
+`leg.plant` and does not survive contact with the pose.
+
+**Where to look**, in order of suspicion: `TwoBoneIK.solve` returning an `end` that is not `lower`
+away from its own `joint`, in which case `Rig.aim` reconstructs a different ankle than the solver
+intended and the error is the difference; or `_solve` aiming `chain[1]` at a point it cannot place
+because `aim` sets a direction while the bone keeps its own length. The 0.2 is suspiciously
+`trail / 2`, which may mean something or may be arithmetic coincidence on this fixture — check a
+second creature before reading anything into it.
+
+The test that found this is not in the suite, because it fails and the tree does not stay red. It
+is four lines and it belongs in `case_body.gd` the moment the defect is fixed: step the driver,
+rebuild the reported body transform as `Transform3D(out.basis, (at.x, out.height, at.z))`, and
+assert that `posed * Leg.tip_of(rig, leg.chain[-1])` is on `leg.plant["position"]` for every leg
+in stance.
+
+**The original D1 still stands underneath this**, unresolved and now secondary: the
+order-of-operations policy in `Locomotion.step` and again in `Walker._physics_process` has no
+test, and `tools/mutate.py` reports the walker half as MISSED. The two earlier attempts at pinning
+it are worth not repeating — world slide cannot see it, because a stale transform advances by the
+same amount per frame as a current one; and the obvious lean measurement passes for the wrong
+reason, because `rig.root.basis.x.angle_to(RIGHT)` conflates roll with a frame of yaw error. The
+pose-versus-plant assertion above is the thing that would pin both, once it can pass.
 
 ### D2. The hang lag's frame-rate independence has no test
 
