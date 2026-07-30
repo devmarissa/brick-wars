@@ -45,6 +45,7 @@ func run(t: TestContext) -> void:
 	await _walks_and_sprints(t, world, soldier)
 	await _jumps(t, world, soldier)
 	await _climbs(t, world, soldier)
+	await _the_horse_walks_too(t, world)
 
 
 ## What a walker is before it has moved: a rig, its legs, and its own declared collision — not a
@@ -163,6 +164,59 @@ func _climbs(t: TestContext, world: Dictionary, soldier: ResolvedAsset) -> void:
 	var tilt := rad_to_deg(walker.rig.root.basis.y.angle_to(Vector3.UP))
 	t.ok(tilt > 0.2, "with the body tilted onto the slope: %.2f degrees" % tilt)
 	t.ok(tilt < 14.04, "part of the way, not all of it — `body_pitch` is 0.08, not 1")
+	walker.queue_free()
+
+
+## C2's other done-condition clause: *a four-legged test creature walks using the same system*.
+##
+## "The same system" is the whole claim, and it is why this section is in this file rather than in
+## a horse-shaped one of its own. `testpack:horse` goes through the identical `Walker`, the
+## identical `Locomotion`, the identical `Footing` — and it comes out of a *non-core pack*, which
+## is the part RIG-SPEC §5 is actually arguing for: `legged` sits in the locomotion type list
+## beside `wheeled` so that a rideable animal is something a modder writes rather than something
+## core has to grow a system for. If that were false, this section would need core changes to
+## pass. It needs none.
+func _the_horse_walks_too(t: TestContext, world: Dictionary) -> void:
+	var horse := FixtureWorld.asset(world, "testpack:horse")
+	t.ok(horse != null, "TESTPACK's horse resolved — a non-core pack adding a walking creature")
+	if horse == null:
+		return
+
+	var walker := await _spawn(t, world, horse, Vector3(-2.0, 0.3, 6.0))
+	t.ok(walker.warnings.is_empty(), "it builds without complaint: " + "\n".join(walker.warnings))
+	t.eq(walker.locomotion.legs.size(), 4, "with four legs, through the same driver as the soldier")
+
+	# The sentence RIG-SPEC §4 spends a paragraph on, now on shipped pack content rather than on a
+	# fixture: a knee and a hock are one function reading two rest poses, with no field between
+	# them. `case_leg.gd` asserts it against numbers authored to be checked by hand; this asserts
+	# it against an animal somebody actually authored.
+	t.ok(walker.locomotion.legs[0].bend.z < 0.0, "its forelegs bend forward, like knees")
+	t.ok(walker.locomotion.legs[2].bend.z > 0.0, "and its hind legs backward, like hocks")
+
+	# Measured against the surface rather than against zero: the horse stands past `TestGround`'s
+	# lip, where the ground genuinely is 0.4 m up, and an assertion of 0 there would be testing
+	# the map rather than the creature.
+	var under := TestGround.height_at(walker.global_position.x, walker.global_position.z)
+	t.near(walker.global_position.y, under, 0.05,
+		"it settles on the ground rather than into it: %.3f on ground at %.3f" % [
+			walker.global_position.y, under])
+	for leg in walker.locomotion.legs:
+		var at: Vector3 = leg.plant["position"]
+		t.near(at.y, TestGround.height_at(at.x, at.z), 0.002,
+			"and each of its four feet is on the surface")
+
+	var from := walker.global_position
+	walker.wish = Vector2(0.0, -1.0)
+	await t.ticks(SETTLE)
+	t.ok(walker.global_position.z < from.z - 0.5, "it walks: " + walker.report())
+	t.eq(String(walker.last["gait"]), "walk", "at a four-beat walk")
+
+	# Its own gait table hands over at 2.2, below the soldier's 2.6 — a horse trots where a
+	# soldier is still walking, which is the point of the table being the pack's rather than
+	# core's.
+	walker.sprinting = true
+	await t.ticks(SETTLE)
+	t.eq(String(walker.last["gait"]), "trot", "and trots when the controller asks for more speed")
 	walker.queue_free()
 
 

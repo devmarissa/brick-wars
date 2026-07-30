@@ -112,6 +112,7 @@ static func of(asset: ResolvedAsset, materials: MaterialSet, palette: Palette) -
 		walker.add_child(shape)
 	built.queue_free()
 
+	walker._check_stance(asset)
 	if not walker.locomotion.setup(walker.rig, Locomotion.declared(asset)):
 		walker.warnings.append(("%s has a rig but nothing to drive it — no `legged` locomotion"
 			+ " block resolved to real legs (RIG-SPEC §5)") % asset.id)
@@ -207,6 +208,26 @@ func _target_speed() -> float:
 func _turn_toward(heading: float, delta: float) -> float:
 	var step := angle_difference(_yaw, heading)
 	return _yaw + clampf(step, -TURN_RATE * delta, TURN_RATE * delta)
+
+
+## A walker's collision has to reach down to where its feet are, and this is the check that says
+## so out loud. `Locomotion.step` plants feet against the transform it is handed, which is the
+## body's own — so a creature whose lowest collision box stops above its soles settles that far
+## into the ground, and then every foot is asked to reach *upward* for a surface above its own
+## ideal position and fails to. The symptom is a creature knee-deep in the floor with all four
+## feet reported unplanted, and nothing about it points at the collider. `testpack:horse` shipped
+## with exactly that and it took longer to find than it should have.
+func _check_stance(asset: ResolvedAsset) -> void:
+	var lowest := INF
+	for shape in _colliders(asset):
+		var box := shape.shape as BoxShape3D
+		if box != null:
+			lowest = minf(lowest, shape.position.y - box.size.y * 0.5)
+	if lowest == INF or lowest <= STILL:
+		return
+	warnings.append(("%s's lowest collision box starts %.2f m above its origin, so it will settle"
+		+ " that far into the ground and its feet will not reach. A walker's collision has to"
+		+ " come down to its soles (RIG-SPEC §3)") % [asset.id, lowest])
 
 
 ## How far the probe looks, from the legs themselves. The longest leg's reach plus a margin: the
