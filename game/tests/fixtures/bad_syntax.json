@@ -1,0 +1,8 @@
+{
+  "format": 1,
+  "id": "bad_syntax_fixture",
+  "colours": {
+    "mud": { "hex": "#5e5240" }
+    "stone": { "hex": "#7d7a70" }
+  }
+}

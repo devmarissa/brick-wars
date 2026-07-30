@@ -1,0 +1,107 @@
+{
+  "_": [
+    "The whole game's colour identity. ART-BIBLE §2.",
+    "",
+    "No asset introduces a new colour. Parts name a colour from this file, or they take",
+    "the default their material supplies; hex in a pack is a validator refusal, not a",
+    "warning. That is the entire reason this file exists — a world where anyone can type",
+    "a hex code is a world that looks like a toy bin within a month.",
+    "",
+    "Adding a colour here is a deliberate act: it needs a name, a stated use, and it has",
+    "to pass the laws below. Packs cannot add to this file. They get faction colours",
+    "instead, which are theirs to choose and are structurally constrained (see `faction`).",
+    "",
+    "Names are lowercase snake_case, matching FORMAT-SPEC's own examples (`wood2`,",
+    "`gunmetal`). ART-BIBLE §2 writes them as GDScript-constant abbreviations (`SBAG`,",
+    "`GUN`, `PACK`); those are the same twenty colours under shorter names, and the",
+    "spec table wants amending to match this file rather than the other way round. One",
+    "of them changed meaningfully: ART-BIBLE's `PACK` is `webbing` here, because a",
+    "colour called `pack` sitting next to pack.json and pack ids is a trap."
+  ],
+
+  "format": 1,
+  "id": "core",
+
+  "law": {
+    "_": [
+      "ART-BIBLE §2's palette laws, as numbers the registry can actually enforce.",
+      "",
+      "The spec says 'saturation stays under ~35%'. The tilde is doing a lot of quiet",
+      "work: seven of the twenty entries below are over the line. So the threshold here",
+      "is exact and the tilde has been turned into a list of names — every entry that",
+      "breaks a law carries `exempt` and a `why`, and anything without one is refused.",
+      "An exception you have to name is a different thing from a limit nobody checks."
+    ],
+    "saturation_max": 0.35,
+    "value_max": 0.647,
+    "value_min": 0.102,
+    "value_max_hex": "#a5a5a5",
+    "value_min_hex": "#1a1a16",
+    "exempt_requires_why": true
+  },
+
+  "faction": {
+    "_": [
+      "Core does not define faction colours — each era pack does. What core fixes is the",
+      "shape: exactly two factions, each exactly one colour plus one shadow variant. That",
+      "is what lets faction-readability code be written once and never touched again.",
+      "",
+      "Faction colour is only ever on soldiers and vehicles. Never terrain, props, or",
+      "buildables — otherwise silhouette reading breaks at range. The validator enforces",
+      "this by asset class, not by hoping."
+    ],
+    "count": 2,
+    "shades_per_faction": 2,
+    "allowed_on": ["soldier", "vehicle"]
+  },
+
+  "colours": {
+    "mud":        { "hex": "#5e5240", "use": "primary earth, trench walls" },
+    "mud2":       { "hex": "#6a5c47", "use": "earth variation, spoil" },
+    "clay":       { "hex": "#74604a", "use": "subsoil, deep digs, crater interiors",
+                    "exempt": ["saturation"],
+                    "why": "0.362 against a 0.35 limit. Subsoil is warmer than topsoil and dropping the last twelve thousandths reads as grey mud, which is the colour immediately above it." },
+    "wood":       { "hex": "#6a5138", "use": "timber, duckboards, revetment",
+                    "exempt": ["saturation"],
+                    "why": "0.472. The largest exemption in the file and the one most worth arguing about. Timber desaturated to 0.35 stops reading as wood and starts reading as dirt, and duckboards over mud need to be a different material at a glance." },
+    "wood2":      { "hex": "#584431", "use": "timber shadow/variation",
+                    "exempt": ["saturation"],
+                    "why": "0.443. Inherits wood's problem; a shadow tone that is less saturated than its parent inverts the relationship and looks like a stain rather than shade." },
+    "sandbag":    { "hex": "#9a8a68", "use": "sandbags" },
+    "sandbag2":   { "hex": "#8b7c5e", "use": "sandbag variation" },
+    "stone":      { "hex": "#7d7a70", "use": "masonry, ruins, roads" },
+    "stone2":     { "hex": "#6e6b62", "use": "masonry variation" },
+    "grey":       { "hex": "#767468", "use": "neutral grey, mechanical" },
+    "grey_light": { "hex": "#8f8c7c", "use": "light grey, highlights" },
+    "black":      { "hex": "#232019", "use": "deepest value — tyres, openings, iron" },
+    "gunmetal":   { "hex": "#2b2a24", "use": "gunmetal" },
+    "tan":        { "hex": "#8a7a58", "use": "canvas, leather, rope",
+                    "exempt": ["saturation"],
+                    "why": "0.362, twelve thousandths over. Rounding, not a decision." },
+    "canvas":     { "hex": "#7d7460", "use": "tarpaulin, tenting" },
+    "wire":       { "hex": "#4a4440", "use": "barbed wire, chain, cable" },
+    "skin":       { "hex": "#c4a26e", "use": "exposed skin",
+                    "exempt": ["saturation", "value"],
+                    "why": "0.439 saturation and 0.769 value, the only entry that breaks both. Faces have to read at range against every terrain colour in the file, and every terrain colour in the file is a mid-value brown. Skin is the one thing in the palette that is not weathered materiel, so the law that produces weathered materiel does not describe it." },
+    "webbing":    { "hex": "#584c39", "use": "webbing, packs, straps",
+                    "exempt": ["saturation"],
+                    "why": "0.352, two thousandths over. Rounding." },
+    "green":      { "hex": "#5a5c42", "use": "vegetation" },
+    "blue":       { "hex": "#5c6660", "use": "desaturated cool accent" }
+  },
+
+  "reserved": {
+    "_": [
+      "Saturated colour is a signal, not decoration. Bright red, orange and cyan mean",
+      "something in this game, and the moment a prop is allowed to be bright the player",
+      "starts reading props as gameplay-relevant. So brightness is spent deliberately,",
+      "on this list, and the palette above contains none of it.",
+      "",
+      "These are not part-assignable. They are named here so that the reason the palette",
+      "has no bright colours in it is written down next to the palette, rather than being",
+      "a thing everybody has to remember."
+    ],
+    "for": ["fire", "tracers", "flares", "blood", "ui"],
+    "emissive_exempt_from_value_law": true
+  }
+}

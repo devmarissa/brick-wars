@@ -1,0 +1,448 @@
+{
+  "_": [
+    "The sanctioned material set. MATERIAL-SPEC §5.",
+    "",
+    "Every part in the game names a material from this file. It is required and there is",
+    "no default, because a default would be a silent decision about how something breaks,",
+    "and how things break is the game.",
+    "",
+    "Mass is derived — volume × density — so a stone block is heavy because stone is heavy,",
+    "not because someone typed a number. FORMAT-SPEC §6's `mass` field is an override for",
+    "the rare case where derived mass is wrong (a hollow crate, an empty fuel drum).",
+    "",
+    "Packs cannot add to this file. A pack defines a new material only by `extends` on a",
+    "core material, clamped to ×0.5–×2.0 on any numeric property, with `class`, `failure`",
+    "and `hardness` inherited and not overridable (MATERIAL-SPEC §8). Identity is a pack's",
+    "to define; physics is not.",
+    "",
+    "Thirty-three entries. MATERIAL-SPEC §5 says thirty, and its five tables do total",
+    "thirty — but it then names `ice`, `glass` and `water` under 'Other' and points at",
+    "EARTH-SPEC §8, which covers water only and gives no numbers for any of them. Those",
+    "three are authored here and flagged `authored_here` so the gap is visible rather than",
+    "looking like settled spec. §5's count wants amending to thirty-three."
+  ],
+
+  "format": 1,
+  "id": "core",
+
+  "damage_types": {
+    "_": [
+      "Six, closed set. MATERIAL-SPEC §3. Numbers everywhere in this file are *damage",
+      "taken*, so lower is tougher — 0.15 means the material absorbs 85% of it."
+    ],
+    "order": ["kinetic", "blast", "crushing", "cutting", "fire", "dig"],
+    "kinetic":  "bullets, arrows, fragments",
+    "blast":    "explosive overpressure",
+    "crushing": "rams, falling debris, direct artillery",
+    "cutting":  "blades, saws, cutters",
+    "fire":     "burning",
+    "dig":      "tools"
+  },
+
+  "failure_modes": {
+    "_": ["Closed set. What breaking looks like, and what it leaves."],
+    "order": ["shatter", "crumble", "splinter", "tear", "deform", "burn_through"]
+  },
+
+  "hardness_tiers": {
+    "_": [
+      "MATERIAL-SPEC §4. A tool declares `tool_power` and works material where",
+      "`tool_power >= hardness`.",
+      "",
+      "A tool that cannot do the job says so — 'your shovel won't cut chalk, you need a",
+      "pick.' Never a silent no-op, never an animation that plays and achieves nothing.",
+      "That refusal message is the entire cost of tool gating and it is cheap to pay.",
+      "",
+      "This is also what gives each era its own texture in how it breaks the world, with",
+      "no era-specific code anywhere: ancient does everything by hand and by fire,",
+      "gunpowder brings the charge, modern brings the drill and the torch."
+    ],
+    "0": { "worked_by": ["hands"] },
+    "1": { "worked_by": ["shovel"] },
+    "2": { "worked_by": ["shovel_slow", "pick", "axe"] },
+    "3": { "worked_by": ["pick", "sledge", "cutter"] },
+    "4": { "worked_by": ["drill", "charge"] },
+    "5": { "worked_by": ["charge", "torch"] }
+  },
+
+  "classes": {
+    "_": [
+      "Class defaults, overridable per material. MATERIAL-SPEC §3.",
+      "",
+      "Read a resist row across and the material's personality is right there. Stone",
+      "shrugs off a blade and shatters under a hammer. Earth swallows bullets and is",
+      "trivially dug. Fabric stops almost nothing but a knife goes through it like it",
+      "isn't there.",
+      "",
+      "`other` deliberately has no resist row — §3's table lists five classes, not six.",
+      "So an `other` material must state all six resistances itself, and the validator",
+      "refuses one that doesn't. Better than inventing a sixth row nobody specified."
+    ],
+
+    "earth": {
+      "resist":  { "kinetic": 0.15, "blast": 0.50, "crushing": 0.70, "cutting": 0.30, "fire": 0.00, "dig": 1.50 },
+      "spall":   0.0,
+      "surface": { "footstep": "dirt", "impact": "thud", "friction": 0.90, "roughness": 0.80 }
+    },
+    "stone": {
+      "resist":  { "kinetic": 0.30, "blast": 0.80, "crushing": 1.20, "cutting": 0.15, "fire": 0.05, "dig": 0.40 },
+      "spall":   0.45,
+      "surface": { "footstep": "stone", "impact": "crack", "friction": 0.80, "roughness": 0.60 }
+    },
+    "wood": {
+      "resist":  { "kinetic": 0.60, "blast": 1.00, "crushing": 0.90, "cutting": 1.60, "fire": 2.00, "dig": 0.80 },
+      "spall":   0.15,
+      "surface": { "footstep": "wood", "impact": "knock", "friction": 0.70, "roughness": 0.50 }
+    },
+    "metal": {
+      "resist":  { "kinetic": 0.50, "blast": 0.70, "crushing": 0.60, "cutting": 0.80, "fire": 0.10, "dig": 0.20 },
+      "spall":   0.30,
+      "surface": { "footstep": "metal", "impact": "clang", "friction": 0.60, "roughness": 0.20 }
+    },
+    "fabric": {
+      "resist":  { "kinetic": 0.40, "blast": 0.60, "crushing": 0.50, "cutting": 2.50, "fire": 2.20, "dig": 1.20 },
+      "spall":   0.0,
+      "surface": { "footstep": "soft", "impact": "muffled", "friction": 1.00, "roughness": 0.90 }
+    },
+    "other": {
+      "resist":  null,
+      "spall":   0.0,
+      "surface": null
+    }
+  },
+
+  "materials": {
+
+    "_earth": "MATERIAL-SPEC §5 · Earth — the diggable substrate (EARTH-SPEC)",
+
+    "sand": {
+      "class": "earth", "density": 1600, "hardness": 0, "integrity": 5,
+      "support_vertical": 30, "support_lateral": 5, "cohesion": 5,
+      "angle_of_repose": 30, "shoreable": 25,
+      "work_rate": 1.40, "flammability": 0.0, "failure": "crumble",
+      "colour": "tan", "colour_allow": ["tan", "sandbag", "sandbag2"]
+    },
+    "topsoil": {
+      "class": "earth", "density": 1300, "hardness": 1, "integrity": 8,
+      "support_vertical": 35, "support_lateral": 12, "cohesion": 20,
+      "angle_of_repose": 35, "shoreable": 30,
+      "work_rate": 1.20, "flammability": 0.05,
+      "fire": { "burn_rate": 0.2, "fuel": 2, "spread_radius": 0.2, "on_burnt": "ash", "becomes": null, "smoke": 0.3 },
+      "failure": "crumble",
+      "colour": "mud", "colour_allow": ["mud", "mud2"]
+    },
+    "loam": {
+      "class": "earth", "density": 1400, "hardness": 1, "integrity": 10,
+      "support_vertical": 40, "support_lateral": 15, "cohesion": 25,
+      "angle_of_repose": 38, "shoreable": 30,
+      "work_rate": 1.00, "flammability": 0.0, "failure": "crumble",
+      "colour": "mud", "colour_allow": ["mud", "mud2"]
+    },
+    "gravel": {
+      "class": "earth", "density": 1700, "hardness": 1, "integrity": 8,
+      "support_vertical": 45, "support_lateral": 8, "cohesion": 5,
+      "angle_of_repose": 36, "shoreable": 25,
+      "work_rate": 0.90, "flammability": 0.0, "failure": "crumble",
+      "colour": "stone2", "colour_allow": ["stone", "stone2", "grey"]
+    },
+    "mud": {
+      "class": "earth", "density": 1750, "hardness": 0, "integrity": 4,
+      "support_vertical": 15, "support_lateral": 5, "cohesion": 20,
+      "angle_of_repose": 15, "shoreable": 20,
+      "work_rate": 1.30, "flammability": 0.0, "failure": "crumble",
+      "surface": { "footstep": "mud", "impact": "squelch", "friction": 1.20, "roughness": 0.70 },
+      "colour": "mud", "colour_allow": ["mud", "mud2"]
+    },
+    "clay": {
+      "class": "earth", "density": 1900, "hardness": 2, "integrity": 22,
+      "support_vertical": 60, "support_lateral": 35, "cohesion": 55,
+      "angle_of_repose": 55, "shoreable": 25,
+      "work_rate": 0.60, "flammability": 0.0, "failure": "crumble",
+      "colour": "clay", "colour_allow": ["clay", "mud2"]
+    },
+    "hardpack": {
+      "class": "earth", "density": 2000, "hardness": 2, "integrity": 30,
+      "support_vertical": 70, "support_lateral": 45, "cohesion": 60,
+      "angle_of_repose": 60, "shoreable": 20,
+      "work_rate": 0.50, "flammability": 0.0, "failure": "crumble",
+      "colour": "mud2", "colour_allow": ["mud", "mud2", "clay"]
+    },
+    "chalk": {
+      "class": "earth", "density": 2100, "hardness": 2, "integrity": 28,
+      "support_vertical": 65, "support_lateral": 40, "cohesion": 60,
+      "angle_of_repose": 65, "shoreable": 20,
+      "work_rate": 0.55, "flammability": 0.0, "failure": "crumble",
+      "spall": 0.10,
+      "colour": "grey_light", "colour_allow": ["grey_light", "grey", "stone"]
+    },
+    "snow": {
+      "class": "earth", "density": 400, "hardness": 0, "integrity": 3,
+      "support_vertical": 10, "support_lateral": 3, "cohesion": 15,
+      "angle_of_repose": 35, "shoreable": 20,
+      "work_rate": 1.50, "flammability": 0.0, "failure": "crumble",
+      "resist": { "fire": 4.00 },
+      "surface": { "footstep": "snow", "impact": "muffled", "friction": 0.40, "roughness": 0.30 },
+      "colour": "grey_light", "colour_allow": ["grey_light"]
+    },
+
+    "_stone": "MATERIAL-SPEC §5 · Stone & masonry",
+
+    "rubble": {
+      "class": "stone", "density": 1500, "hardness": 1, "integrity": 6,
+      "support_vertical": 35, "support_lateral": 6, "cohesion": 3,
+      "angle_of_repose": 40, "shoreable": 25,
+      "work_rate": 0.90, "flammability": 0.0, "failure": "crumble",
+      "spall": 0.20,
+      "colour": "stone2", "colour_allow": ["stone", "stone2", "grey"]
+    },
+    "brick_masonry": {
+      "class": "stone", "density": 1900, "hardness": 3, "integrity": 50,
+      "support_vertical": 80, "support_lateral": 45, "cohesion": 65,
+      "work_rate": 0.40, "flammability": 0.0, "failure": "shatter",
+      "spall": 0.45,
+      "colour": "clay", "colour_allow": ["clay", "mud2", "stone"]
+    },
+    "soft_stone": {
+      "class": "stone", "density": 2300, "hardness": 3, "integrity": 55,
+      "support_vertical": 85, "support_lateral": 60, "cohesion": 70,
+      "work_rate": 0.35, "flammability": 0.0, "failure": "shatter",
+      "spall": 0.50,
+      "colour": "stone", "colour_allow": ["stone", "stone2", "grey_light"]
+    },
+    "hard_stone": {
+      "class": "stone", "density": 2700, "hardness": 4, "integrity": 80,
+      "support_vertical": 95, "support_lateral": 75, "cohesion": 80,
+      "work_rate": 0.20, "flammability": 0.0, "failure": "shatter",
+      "spall": 0.60,
+      "colour": "stone2", "colour_allow": ["stone", "stone2", "grey"]
+    },
+    "concrete": {
+      "class": "stone", "density": 2400, "hardness": 4, "integrity": 85,
+      "support_vertical": 95, "support_lateral": 70, "cohesion": 85,
+      "work_rate": 0.20, "flammability": 0.0, "failure": "shatter",
+      "spall": 0.85,
+      "_spall": "The worst offender on the list, which is historically correct and is the whole reason sandbag revetment has a job. Sheltering behind concrete means taking chips when it is hit.",
+      "colour": "grey", "colour_allow": ["grey", "grey_light", "stone"]
+    },
+    "reinforced_concrete": {
+      "class": "stone", "density": 2500, "hardness": 5, "integrity": 130,
+      "support_vertical": 99, "support_lateral": 90, "cohesion": 95,
+      "work_rate": 0.10, "flammability": 0.0,
+      "failure": "deform", "failure_then": "shatter",
+      "spall": 0.90,
+      "colour": "grey", "colour_allow": ["grey", "grey_light"]
+    },
+
+    "_wood": "MATERIAL-SPEC §5 · Wood",
+
+    "plank": {
+      "class": "wood", "density": 600, "hardness": 2, "integrity": 20,
+      "support_vertical": 45, "support_lateral": 25, "cohesion": 50,
+      "work_rate": 0.80, "flammability": 0.80,
+      "fire": { "burn_rate": 1.0, "fuel": 40, "spread_radius": 1.5, "on_burnt": "charred", "becomes": "charred_timber", "smoke": 0.6 },
+      "failure": "splinter",
+      "colour": "wood", "colour_allow": ["wood", "wood2"]
+    },
+    "timber": {
+      "class": "wood", "density": 700, "hardness": 2, "integrity": 35,
+      "support_vertical": 70, "support_lateral": 40, "cohesion": 60,
+      "work_rate": 0.60, "flammability": 0.70,
+      "fire": { "burn_rate": 0.7, "fuel": 90, "spread_radius": 1.5, "on_burnt": "charred", "becomes": "charred_timber", "smoke": 0.7 },
+      "failure": "splinter",
+      "_": "support_vertical 70 is what holds a mine gallery's roof span, and burning it down to charred_timber's 20 is what drops the wall above it. MATERIAL-SPEC §6.",
+      "colour": "wood", "colour_allow": ["wood", "wood2"]
+    },
+    "log": {
+      "class": "wood", "density": 750, "hardness": 2, "integrity": 45,
+      "support_vertical": 75, "support_lateral": 45, "cohesion": 60,
+      "work_rate": 0.50, "flammability": 0.60,
+      "fire": { "burn_rate": 0.5, "fuel": 140, "spread_radius": 1.4, "on_burnt": "charred", "becomes": "charred_timber", "smoke": 0.8 },
+      "failure": "splinter",
+      "colour": "wood2", "colour_allow": ["wood", "wood2"]
+    },
+    "charred_timber": {
+      "class": "wood", "density": 400, "hardness": 1, "integrity": 8,
+      "support_vertical": 20, "support_lateral": 10, "cohesion": 30,
+      "work_rate": 1.20, "flammability": 0.30,
+      "fire": { "burn_rate": 0.4, "fuel": 20, "spread_radius": 1.0, "on_burnt": "ash", "becomes": null, "smoke": 0.5 },
+      "failure": "crumble",
+      "spall": 0.0,
+      "colour": "black", "colour_allow": ["black", "gunmetal", "wood2"]
+    },
+
+    "_fabric": "MATERIAL-SPEC §5 · Fabric & filled",
+
+    "canvas": {
+      "class": "fabric", "density": 300, "hardness": 0, "integrity": 2,
+      "support_vertical": 2, "support_lateral": 2, "cohesion": 40,
+      "work_rate": 1.50, "flammability": 0.85,
+      "fire": { "burn_rate": 2.2, "fuel": 6, "spread_radius": 1.2, "on_burnt": "gone", "becomes": null, "smoke": 0.8 },
+      "failure": "tear",
+      "colour": "canvas", "colour_allow": ["canvas", "tan", "green"]
+    },
+    "thatch": {
+      "class": "fabric", "density": 200, "hardness": 0, "integrity": 3,
+      "support_vertical": 5, "support_lateral": 3, "cohesion": 20,
+      "work_rate": 1.50, "flammability": 1.00,
+      "fire": { "burn_rate": 3.0, "fuel": 8, "spread_radius": 2.5, "on_burnt": "ash", "becomes": null, "smoke": 1.0 },
+      "failure": "burn_through",
+      "_": "Flammability 1.0 — catches instantly, spreads 2.5 m. The reason a torch is a siege weapon in the ancient packs and the reason roofs are the first thing to go.",
+      "colour": "tan", "colour_allow": ["tan", "sandbag2", "canvas"]
+    },
+    "hide": {
+      "class": "fabric", "density": 900, "hardness": 1, "integrity": 8,
+      "support_vertical": 5, "support_lateral": 4, "cohesion": 45,
+      "work_rate": 1.10, "flammability": 0.50,
+      "fire": { "burn_rate": 0.8, "fuel": 12, "spread_radius": 0.8, "on_burnt": "charred", "becomes": null, "smoke": 0.9 },
+      "failure": "tear",
+      "colour": "tan", "colour_allow": ["tan", "webbing", "wood2"]
+    },
+    "rope": {
+      "class": "fabric", "density": 900, "hardness": 1, "integrity": 12,
+      "support_vertical": null, "support_lateral": null, "cohesion": null,
+      "work_rate": 1.20, "flammability": 0.60,
+      "fire": { "burn_rate": 1.6, "fuel": 5, "spread_radius": 0.6, "on_burnt": "gone", "becomes": null, "smoke": 0.5 },
+      "failure": "tear",
+      "_": "Carries no compressive support at all — null rather than zero, because rope in tension is a rig constraint (RIG-SPEC), not a wall.",
+      "tension_only": true,
+      "colour": "tan", "colour_allow": ["tan", "webbing", "canvas"]
+    },
+    "wicker": {
+      "class": "fabric", "density": 1400, "hardness": 1, "integrity": 15,
+      "support_vertical": 50, "support_lateral": 20, "cohesion": 30,
+      "work_rate": 1.00, "flammability": 0.70,
+      "fire": { "burn_rate": 2.0, "fuel": 10, "spread_radius": 1.6, "on_burnt": "ash", "becomes": null, "smoke": 0.7 },
+      "failure": "tear",
+      "_": "The gabion. Filled it behaves like sandbag; empty it is a basket. Support numbers here are the empty basket.",
+      "colour": "tan", "colour_allow": ["tan", "wood2", "canvas"]
+    },
+    "sandbag": {
+      "class": "fabric", "density": 1500, "hardness": 1, "integrity": 18,
+      "support_vertical": 55, "support_lateral": 8, "cohesion": 5,
+      "work_rate": 1.10, "flammability": 0.15,
+      "fire": { "burn_rate": 0.6, "fuel": 4, "spread_radius": 0.4, "on_burnt": "gone", "becomes": "sand", "smoke": 0.4 },
+      "failure": "tear", "failure_then": "crumble",
+      "resist": { "kinetic": 0.20, "blast": 0.25 },
+      "_": [
+        "The whole materials system in one row. Good support_vertical, terrible",
+        "support_lateral, near-zero cohesion, and the best blast and kinetic numbers on",
+        "the list — so it is real cover that a tank drives straight through and a near",
+        "miss topples as loose units rather than cratering. Hardness 1, so a shovel takes",
+        "it apart and sapping a parapet is a thing you can actually do.",
+        "",
+        "Nobody wrote parapet code. It is four numbers, and it is why every era from",
+        "Vauban to Helmand used them.",
+        "",
+        "`becomes: sand` — burn the cloth and the fill stays where it fell."
+      ],
+      "colour": "sandbag", "colour_allow": ["sandbag", "sandbag2", "tan"]
+    },
+
+    "_metal": "MATERIAL-SPEC §5 · Metal",
+
+    "wire": {
+      "class": "metal", "density": 7800, "hardness": 3, "integrity": 10,
+      "support_vertical": null, "support_lateral": null, "cohesion": null,
+      "work_rate": 0.70, "flammability": 0.0, "failure": "tear",
+      "spall": 0.0, "tension_only": true,
+      "colour": "wire", "colour_allow": ["wire", "gunmetal", "black"]
+    },
+    "sheet_metal": {
+      "class": "metal", "density": 7800, "hardness": 3, "integrity": 25,
+      "support_vertical": 20, "support_lateral": 15, "cohesion": 80,
+      "work_rate": 0.60, "flammability": 0.0, "failure": "deform",
+      "spall": 0.20,
+      "colour": "grey", "colour_allow": ["grey", "grey_light", "gunmetal", "wire"]
+    },
+    "iron": {
+      "class": "metal", "density": 7200, "hardness": 4, "integrity": 70,
+      "support_vertical": 90, "support_lateral": 70, "cohesion": 90,
+      "work_rate": 0.25, "flammability": 0.0, "failure": "deform",
+      "spall": 0.30,
+      "colour": "gunmetal", "colour_allow": ["gunmetal", "black", "wire"]
+    },
+    "steel": {
+      "class": "metal", "density": 7800, "hardness": 5, "integrity": 95,
+      "support_vertical": 95, "support_lateral": 85, "cohesion": 95,
+      "work_rate": 0.15, "flammability": 0.0, "failure": "deform",
+      "spall": 0.35,
+      "colour": "grey", "colour_allow": ["grey", "gunmetal", "wire"]
+    },
+    "armour_plate": {
+      "class": "metal", "density": 7800, "hardness": 5, "integrity": 140,
+      "support_vertical": 99, "support_lateral": 95, "cohesion": 99,
+      "work_rate": 0.10, "flammability": 0.0, "failure": "deform",
+      "spall": 0.50,
+      "colour": "gunmetal", "colour_allow": ["gunmetal", "grey", "black"]
+    },
+
+    "_other": [
+      "MATERIAL-SPEC §5 · Other.",
+      "",
+      "§5 names these three and points at EARTH-SPEC §8 for the numbers. EARTH-SPEC §8",
+      "covers water only, and gives no numbers for any of them. Everything below is",
+      "authored here, marked `authored_here: true`, and is the least settled data in the",
+      "file. The `other` class has no resist row in §3, so all six are stated in full."
+    ],
+
+    "ice": {
+      "class": "other", "authored_here": true,
+      "density": 917, "hardness": 2, "integrity": 15,
+      "support_vertical": 60, "support_lateral": 40, "cohesion": 70,
+      "work_rate": 0.70, "flammability": 0.0, "failure": "shatter",
+      "spall": 0.30,
+      "resist": { "kinetic": 0.50, "blast": 0.90, "crushing": 1.40, "cutting": 0.60, "fire": 3.00, "dig": 0.60 },
+      "surface": { "footstep": "ice", "impact": "crack", "friction": 0.10, "roughness": 0.05 },
+      "_": "Holds a real span until something warm happens to it, then stops. Friction 0.10 is the entire winter-map gimmick and it costs one number.",
+      "colour": "blue", "colour_allow": ["blue", "grey_light"]
+    },
+    "glass": {
+      "class": "other", "authored_here": true,
+      "density": 2500, "hardness": 3, "integrity": 3,
+      "support_vertical": 30, "support_lateral": 10, "cohesion": 40,
+      "work_rate": 0.90, "flammability": 0.0, "failure": "shatter",
+      "spall": 0.70,
+      "resist": { "kinetic": 1.80, "blast": 2.00, "crushing": 2.20, "cutting": 0.40, "fire": 0.20, "dig": 1.50 },
+      "surface": { "footstep": "glass", "impact": "tink", "friction": 0.50, "roughness": 0.05 },
+      "_": "Integrity 3 and blast 2.00 — the first thing in any building to go, and it goes from a shell landing in the next street. Spall 0.70 makes standing near a window during a bombardment a mistake.",
+      "colour": "blue", "colour_allow": ["blue", "grey_light"]
+    },
+    "water": {
+      "class": "other", "authored_here": true,
+      "density": 1000, "hardness": 0, "integrity": 0,
+      "support_vertical": 0, "support_lateral": 0, "cohesion": 0,
+      "work_rate": 1.00, "flammability": 0.0, "failure": "crumble",
+      "spall": 0.0,
+      "resist": { "kinetic": 1.00, "blast": 1.00, "crushing": 1.00, "cutting": 1.00, "fire": 0.00, "dig": 1.00 },
+      "surface": { "footstep": "water", "impact": "splash", "friction": 1.50, "roughness": 0.00 },
+      "indestructible": true,
+      "_": [
+        "Not a buildable and not destructible. It is here so that `material: water` is a",
+        "name the validator knows rather than a refusal, and so density 1000 exists for",
+        "buoyancy and for the fill rule.",
+        "",
+        "EARTH-SPEC §8: a per-map level with optional per-region overrides. Dig below it",
+        "and the void fills; filled ground becomes `mud`, with everything that implies",
+        "for repose and movement. Full water simulation is explicitly not in scope — a",
+        "level, a fill rule and a wetness multiplier get 90% of the feel for 5% of the",
+        "work."
+      ],
+      "fills_to": "mud",
+      "colour": "blue", "colour_allow": ["blue"]
+    }
+  },
+
+  "pack_extends": {
+    "_": [
+      "MATERIAL-SPEC §8. What a pack is allowed to do to a core material.",
+      "",
+      "The clamp is the point. A pack can make its duckboards a little tougher than a",
+      "plank; it cannot make them armour plate. Identity is a pack's to define, physics",
+      "is not — same rule as colour, same rule as animation states."
+    ],
+    "multiplier_min": 0.5,
+    "multiplier_max": 2.0,
+    "inherited_not_overridable": ["class", "failure", "failure_then", "hardness"],
+    "must_extend_core_material": true
+  }
+}

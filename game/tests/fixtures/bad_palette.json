@@ -1,0 +1,39 @@
+{
+  "_": [
+    "A palette with one of every way a palette can be wrong, for case_content_data.",
+    "",
+    "Deliberately broken. Every entry below except `fine` is a test of a specific refusal,",
+    "and if this file ever loads clean the palette registry has stopped enforcing something."
+  ],
+
+  "format": 1,
+  "id": "bad_palette_fixture",
+
+  "law": {
+    "saturation_max": 0.35,
+    "value_max": 0.647,
+    "value_min": 0.102,
+    "exempt_requires_why": true
+  },
+
+  "colours": {
+    "fine":        { "hex": "#767468", "use": "a colour that obeys both laws" },
+
+    "loud":        { "hex": "#8a5a2a", "use": "0.696 saturation, no exemption claimed" },
+
+    "too_dark":    { "hex": "#0a0a08", "use": "value 0.039, under the 0.102 floor" },
+
+    "stale":       { "hex": "#767468", "use": "obeys the law but claims to be excused from it",
+                     "exempt": ["saturation"],
+                     "why": "there is no reason, which is the point" },
+
+    "unjustified": { "hex": "#7a4b20", "use": "breaks saturation, exempt, no why given",
+                     "exempt": ["saturation"] },
+
+    "invented":    { "hex": "#8a5a2a", "use": "exempt from a law that does not exist",
+                     "exempt": ["vibes"],
+                     "why": "vibes is not one of the two laws" },
+
+    "not_a_colour": { "hex": "#nothex", "use": "six characters, none of them hex" }
+  }
+}

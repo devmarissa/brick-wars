@@ -1,0 +1,124 @@
+{
+  "_": [
+    "A material set with one of every way a material can be wrong, for case_content_data.",
+    "",
+    "Deliberately broken, and validated against the *real* core palette, because half of",
+    "these failures are about a material naming a colour that does not exist. Each entry",
+    "below is named after the mistake it makes."
+  ],
+
+  "format": 1,
+  "id": "bad_materials_fixture",
+
+  "damage_types": { "order": ["kinetic", "blast", "crushing", "cutting", "fire", "dig"] },
+  "failure_modes": { "order": ["shatter", "crumble", "splinter", "tear", "deform", "burn_through"] },
+
+  "hardness_tiers": {
+    "0": { "worked_by": ["hands"] },
+    "1": { "worked_by": ["shovel"] },
+    "2": { "worked_by": ["pick"] },
+    "3": { "worked_by": ["pick"] },
+    "4": { "worked_by": ["charge"] },
+    "5": { "worked_by": ["charge"] }
+  },
+
+  "classes": {
+    "stone": {
+      "resist": { "kinetic": 0.30, "blast": 0.50, "crushing": 0.60, "cutting": 0.20, "fire": 0.05, "dig": 0.40 },
+      "spall": 0.45,
+      "surface": { "footstep": "hard", "impact": "sharp", "friction": 0.9, "roughness": 0.5 }
+    },
+    "fabric": {
+      "resist": { "kinetic": 0.40, "blast": 0.60, "crushing": 0.50, "cutting": 2.50, "fire": 2.20, "dig": 1.20 },
+      "spall": 0.0,
+      "surface": { "footstep": "soft", "impact": "muffled", "friction": 1.0, "roughness": 0.9 }
+    },
+    "other": { "resist": null, "spall": 0.0, "surface": null }
+  },
+
+  "materials": {
+    "ghost_class": {
+      "class": "plastic", "density": 900, "hardness": 1, "integrity": 10,
+      "work_rate": 1.0, "flammability": 0.0, "failure": "crumble",
+      "colour": "grey", "colour_allow": ["grey"]
+    },
+
+    "no_density": {
+      "class": "stone", "hardness": 3, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "shatter",
+      "colour": "stone", "colour_allow": ["stone"]
+    },
+
+    "string_density": {
+      "class": "stone", "density": "1900", "hardness": 3, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "shatter",
+      "colour": "stone", "colour_allow": ["stone"]
+    },
+
+    "hot_pink": {
+      "class": "stone", "density": 2000, "hardness": 3, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "shatter",
+      "colour": "hotpink", "colour_allow": ["hotpink"]
+    },
+
+    "not_in_own_allow": {
+      "class": "stone", "density": 2000, "hardness": 3, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "shatter",
+      "colour": "stone", "colour_allow": ["grey"]
+    },
+
+    "wrong_failure": {
+      "class": "stone", "density": 2000, "hardness": 3, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "explodes",
+      "colour": "stone", "colour_allow": ["stone"]
+    },
+
+    "no_such_tier": {
+      "class": "stone", "density": 2000, "hardness": 9, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "shatter",
+      "colour": "stone", "colour_allow": ["stone"]
+    },
+
+    "smoulder": {
+      "class": "fabric", "density": 400, "hardness": 0, "integrity": 4,
+      "work_rate": 1.4, "flammability": 0.5, "failure": "tear",
+      "colour": "canvas", "colour_allow": ["canvas"]
+    },
+
+    "bad_burnt": {
+      "class": "fabric", "density": 400, "hardness": 0, "integrity": 4,
+      "work_rate": 1.4, "flammability": 0.5, "failure": "tear",
+      "fire": { "burn_rate": 1.0, "fuel": 5, "spread_radius": 1.0, "on_burnt": "vaporised" },
+      "colour": "canvas", "colour_allow": ["canvas"]
+    },
+
+    "phantom_change": {
+      "class": "fabric", "density": 400, "hardness": 0, "integrity": 4,
+      "work_rate": 1.4, "flammability": 0.5, "failure": "tear",
+      "fire": { "burn_rate": 1.0, "fuel": 5, "spread_radius": 1.0, "on_burnt": "ash", "becomes": "unobtanium" },
+      "colour": "canvas", "colour_allow": ["canvas"]
+    },
+
+    "made_up_damage": {
+      "class": "stone", "density": 2000, "hardness": 3, "integrity": 40,
+      "work_rate": 0.4, "flammability": 0.0, "failure": "shatter",
+      "resist": { "sarcasm": 0.1 },
+      "colour": "stone", "colour_allow": ["stone"]
+    },
+
+    "underspecified": {
+      "class": "other", "density": 1000, "hardness": 1, "integrity": 5,
+      "work_rate": 1.0, "flammability": 0.0, "failure": "crumble",
+      "resist": { "kinetic": 0.5 },
+      "surface": { "footstep": "hard", "impact": "sharp", "friction": 0.9, "roughness": 0.5 },
+      "colour": "grey", "colour_allow": ["grey"]
+    },
+
+    "surfaceless": {
+      "class": "other", "density": 1000, "hardness": 1, "integrity": 5,
+      "work_rate": 1.0, "flammability": 0.0, "failure": "crumble",
+      "resist": { "kinetic": 0.5, "blast": 0.5, "crushing": 0.5, "cutting": 0.5, "fire": 0.5, "dig": 0.5 },
+      "colour": "grey", "colour_allow": ["grey"]
+    }
+  }
+}
