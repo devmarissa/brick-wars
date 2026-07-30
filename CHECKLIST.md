@@ -30,8 +30,13 @@ content is how we find out what the core must expose (`CORE-SPEC.md` §6).
 - [x] **Art bible** (module system, palette law, silhouette, budgets, materials, gate)
 - [ ] **Audio direction doc** (procedural vs recorded, distance-mix philosophy,
       core-vs-pack audio split, loudness targets)
-- [ ] **Animation style guide** (state list, timing table, weight/anticipation
-      conventions, FP↔TP parity rules, pack pose-data format)
+- [~] **Animation style guide** (`ANIMATION-SPEC.md` — state list, timing table,
+      weight/anticipation conventions, FP↔TP parity rules, pack pose-data format).
+      Written at the end of C2, the first point there was a running game to write it
+      against. **24 states, closed**, each marked live or reserved-to-a-milestone; gaits
+      are deliberately *not* on it, because `CORE-SPEC` §5 exempts rigs and a state list
+      that enumerated gaits would grow every time somebody authored a creature. Unblocks
+      the `anim` rule in `AssetValidator.DORMANT`, which had been waiting on exactly this.
 - [x] **Part-table asset format** spec (`FORMAT-SPEC.md` — this *is* the mod format)
       — **all four decisions closed 30 Jul**: JSON · integer modules · `pack:asset` ids ·
       `extends` with full cross-pack reach, depth capped at 3 (`FORMAT-SPEC` §12)
@@ -180,8 +185,9 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       **In the game as of C2**: `Walker` does walk 2.2 / sprint 5.4 m/s and `core:soldier`'s
       gait table hands over between them at 2.6. Every number is a first pass and none of it
       has been felt by anybody holding a key down — the tests assert that the speeds and the
-      gait table *agree*, which is a different claim from either being right. `[~]` until
-      Marissa has driven it.
+      gait table *agree*, which is a different claim from either being right. **It cannot be
+      felt yet: nothing in the build reads input, and the input layer is C4's.** So this is
+      `[~]` until C4, not until somebody finds ten minutes.
 - [~] Jump (height, gravity, air control) — same, retuned. Jump 6 m/s against 22 m/s² of
       gravity, a little over 0.8 m of clearance: enough for a crater lip, not for a wall.
       No air control at all yet, which is a decision nobody has made rather than one made.
@@ -218,9 +224,15 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       plate cannot show planting: every foot lands at zero whether the solver works or not.
       Screenshot: `game/docs/c2_walkers.png`.
 - [ ] **Feel-check the locomotion** — the one thing above that needs Marissa rather than a test.
-- [ ] Measure the two constraint budgets, and write the animation style guide (#68). RIG-SPEC §2
-      and §6 assert the budgets exist and state no numbers, which is why
-      `AssetValidator.DORMANT` announces them at boot rather than pretending to enforce them.
+- [~] **#68 done, and it came out asymmetric.** The animation style guide is written
+      (`ANIMATION-SPEC.md`). The **per-object** constraint budget is landed at **20**,
+      measured against the horse exactly as RIG-SPEC §2 asked — `testpack:horse` and
+      `core:soldier` are both 14 joints, so the densest rig we intend to allow sits at 14
+      and 20 is that with headroom. The **per-scene** budget is *not* landed: §2 says to
+      measure it from "a full sandbox with vehicles in it" and vehicles arrive at C6, so a
+      number now would be a guess about the largest consumer of the thing being budgeted.
+      Both rules stay dormant regardless — there is not a physical constraint anywhere in
+      the build, so a rule counting them would pass on all content.
 - [ ] Two policy lines are still untested and named in `DEVIATIONS-C2.md` §D rather than left
       quiet: the order inside `Locomotion.step`, and the hang lag's frame-rate independence.
       Both block C2 being honestly called *verified*.

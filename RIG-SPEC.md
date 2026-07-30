@@ -46,13 +46,34 @@ simulated. Expensive, nondeterministic, and does not replicate cheaply.
 Physical constraints are **budgeted**: a per-object cap and a per-scene cap, enforced by
 the pack validator. A pack cannot ship a 200-joint creature and tank the server.
 
-**The two numbers are not written down yet, and the validator rule that would enforce them
-is dormant and says so at every boot.** Both caps have to come out of measurement — the
-per-object one from the horse, which is the formal extensibility target and the densest
-rig we intend to allow, and the per-scene one from a full sandbox with vehicles in it.
-Guessing them here would mean either a cap so generous it protects nothing or one so tight
-the horse fails its own test. **They land at the end of C2**, alongside the animation style
-guide, and this sentence is the marker that they are owed rather than forgotten.
+### The two caps — measured at the end of C2
+
+**Per object: 20 physical constraints.** Measured against the horse, exactly as this section
+asked. `testpack:horse` is 15 parts and **14 joints**, and `core:soldier` is 15 parts and 14
+joints — so the densest rig we intend to allow, and the formal extensibility target, sits at 14.
+The cap is 20: enough headroom that a creature with a tail, or a jaw, or one more segment in each
+leg still passes, and nowhere near enough for the 200-joint creature this budget exists to refuse.
+It is a judgement anchored to a measurement rather than a guess, which is what this section asked
+for, and 14 is written down here so the next person can see what the 20 was reasoned from.
+
+A caveat that matters, because it will otherwise mislead: **the horse's 14 joints are kinematic
+and do not spend this budget at all.** Nothing in the build uses a physical constraint yet — there
+is not a single Jolt joint in the game. What 14 bounds is what a *ragdoll* of the horse would cost
+at C5, which is the first milestone where anything physical exists. A 14-joint creature today is
+free.
+
+**Per scene: not landed, and owed at C6.** This section says to measure it "from a full sandbox
+with vehicles in it", and there are no vehicles — they arrive at C6, and vehicle suspension is the
+single largest consumer of physical constraints the design has. Writing a number now would be the
+guess this section warns against, and it would be a guess about the exact thing that has not been
+built. The per-object cap protects the workshop from one absurd asset in the meantime, which is
+the case that actually needs guarding before there is a server to tank.
+
+**Both rules stay dormant either way**, and `AssetValidator.DORMANT` says so at every boot with
+the current reason. Enforcement is a separate decision from the number: every asset in the game
+has zero physical constraints, so a rule counting them would pass trivially on all content, and a
+rule that cannot fail is the same problem as one that does not run. It goes in at C5 with the
+first thing that has a constraint to count.
 
 ## 3 · Kinematic rigs — the format
 

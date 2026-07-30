@@ -8,6 +8,12 @@ extends TestCase
 ## itself and built on `broken`, which is the part that is easy to get wrong: a variant of an
 ## asset that was not allowed to exist must not stay loaded because it was fine on its own.
 ##
+## This half is the *rules*: what gets refused, and whether the message is worth reading. What a
+## refusal then costs — which packs go down with it, and which rules the validator admits it is
+## not running at all — is `case_refusal.gd`. The two were one file until C2 pushed it two lines
+## past the cap, and the seam is real: one asks "is this content legal", the other asks "and what
+## happens to the world when it is not".
+##
 ## What is being checked is the message as much as the verdict. `broken:typo` failing is not
 ## worth much; `broken:typo` failing with the file, the line, the offending word and `Did you
 ## mean \`steel\`?` is the difference between a workshop that stays coherent and one that
@@ -25,7 +31,7 @@ func case_name() -> String:
 
 
 func run(t: TestContext) -> void:
-	var world := _load()
+	var world := FixtureWorld.load_root(FIXTURES)
 	if world.is_empty():
 		t.fail("core content data would not load, so nothing below means anything")
 		return
@@ -35,32 +41,7 @@ func run(t: TestContext) -> void:
 	_rig_rules(t, world)
 	_asset_rules(t, world)
 	_warnings_load_anyway(t, world)
-	_scoped_and_cascading(t, world)
 	_defaults(t, world)
-	_when_core_is_the_broken_one(t)
-	_dormant_rules(t)
-
-
-## The fixture set run exactly as `content_module` runs the real one, core data included —
-## the validator's whole job is comparing packs against that data, so a test that fed it a
-## hand-made palette would be testing a game nobody ships.
-func _load(root := FIXTURES) -> Dictionary:
-	var palette := Palette.new()
-	var materials := MaterialSet.new()
-	var slots := SlotSet.new()
-	if not (palette.load_core() and materials.load_core(palette) and slots.load_core()):
-		return {}
-
-	var packs := PackSet.new()
-	packs.discover([root] as Array[String])
-	var index := AssetIndex.new()
-	index.scan(packs)
-	var resolver := AssetResolver.new()
-	resolver.resolve_all(index, packs)
-
-	var validator := AssetValidator.new()
-	validator.validate_all(resolver, index, packs, materials, palette, slots)
-	return { "packs": packs, "index": index, "resolver": resolver, "validator": validator }
 
 
 func _the_good_ones_load(t: TestContext, world: Dictionary) -> void:
@@ -182,31 +163,6 @@ func _warnings_load_anyway(t: TestContext, world: Dictionary) -> void:
 	t.ok(said.contains("no `format`"), "and so does a document with no format version")
 
 
-func _scoped_and_cascading(t: TestContext, world: Dictionary) -> void:
-	var packs: PackSet = world["packs"]
-	var resolver: AssetResolver = world["resolver"]
-
-	t.ok(not packs.is_enabled(&"broken"), "one refused asset disables the whole pack")
-	t.ok(not resolver.has("broken:crate_fine"),
-		"including the assets in it that were perfectly fine — it never half-loads")
-
-	# `heir` broke no rule. It is off because the thing it is a variant of is off, and an
-	# asset built on a refused one is not a thing that can be trusted to be what it says.
-	t.ok(not packs.is_enabled(&"heir"), "a pack built on a refused one goes with it")
-	t.ok(not resolver.has("heir:crate_tall"), "and its assets leave the resolved set too")
-	t.ok(String(packs.disabled.get(&"heir", "")).contains("broken"),
-		"and it is told which pack took it down: " + String(packs.disabled.get(&"heir", "")))
-
-	# The isolation claim in one number: two packs off, two on, and every asset still standing
-	# belongs to one of the two that are on.
-	t.eq(packs.order.size(), 2, "the two clean packs are still in the load order")
-	t.eq((world["validator"] as AssetValidator).refused.size(), 1,
-		"the validator refused one pack, and the manifest graph took `heir` down after it")
-	for id in resolver.sorted_ids():
-		t.ok(packs.is_enabled((resolver.resolved[id] as ResolvedAsset).owner),
-			"%s belongs to a pack that is still enabled" % id)
-
-
 ## The defaults the validator writes in once a part has passed. Everything downstream reads
 ## a complete part, so `shape` and `rotation` are never optional by the time a builder sees
 ## them — and `jitter` on a primitive is zero whatever the author put there.
@@ -229,57 +185,6 @@ func _defaults(t: TestContext, world: Dictionary) -> void:
 	# leaving somebody to guess.
 	t.ok(barrel.dump_part("lid").contains("← core (default)"),
 		"and a defaulted field says so in the provenance dump")
-
-
-## Core failing its own rules, which is a different event from a pack failing.
-##
-## Nobody declares `depends` on core — `core_version` on the manifest is that declaration —
-## so the edge from a pack to core is implicit, and for a while `PackSet._cascade()` walked
-## straight past it. That left the validator's own asset-level cascade as the only thing
-## standing between a refused base and a variant of it loading as though the base were fine,
-## which is a lot of weight on the later of the two passes.
-##
-## `_cascade()` knows about the edge now, so it fires first and a dependent pack is told the
-## thing it can actually act on: core is off, and here is the file and line that turned it
-## off. Naming which of core's assets the pack happened to extend was more precise and less
-## useful — a modder cannot fix `core:prop_crate` and does not need to know they touched it.
-## The validator's cascade is still there underneath and still correct; it is a backstop now
-## rather than the only guard.
-func _when_core_is_the_broken_one(t: TestContext) -> void:
-	var world := _load(FIXTURES_CORE)
-	if world.is_empty():
-		t.fail("core content data would not load")
-		return
-	var validator: AssetValidator = world["validator"]
-	var packs: PackSet = world["packs"]
-
-	t.ok(validator.core_failed, "core breaking its own rules is reported as its own kind of event")
-	t.ok(not packs.is_enabled(&"core"), "and core is refused rather than excused")
-	t.ok(_about(world, "core:prop_bad").contains("`granite` is not a material"),
-		"for the asset that actually broke a rule: " + _about(world, "core:prop_bad"))
-
-	t.ok(not packs.is_enabled(&"rider"),
-		"a pack extending core goes down with it, having declared no dependency to cascade along")
-
-	# The reason it gets is core's, not its own. An author whose pack went down because core
-	# broke has done nothing to fix, and the useful thing to hand them is the file and line
-	# that actually broke — not a note about which core asset they happened to extend.
-	var why := String(packs.disabled.get(&"rider", ""))
-	t.ok(why.contains("`core` is disabled"), "and told the cause is core, not itself: " + why)
-	t.ok(why.contains("bad.json"), "with the file that broke, which is the actionable part")
-	t.ok(not why.contains("rider"), "and is not blamed for anything of its own")
-	t.ok((world["resolver"] as AssetResolver).resolved.is_empty(),
-		"nothing at all is left resolved, because everything descended from core")
-
-
-## The three rules §10 asks for that nothing here enforces yet. They are asserted so that
-## building one deletes a line from a test as well as from a constant — a rule that quietly
-## stays dormant after it could have been enforced is the worst of both.
-func _dormant_rules(t: TestContext) -> void:
-	t.eq(AssetValidator.DORMANT.size(), 3, "three rules are declared and not yet enforced")
-	var report := AssetValidator.dormant_report()
-	for topic in ["anim", "physical-constraint budget", "multipliers"]:
-		t.ok(report.contains(topic), "the boot report names the %s rule" % topic)
 
 
 ## Everything said about one asset, run together — the messages are checked by content and

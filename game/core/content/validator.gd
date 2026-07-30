@@ -24,8 +24,9 @@ const FORMAT := 1
 ## than quietly skipped: a written rule that silently does not run is worse than one nobody
 ## wrote, because everyone downstream builds as though it were holding.
 const DORMANT := [
-	"`anim` keys are not checked against core animation states — core has no state list yet, and the animation style guide that would define one is deferred until there is a running game to write it against.",
-	"the physical-constraint budget per object and per scene is not enforced — RIG-SPEC §2 and §6 assert the budget exists and state no numbers.",
+	"`anim` keys are not checked against core animation states — ANIMATION-SPEC §2 now names all 24 of them, so the rule is writable; it is not wired because no shipped asset has an `anim` block, and a rule that passes trivially on every piece of content in the game is the same problem as one that does not run. It goes in at C4 with the first weapon.",
+	"the physical-constraint budget per object is not enforced — RIG-SPEC §2 now sets it at 20, measured against the horse's 14 joints. Nothing counts it because there is not a physical constraint anywhere in the build: every joint in the game is kinematic, so the rule would pass on all content. It goes in at C5 with the first thing that has a constraint to count.",
+	"the physical-constraint budget per scene has no number at all — RIG-SPEC §2 says to measure it from a full sandbox with vehicles in it, and vehicles arrive at C6. Guessing it would be a guess about the largest consumer of the thing being budgeted.",
 	"derived-material multipliers are not checked — the ×0.5–×2.0 bound, and `class`, `failure` and `hardness` being un-overridable, need the pack-material resolver (MATERIAL-SPEC §8), which is not built.",
 ]
 

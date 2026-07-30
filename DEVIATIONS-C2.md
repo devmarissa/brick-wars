@@ -136,12 +136,35 @@ feet go and when) and `case_body.gd` (what the body does about where they landed
 happened at 316 lines. Again the seam is genuine — it is `Locomotion.step`'s own two halves — but
 it was the cap that forced the question.
 
-### C3. `game/tests/fixture_world.gd` is new, and two older cases still do not use it
+### C3. `game/tests/fixture_world.gd` is new, and one older case still does not use it
 
 Three cases needed the same fifteen lines of "load a fixture root through the real pipeline", so it
-is one static helper now. `case_rig.gd` (300 lines) and `case_validator.gd` (299) still carry their
-own copies and were left alone, because folding them in means editing a file that has no room for
-the edit. Whoever next needs a line in either of them should fold it in then.
+is one static helper now. `case_rig.gd` (300 lines) still carries its own copy and was left alone,
+because folding it in means editing a file that has no room for the edit. Whoever next needs a line
+in it should fold it in then.
+
+`case_validator.gd` was the other one, and #68 forced the issue: adding four words to its
+dormant-rule assertion put it two lines past the cap. It is now `case_validator.gd` (the rules —
+what gets refused, and whether the message is worth reading) and `case_refusal.gd` (what a refusal
+costs, and what the validator admits it is not checking), both on `FixtureWorld`. The seam is
+genuine — one asks whether content is legal, the other asks what happens to the world when it is
+not — but the cap is what forced the question, which is the pattern this section exists to record.
+
+### C4. The animation state list is 24 names, and gaits are deliberately not among them
+
+`ANIMATION-SPEC.md` §2 is a closed list, in the same sense as the joint types and
+`Locomotion.TYPES`. The judgement worth flagging is what is *absent*: there is no `walk`, no `run`,
+no `sprint`. Those are gait names out of a pack's own table — `core:soldier` calls its fast one
+`sprint` and `testpack:horse` calls its `trot` — and `CORE-SPEC` §5 exempts rigs from the
+no-new-states rule for exactly that reason. A core state list that enumerated gaits would have to
+grow every time somebody authored a creature, which is the definition of not closed. So the list
+has one `locomote` and the gait engine owns the detail.
+
+Twelve of the 24 are reserved to C4, three to C5, two to C6. That is a lot of names for things
+nothing can play, and the alternative — adding them one at a time as each verb lands — means the
+list is never a list. They are marked reserved with the milestone named, and the validator rule is
+meant to say which milestone rather than "unknown state", because those two send an author to
+different places.
 
 ---
 
@@ -198,4 +221,3 @@ agree, which is determinism and a different claim. The test would be that one st
 of `dt/2` land on the same hang direction — exact for the exponential and visibly not for a lerp —
 and it needs a non-level body basis to have anything to converge toward, since with an identity
 basis the hang starts at its own target and never moves.
-
