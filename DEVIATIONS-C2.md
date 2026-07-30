@@ -84,6 +84,21 @@ lowest foot the body's origin may sit*, and `Locomotion` passes `drop`, which is
 legs' `span − hip height`. Both are the same quantity under two names. If either gets renamed,
 rename both.
 
+### B5. The test fixtures are bent by an offset jog, not by a `rest` angle
+
+`biped.json` and `quadruped.json` need genuinely bent legs, or `bend` is a guess and `reach`
+collapses to its floor. They are bent by putting each shin's top two modules forward (or back, for
+a hock) of its thigh's bottom, rather than by giving the knee a `rest` angle — which is what the
+warning in A1 tells authors to do.
+
+The reason is that `pivot` must be whole modules and a bone's pivot sits half its length along its
+own axis, so any rotation that is not a multiple of 90° puts the joint at an irrational offset and
+forces a non-grid `offset` to compensate. Bending by `rest` would make every expected number in
+`case_leg.gd` a trig expression, which is exactly what `case_rig.gd`'s "whole modules and right
+angles" fixture philosophy exists to avoid. The cost is a visible 0.2 m step at each knee. On a
+box creature in a test fixture that is a fair trade; it would not be on shipped content, and
+`core:soldier` at #66 should be bent by `rest` angles like a real asset.
+
 ### B6. `skin` was a palette colour no material would accept, and now `hide` accepts it
 
 Core data, changed rather than worked around. `palette.json` declares `skin` and argues for it at
@@ -101,21 +116,6 @@ got was correct and useless.
 only thing that would use it. One word of data, no spec edit, because `colour_allow` is a data
 concept that MATERIAL-SPEC's table does not describe. Reversible by deleting it, at the cost of
 the soldier's head and hands going back to `tan`.
-
-### B5. The test fixtures are bent by an offset jog, not by a `rest` angle
-
-`biped.json` and `quadruped.json` need genuinely bent legs, or `bend` is a guess and `reach`
-collapses to its floor. They are bent by putting each shin's top two modules forward (or back, for
-a hock) of its thigh's bottom, rather than by giving the knee a `rest` angle — which is what the
-warning in A1 tells authors to do.
-
-The reason is that `pivot` must be whole modules and a bone's pivot sits half its length along its
-own axis, so any rotation that is not a multiple of 90° puts the joint at an irrational offset and
-forces a non-grid `offset` to compensate. Bending by `rest` would make every expected number in
-`case_leg.gd` a trig expression, which is exactly what `case_rig.gd`'s "whole modules and right
-angles" fixture philosophy exists to avoid. The cost is a visible 0.2 m step at each knee. On a
-box creature in a test fixture that is a fair trade; it would not be on shipped content, and
-`core:soldier` at #66 should be bent by `rest` angles like a real asset.
 
 ---
 
