@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "id": "core:wall",
+  "kind": "structure",
+  "name": "Six Course Wall",
+  "parts": [
+    { "name": "a", "offset": [-20, 2, 0], "size": [8, 4, 4], "material": "hard_stone", "jitter": 0.06 },
+    { "name": "b", "offset": [-12, 2, 0], "size": [8, 4, 4], "material": "hard_stone", "jitter": 0.06 },
+    { "name": "c", "offset": [ -4, 2, 0], "size": [8, 4, 4], "material": "hard_stone", "jitter": 0.06 },
+    { "name": "d", "offset": [  4, 2, 0], "size": [8, 4, 4], "material": "hard_stone", "jitter": 0.06 },
+    { "name": "e", "offset": [ 12, 2, 0], "size": [8, 4, 4], "material": "hard_stone", "jitter": 0.06 },
+    { "name": "f", "offset": [ 20, 2, 0], "size": [8, 4, 4], "material": "hard_stone", "jitter": 0.06 }
+  ]
+}

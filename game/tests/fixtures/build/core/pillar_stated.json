@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "id": "core:pillar_stated",
+  "extends": "core:pillar",
+  "name": "Pillar With A Number On It",
+  "mass": 42.0
+}

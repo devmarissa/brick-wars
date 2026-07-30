@@ -39,8 +39,12 @@ content is how we find out what the core must expose (`CORE-SPEC.md` §6).
       types, hardness tiers, support/cohesion/repose, fire)
 - [x] **Earth spec** (`EARTH-SPEC.md` — 0.5 m column-span field, continuous height,
       slope-dependent meshing, repose settling, tunnels, event log)
-- [ ] **Primitive set implemented**: block · wedge · corner wedge · cylinder · sphere
-      (ART-BIBLE §1b) — meshes, module-snapped sizing, collider policy, shatter-to-blocks
+- [~] **Primitive set implemented**: block · wedge · corner wedge · cylinder · sphere
+      (ART-BIBLE §1b) — meshes ✓, module-snapped sizing ✓, collider policy ✓ (round two
+      analytic, wedges as hulls so a ramp is a ramp), shatter-to-blocks dormant until C5.
+      The wedges are hand-built and fix their own winding against the solid's centroid
+      rather than trusting a face table — and the engine's winding convention is now
+      measured in the suite rather than remembered
 - [~] Primitive compliance check in review (70/30 block ratio; the three-tier law holds —
       earth continuous, built things 100% blocks, machines blocks + primitives) — the 70/30
       ratio, the closed five-primitive list and the four-collider cap are machine-checked as

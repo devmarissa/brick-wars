@@ -17,6 +17,8 @@ const CASES := [
 	"res://tests/cases/case_pack_order.gd",
 	"res://tests/cases/case_extends.gd",
 	"res://tests/cases/case_validator.gd",
+	"res://tests/cases/case_geometry.gd",
+	"res://tests/cases/case_builder.gd",
 	"res://tests/cases/case_bricks_fall.gd",
 	"res://tests/cases/case_sleep_pattern.gd",
 ]

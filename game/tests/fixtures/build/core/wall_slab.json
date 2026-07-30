@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "id": "core:wall_slab",
+  "extends": "core:wall",
+  "name": "The Same Wall, Cast In One Piece",
+  "body": "single"
+}

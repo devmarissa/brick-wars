@@ -63,6 +63,7 @@ func check(part: Dictionary, label: String, at: Callable, names: Array[String],
 			at.call(""), label])
 	else:
 		_check_size(part, label, at)
+		_check_round(part, shape, label, at)
 	_check_rotation(part, shape, label, at)
 
 	var material := _check_material(part, label, at, materials)
@@ -121,6 +122,28 @@ func _check_size(part: Dictionary, label: String, at: Callable) -> void:
 			errors.append("%s — %s: `size` is %s, and a part has to have a size (FORMAT-SPEC §5)" % [
 				at.call("size"), label, ResolvedAsset.value_text(size)])
 			return
+
+
+## FORMAT-SPEC §5: a cylinder is `[diameter, diameter, length]` and a sphere `[d, d, d]`.
+## The geometry takes the diameter from x alone, so a cylinder whose y disagrees renders at a
+## size nobody wrote — silently, and a silently wrong size is the kind of thing an author
+## chases for an hour before checking the one field they were sure of.
+func _check_round(part: Dictionary, shape: String, label: String, at: Callable) -> void:
+	if shape != "cylinder" and shape != "sphere":
+		return
+	var size: Variant = part["size"]
+	if typeof(size) != TYPE_ARRAY or (size as Array).size() != 3:
+		return
+	var axes: Array = size
+	var round_enough := is_equal_approx(float(axes[0]), float(axes[1]))
+	if shape == "sphere":
+		round_enough = round_enough and is_equal_approx(float(axes[0]), float(axes[2]))
+	if round_enough:
+		return
+	errors.append("%s — %s: `size` is %s, and a %s is %s. %s (FORMAT-SPEC §5)" % [
+		at.call("size"), label, ResolvedAsset.value_text(size), shape,
+		"`[d, d, length]`, its length along -Z" if shape == "cylinder" else "`[d, d, d]`",
+		"An ellipse is not one of the five primitives, so the odd axis would be ignored"])
 
 
 func _check_rotation(part: Dictionary, shape: String, label: String, at: Callable) -> void:

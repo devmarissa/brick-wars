@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "id": "core:post",
+  "kind": "prop",
+  "name": "Fence Post",
+  "class": "small_prop",
+  "body": "bricks",
+  "parts": [
+    { "name": "foot",  "offset": [0, 1, 0], "size": [4, 2, 4], "material": "plank" },
+    { "name": "shaft", "offset": [0, 8, 0], "size": [2, 12, 2], "material": "plank" },
+    { "name": "cap",   "offset": [0, 15, 0], "size": [4, 2, 4], "material": "plank" },
+    { "name": "band",  "offset": [0, 12, 0], "size": [3, 3, 1], "material": "steel", "shape": "cylinder" }
+  ]
+}

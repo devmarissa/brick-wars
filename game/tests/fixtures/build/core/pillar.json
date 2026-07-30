@@ -1,0 +1,15 @@
+{
+  "format": 1,
+  "id": "core:pillar",
+  "kind": "prop",
+  "name": "Stone Pillar",
+  "class": "small_prop",
+  "parts": [
+    { "name": "low",  "offset": [0,  5, 0], "size": [10, 10, 10], "material": "hard_stone" },
+    { "name": "mid",  "offset": [0, 15, 0], "size": [10, 10, 10], "material": "hard_stone" },
+    { "name": "high", "offset": [0, 25, 0], "size": [10, 10, 10], "material": "hard_stone" }
+  ],
+  "collider": [
+    { "offset": [0, 15, 0], "size": [10, 30, 10] }
+  ]
+}

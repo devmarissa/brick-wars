@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "id": "core:pillar_hollow",
+  "extends": "core:pillar",
+  "name": "Hollow Stone Pillar",
+  "hollow": true
+}

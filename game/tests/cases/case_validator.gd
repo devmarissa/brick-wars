@@ -114,6 +114,22 @@ func _asset_rules(t: TestContext, world: Dictionary) -> void:
 	var vague := _about(world, "broken:vague")
 	t.ok(vague.contains("spread is missing"), "a slot's required stat left out: " + vague)
 
+	# FORMAT-SPEC §5's size convention for the round two. The geometry reads a diameter off x
+	# alone, so a mismatched y is a part that renders at a size nobody wrote — and a size that
+	# is silently wrong is the field an author checks last, because they were sure of it.
+	var ellipse := _about(world, "broken:ellipse")
+	t.ok(ellipse.contains("a cylinder is `[d, d, length]`"),
+		"a cylinder that is not round: " + ellipse)
+	t.ok(ellipse.contains("not one of the five primitives"), "and it is told why there is no ellipse")
+
+	# `body` is not in §6's table — the spec has nothing to say about body granularity and it
+	# decides whether a wall falls down or tips over, so an unknown value is refused rather
+	# than defaulted to whichever of the two the author did not mean.
+	var bodied := _about(world, "broken:bodied")
+	t.ok(bodied.contains("`body` is `loose`") and bodied.contains("single, bricks"),
+		"an invented body mode: " + bodied)
+	t.ok(bodied.contains("brick by brick"), "and is told what the other setting buys")
+
 	var swollen := _about(world, "broken:swollen")
 	t.ok(swollen.contains("12 parts") and swollen.contains("small_prop runs 3–8"),
 		"over the part budget for its class: " + swollen)

@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "broken:bodied",
+  "kind": "prop",
+  "name": "An Asset With Opinions About Physics",
+  "class": "small_prop",
+  "body": "loose",
+  "parts": [
+    { "name": "base", "offset": [0, 0, 0], "size": [6, 1, 6], "material": "plank" },
+    { "name": "post", "offset": [0, 4, 0], "size": [2, 8, 2], "material": "plank" },
+    { "name": "cap",  "offset": [0, 8, 0], "size": [6, 1, 6], "material": "plank" }
+  ]
+}

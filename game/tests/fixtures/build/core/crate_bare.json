@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "core:crate_bare",
+  "kind": "prop",
+  "name": "Crate With Nothing Declared",
+  "class": "small_prop",
+  "parts": [
+    { "name": "floor",  "offset": [0, 0,  0], "size": [8, 1, 8], "material": "plank" },
+    { "name": "lid",    "offset": [0, 8,  0], "size": [8, 1, 8], "material": "plank" },
+    { "name": "side_n", "offset": [0, 4, -4], "size": [8, 8, 1], "material": "plank" },
+    { "name": "side_s", "offset": [0, 4,  4], "size": [8, 8, 1], "material": "plank" }
+  ]
+}

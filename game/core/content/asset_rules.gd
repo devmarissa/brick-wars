@@ -23,7 +23,7 @@ const MAX_COLLIDERS := 4
 const ANCHOR := "id"
 
 const KNOWN_FIELDS := ["format", "id", "extends", "kind", "name", "class", "parts",
-	"collider", "hollow", "destructible", "mass", "slot", "stats", "anim", "cost",
+	"collider", "hollow", "destructible", "mass", "body", "slot", "stats", "anim", "cost",
 	"locomotion", "seats", "tags"]
 
 var errors: Array[String] = []
@@ -47,6 +47,7 @@ func check(asset: ResolvedAsset, at: Callable, slots: SlotSet) -> void:
 	_check_parts_present(asset, at)
 	_check_block_ratio(asset, at)
 	_check_colliders(asset, at)
+	_check_body(asset, at)
 	_check_budget(asset, at, slots, kind)
 	_check_slot(asset, at, slots, kind)
 
@@ -108,6 +109,15 @@ func _check_block_ratio(asset: ResolvedAsset, at: Callable) -> void:
 ## for a thing a player experiences as one box.
 func _check_colliders(asset: ResolvedAsset, at: Callable) -> void:
 	if not asset.data.has("collider"):
+		# With none declared, the builder fits a single box around the whole asset. That is the
+		# right default — the alternative is a crate a player walks through — but it is a bad
+		# thing to do silently: an envelope around a crate is the crate, and an envelope around
+		# a rifle is a box of air with a rifle somewhere inside it. Only `single` assets are
+		# affected; a stack of bricks collides as its bricks and needs nothing declared.
+		if AssetBuilder.body_mode_of(asset) == "single":
+			warnings.append("%s — no `collider`, so one box is fitted round the whole asset. %s" % [
+				at.call("", ANCHOR),
+				"That is right for a crate and wrong for anything with a barrel or a gap in it (FORMAT-SPEC §6)"])
 		return
 	var list: Variant = asset.data["collider"]
 	if typeof(list) != TYPE_ARRAY:
@@ -135,6 +145,21 @@ func _check_colliders(asset: ResolvedAsset, at: Callable) -> void:
 				errors.append("%s: no `%s`" % [where, field])
 			elif typeof(collider[field]) != TYPE_ARRAY or (collider[field] as Array).size() != 3:
 				errors.append("%s: `%s` should be three whole modules" % [where, field])
+
+
+## Whether the asset is one rigid body or one body per part. Not in FORMAT-SPEC §6's table
+## yet — the spec has nothing to say about body granularity, and a wall has to come apart or
+## it is a slab that tips over in one piece. An unknown value is refused rather than quietly
+## defaulted, because both settings look fine standing still and differ only under fire.
+func _check_body(asset: ResolvedAsset, at: Callable) -> void:
+	if not asset.data.has("body"):
+		return
+	var mode := String(asset.data["body"])
+	if AssetBuilder.BODY_MODES.has(mode):
+		return
+	errors.append("%s — `body` is `%s`, and it is one of: %s. %s" % [
+		at.call("", "body"), mode, ", ".join(AssetBuilder.BODY_MODES),
+		"`single` is one body colliding as its declared boxes; `bricks` is a body per part, which is what lets a wall come down brick by brick"])
 
 
 func _check_budget(asset: ResolvedAsset, at: Callable, slots: SlotSet, kind: String) -> void:

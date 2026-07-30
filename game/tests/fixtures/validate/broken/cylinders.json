@@ -13,8 +13,8 @@
       ],
       "size": [
         4,
-        1,
-        4
+        4,
+        1
       ],
       "material": "steel",
       "shape": "cylinder"
@@ -28,8 +28,8 @@
       ],
       "size": [
         4,
-        1,
-        4
+        4,
+        1
       ],
       "material": "steel",
       "shape": "cylinder"
@@ -43,8 +43,8 @@
       ],
       "size": [
         4,
-        1,
-        4
+        4,
+        1
       ],
       "material": "steel",
       "shape": "cylinder"

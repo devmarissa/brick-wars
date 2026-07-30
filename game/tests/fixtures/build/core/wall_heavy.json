@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "id": "core:wall_heavy",
+  "extends": "core:wall",
+  "name": "A Wall Somebody Weighed",
+  "mass": 1000.0
+}
