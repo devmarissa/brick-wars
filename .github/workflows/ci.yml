@@ -35,9 +35,10 @@ jobs:
           sudo chmod +x /usr/local/bin/godot
           godot --version
 
-      # Godot needs one import pass before it can run anything from a fresh checkout.
-      - name: Import project
-        run: godot --headless --path game --import
-
+      # There is deliberately no import step here any more. There used to be, and it was
+      # hiding a bug: check.sh assumed a game/.godot already existed, which was true on
+      # every machine it had ever run on and false on every fresh clone. CI doing the
+      # import first meant CI was the only place that never noticed. check.sh imports
+      # itself now, so this workflow is back to being one line that knows nothing.
       - name: Run the gate
         run: ./tools/check.sh

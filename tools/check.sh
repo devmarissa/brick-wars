@@ -44,8 +44,52 @@ find_godot() {
 }
 GODOT_BIN="$(find_godot)"
 
+# ------------------------------------------------------------------ time limits
+# Nothing here should ever sit forever. The test runner already learned this lesson once —
+# a case that would not parse killed the coroutine before `quit()`, and one red line became
+# a CI timeout, which is a far worse thing to be greeted by. The same reasoning applies one
+# level up: if Godot wedges, the gate says so in a minute rather than in the morning.
+#
+# `timeout(1)` is not on a stock macOS, so this is the bash version. It has to work on
+# bash 3.2, which is what /bin/bash still is on a Mac.
+IMPORT_LIMIT=600      # first import of a cold project, generously
+TEST_LIMIT=180        # the suite runs in about four seconds
+
+run_with_limit() {
+  local limit=$1; shift
+  "$@" & local pid=$!
+  local waited=0
+  while kill -0 "$pid" 2>/dev/null; do
+    if [ "$waited" -ge "$limit" ]; then
+      kill -9 "$pid" 2>/dev/null
+      wait "$pid" 2>/dev/null
+      return 124
+    fi
+    sleep 1
+    waited=$((waited + 1))
+  done
+  wait "$pid"
+}
+
 echo "BRICK WARS — check.sh"
 echo "${DIM}$(date '+%Y-%m-%d %H:%M')  ·  godot: ${GODOT_BIN:-NOT FOUND}${OFF}"
+
+# The project is developed and verified against 4.7.1. A 4.6 binary will import this
+# project, run the suite, and fail in ways that read as "the code is broken" rather than
+# "you are on the wrong Godot" — so the version gets said out loud before anything else
+# has a chance to produce a confusing red line.
+if [ -n "$GODOT_BIN" ]; then
+  GODOT_VERSION="$("$GODOT_BIN" --version 2>/dev/null | tail -1)"
+  case "$GODOT_VERSION" in
+    4.7.*) printf '%sversion: %s%s\n' "$DIM" "$GODOT_VERSION" "$OFF" ;;
+    "")    printf '%s%s--version said nothing — carrying on, but that is odd%s\n' \
+             "$YELLOW" "" "$OFF" ;;
+    *)     printf '%sversion: %s — expected 4.7.x. Set GODOT=/path/to/4.7 if you have one;%s\n' \
+             "$YELLOW" "$GODOT_VERSION" "$OFF"
+           printf '%s         anything red below may be the version rather than the code.%s\n' \
+             "$YELLOW" "$OFF" ;;
+  esac
+fi
 
 # ------------------------------------------------------------------- 1. file size
 # The 300-line rule is the whole reason this project is being rebuilt. The old build's
@@ -90,11 +134,43 @@ start "headless test suite"
 if [ -z "$GODOT_BIN" ]; then
   fail "no Godot binary found — set GODOT=/path/to/godot and run this again"
 else
+  # A fresh clone has no game/.godot, so the first thing Godot does is import the entire
+  # project — minutes, on no display, with every line of it going into the log file this
+  # check redirects to. The gate looks frozen. It is not frozen; it is importing, and the
+  # first person that happened to reasonably assumed it had hung.
+  #
+  # CI has always done this as a separate step before calling check.sh. That was the bug:
+  # a gate that only works when something else went first is not the same gate, and the
+  # only machine where the difference shows is a brand new clone — which is exactly the
+  # machine you least want lying to you.
+  if [ ! -d game/.godot ]; then
+    printf '    %simporting the project for the first time — a few minutes, once ever%s\n' \
+      "$DIM" "$OFF"
+    IMPORT_LOG="$(mktemp)"
+    run_with_limit "$IMPORT_LIMIT" \
+      "$GODOT_BIN" --headless --path game --import >"$IMPORT_LOG" 2>&1
+    IMPORT_EXIT=$?
+    if [ "$IMPORT_EXIT" -eq 124 ]; then
+      fail "the import did not finish inside ${IMPORT_LIMIT}s — killed it"
+      sed -e 's/^/      /' "$IMPORT_LOG" | tail -15
+    elif [ ! -d game/.godot ]; then
+      fail "the import ran but produced no game/.godot — Godot is not happy with this project"
+      sed -e 's/^/      /' "$IMPORT_LOG" | tail -15
+    else
+      printf '    %simported%s\n' "$DIM" "$OFF"
+    fi
+    rm -f "$IMPORT_LOG"
+  fi
+
   TEST_LOG="$(mktemp)"
-  "$GODOT_BIN" --headless --path game res://tests/test_main.tscn >"$TEST_LOG" 2>&1
+  run_with_limit "$TEST_LIMIT" \
+    "$GODOT_BIN" --headless --path game res://tests/test_main.tscn >"$TEST_LOG" 2>&1
   TEST_EXIT=$?
   SUMMARY=$(grep '^TEST_DONE' "$TEST_LOG" | tail -1)
-  if [ -z "$SUMMARY" ]; then
+  if [ "$TEST_EXIT" -eq 124 ]; then
+    fail "the suite was still running after ${TEST_LIMIT}s — killed it. It takes about 4."
+    sed -e 's/^/      /' "$TEST_LOG" | tail -25
+  elif [ -z "$SUMMARY" ]; then
     fail "the suite never printed TEST_DONE — it crashed or hung before finishing"
     sed -e 's/^/      /' "$TEST_LOG" | tail -25
   elif [ "$TEST_EXIT" -ne 0 ] || ! echo "$SUMMARY" | grep -q 'failed=0'; then
