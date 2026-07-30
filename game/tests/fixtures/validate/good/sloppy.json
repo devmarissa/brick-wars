@@ -1,0 +1,51 @@
+{
+  "_": "Every warning in the book and not one refusal: it loads, and it says so.",
+  "id": "good:prop_sign",
+  "kind": "prop",
+  "zoom": 4,
+  "parts": [
+    {
+      "name": "post",
+      "offset": [
+        0,
+        4,
+        0
+      ],
+      "size": [
+        1,
+        8,
+        1
+      ],
+      "material": "plank",
+      "wobble": true
+    },
+    {
+      "name": "board",
+      "offset": [
+        0,
+        8,
+        0
+      ],
+      "size": [
+        8,
+        4,
+        1
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "brace",
+      "offset": [
+        0,
+        6,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        1
+      ],
+      "material": "plank"
+    }
+  ]
+}

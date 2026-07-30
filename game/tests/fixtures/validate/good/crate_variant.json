@@ -1,0 +1,13 @@
+{
+  "_": "Five lines and a different crate \u2014 the thing C1 exists to make true.",
+  "format": 1,
+  "id": "good:crate_banded",
+  "extends": "core:prop_crate",
+  "name": "Banded Crate",
+  "parts~": [
+    {
+      "name": "band",
+      "material": "steel"
+    }
+  ]
+}

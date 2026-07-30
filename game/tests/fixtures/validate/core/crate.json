@@ -1,0 +1,85 @@
+{
+  "_": "A crate that breaks no rule, so anything failing in this fixture set failed on its own account.",
+  "format": 1,
+  "id": "core:prop_crate",
+  "kind": "prop",
+  "name": "Small Crate",
+  "hollow": true,
+  "destructible": true,
+  "parts": [
+    {
+      "name": "body",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        6,
+        6,
+        6
+      ],
+      "material": "plank",
+      "jitter": 0.05
+    },
+    {
+      "name": "slat_low",
+      "offset": [
+        0,
+        1,
+        3
+      ],
+      "size": [
+        7,
+        1,
+        1
+      ],
+      "material": "plank",
+      "colour": "wood2"
+    },
+    {
+      "name": "slat_high",
+      "offset": [
+        0,
+        5,
+        3
+      ],
+      "size": [
+        7,
+        1,
+        1
+      ],
+      "material": "plank",
+      "colour": "wood2"
+    },
+    {
+      "name": "band",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        7,
+        1,
+        7
+      ],
+      "material": "iron",
+      "colour": "gunmetal"
+    }
+  ],
+  "collider": [
+    {
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        6,
+        6,
+        6
+      ]
+    }
+  ]
+}

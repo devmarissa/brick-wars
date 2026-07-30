@@ -41,8 +41,11 @@ content is how we find out what the core must expose (`CORE-SPEC.md` §6).
       slope-dependent meshing, repose settling, tunnels, event log)
 - [ ] **Primitive set implemented**: block · wedge · corner wedge · cylinder · sphere
       (ART-BIBLE §1b) — meshes, module-snapped sizing, collider policy, shatter-to-blocks
-- [ ] Primitive compliance check in review (70/30 block ratio; the three-tier law holds —
-      earth continuous, built things 100% blocks, machines blocks + primitives)
+- [~] Primitive compliance check in review (70/30 block ratio; the three-tier law holds —
+      earth continuous, built things 100% blocks, machines blocks + primitives) — the 70/30
+      ratio, the closed five-primitive list and the four-collider cap are machine-checked as
+      of the validator; the three-tier law still needs a pair of eyes, because "built things
+      are 100% blocks" is a statement about intent that no rule can read off a part table
 - [x] **Pack manifest format** spec (`pack.json` and the folder contract — `FORMAT-SPEC` §9)
 - [x] **Blast feel fixture harness built** (`blast-fixture/`) — 8 seeded scenarios, impulse
       / wake / shake / knock / earth / settle / scatter + tick timeline + screenshot
@@ -79,15 +82,22 @@ period, it belongs in Part IV.*
 
 ## 1 · Pack architecture & mod loading
 
-- [ ] Palette extracted from `main.gd` consts into a shared data file
+- [x] Palette as core data (`core/data/palette.json`) — authored fresh rather than lifted out
+      of `main.gd`, since the old build is archived; six colours carry a written exemption
 - [ ] Part tables extracted from build code into data files
-- [ ] Materials extracted to `materials.json` as core data, loaded before anything else
-- [ ] Pack loader: read manifest, validate, register content
-- [ ] Pack validation + clear failure messages (a broken pack must say why)
-- [ ] **Material validation**: named references only, `material` required on every part,
-      colour must be in the material's colour set, `extends` multipliers clamped ×0.5–×2.0,
-      `class` / `failure` / `hardness` not overridable (`FORMAT-SPEC` §10)
-- [ ] Archetype slot registry (weapons, vehicles, buildables, classes)
+- [x] Materials as core data (`core/data/materials.json`), loaded before anything else — 33
+      of them, not the 30 MATERIAL-SPEC §5 says in its first line
+- [x] Pack loader: read manifest, validate, register content
+- [x] Pack validation + clear failure messages (a broken pack must say why) — every message
+      carries the file, the line, the offending value and the rule it broke, and the file is
+      the one that *wrote* the value rather than the one being validated
+- [~] **Material validation**: named references only ✓, `material` required on every part ✓,
+      colour must be in the material's colour set ✓ — `extends` multipliers clamped ×0.5–×2.0
+      and `class` / `failure` / `hardness` not overridable are declared dormant and reported
+      at boot, because both need the pack-material resolver (MATERIAL-SPEC §8) (`FORMAT-SPEC` §10)
+- [x] Archetype slot registry (weapons, vehicles, buildables, classes) — `core/data/slots.json`,
+      27 era-neutral slots with their required stats, plus `core/data/budgets.json` for the
+      part counts. **First cut, mine — worth your eye once weapons are actually in the game**
 - [ ] **De-hardcode audit**: no era-specific branch anywhere in core
 - [ ] Hot-reload packs in editor (creator workflow, and it speeds up our own work)
 - [ ] Pack versioning + core-compatibility checking
@@ -95,16 +105,19 @@ period, it belongs in Part IV.*
 
 Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
-- [ ] `extends` resolver: scalar replace, object deep-merge, list replace, `parts+` append,
+- [x] `extends` resolver: scalar replace, object deep-merge, list replace, `parts+` append,
       `parts~` patch-by-name
-- [ ] Chain depth cap of 3 enforced, error names the whole chain
-- [ ] **Semver dependency declaration** required for any cross-pack `extends`
-- [ ] **Deterministic load order**: topological sort of the dependency graph, tie-broken by
-      pack id — must be byte-identical on every client, netcode depends on it
-- [ ] Cycle detection across packs and within one, error names both ends
-- [ ] Resolution happens once at load and is baked; nothing resolves at runtime
-- [ ] **Pack-scoped failure**: a broken or unsatisfiable pack is disabled and reported,
-      never half-loaded, never fatal to the game or to other packs
+- [x] Chain depth cap of 3 enforced, error names the whole chain
+- [x] **Semver dependency declaration** required for any cross-pack `extends` — except into
+      `core`, which every pack already declares via `core_version` (30 Jul)
+- [x] **Deterministic load order**: topological sort of the dependency graph, tie-broken by
+      pack id — must be byte-identical on every client, netcode depends on it. `core` is a
+      pack like any other and holds an implicit edge to all of them, so it always sorts first
+- [x] Cycle detection across packs and within one, error names both ends
+- [x] Resolution happens once at load and is baked; nothing resolves at runtime
+- [x] **Pack-scoped failure**: a broken or unsatisfiable pack is disabled and reported,
+      never half-loaded, never fatal to the game or to other packs — refusal runs in passes,
+      because disabling a pack can invalidate an asset in one that extended it
 - [ ] **Validator `--resolve <asset_id>`**: prints the fully merged asset with per-field
       provenance. Ships *with* the resolver, not after it — without it `extends` is a trap
 - [ ] Modding doc note: pack ids are claimed, pick a distinctive one; an asset others

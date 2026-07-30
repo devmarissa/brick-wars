@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "id": "broken:cylinders",
+  "kind": "prop",
+  "name": "Mostly Cylinders",
+  "parts": [
+    {
+      "name": "a",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel",
+      "shape": "cylinder"
+    },
+    {
+      "name": "b",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel",
+      "shape": "cylinder"
+    },
+    {
+      "name": "c",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel",
+      "shape": "cylinder"
+    },
+    {
+      "name": "d",
+      "offset": [
+        0,
+        4,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel"
+    }
+  ]
+}

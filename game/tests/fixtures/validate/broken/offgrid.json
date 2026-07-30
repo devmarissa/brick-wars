@@ -1,0 +1,50 @@
+{
+  "format": 1,
+  "id": "broken:offgrid",
+  "kind": "prop",
+  "name": "Off Grid",
+  "parts": [
+    {
+      "name": "body",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        4,
+        3.5,
+        4
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "p0",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "p1",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    }
+  ]
+}

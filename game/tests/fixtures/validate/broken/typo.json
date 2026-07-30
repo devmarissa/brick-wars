@@ -1,0 +1,50 @@
+{
+  "format": 1,
+  "id": "broken:typo",
+  "kind": "prop",
+  "name": "Typo",
+  "parts": [
+    {
+      "name": "body",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        4,
+        4,
+        4
+      ],
+      "material": "stell"
+    },
+    {
+      "name": "p0",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "p1",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    }
+  ]
+}

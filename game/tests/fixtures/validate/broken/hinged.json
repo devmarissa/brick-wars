@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "id": "broken:hinged",
+  "kind": "prop",
+  "name": "Hinged",
+  "parts": [
+    {
+      "name": "frame",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        6,
+        1,
+        6
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "lid",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        6,
+        1,
+        6
+      ],
+      "material": "plank",
+      "parent": "frame",
+      "joint": {
+        "type": "hinge",
+        "axis": [
+          1,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "peg",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "plank"
+    }
+  ]
+}

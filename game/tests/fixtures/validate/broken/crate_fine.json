@@ -1,0 +1,65 @@
+{
+  "_": "The one asset in here with nothing wrong with it, so `heir` has something to extend.",
+  "format": 1,
+  "id": "broken:crate_fine",
+  "kind": "prop",
+  "name": "Plain Crate",
+  "parts": [
+    {
+      "name": "p0",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "p1",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "p2",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "p3",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "plank"
+    }
+  ]
+}

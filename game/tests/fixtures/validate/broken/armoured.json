@@ -1,0 +1,127 @@
+{
+  "format": 1,
+  "id": "broken:armoured",
+  "kind": "prop",
+  "name": "Armoured",
+  "parts": [
+    {
+      "name": "p0",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "p1",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "p2",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "p3",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel"
+    }
+  ],
+  "collider": [
+    {
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ]
+    },
+    {
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ]
+    },
+    {
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ]
+    },
+    {
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ]
+    },
+    {
+      "offset": [
+        0,
+        4,
+        0
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "shape": "cylinder"
+    }
+  ]
+}

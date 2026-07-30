@@ -1,0 +1,98 @@
+{
+  "format": 1,
+  "id": "good:prop_barrel",
+  "kind": "prop",
+  "name": "Barrel",
+  "class": "small_prop",
+  "destructible": true,
+  "parts": [
+    {
+      "name": "body",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        5,
+        6,
+        5
+      ],
+      "material": "plank",
+      "jitter": 0.04
+    },
+    {
+      "name": "hoop_low",
+      "offset": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        6,
+        1,
+        6
+      ],
+      "material": "iron",
+      "colour": "gunmetal"
+    },
+    {
+      "name": "hoop_high",
+      "offset": [
+        0,
+        5,
+        0
+      ],
+      "size": [
+        6,
+        1,
+        6
+      ],
+      "material": "iron",
+      "colour": "gunmetal"
+    },
+    {
+      "name": "lid",
+      "offset": [
+        0,
+        6,
+        0
+      ],
+      "size": [
+        5,
+        1,
+        5
+      ],
+      "material": "plank"
+    },
+    {
+      "name": "bung",
+      "offset": [
+        0,
+        7,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "plank",
+      "shape": "cylinder"
+    }
+  ],
+  "collider": [
+    {
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        6,
+        7,
+        6
+      ]
+    }
+  ]
+}

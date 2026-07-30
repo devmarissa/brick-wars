@@ -24,9 +24,11 @@ const PACK_ROOTS: Array[String] = ["res://packs", "user://packs"]
 
 var palette := Palette.new()
 var materials := MaterialSet.new()
+var slots := SlotSet.new()
 var installed := PackSet.new()
 var index := AssetIndex.new()
 var resolver := AssetResolver.new()
+var validator := AssetValidator.new()
 
 ## True once both core data files loaded clean. Nothing downstream should half-run on a
 ## broken palette: a part that cannot resolve its colour is not a part that should be
@@ -68,6 +70,13 @@ func module_init() -> void:
 	index.scan(installed)
 	resolver.resolve_all(index, installed)
 
+	# Validation needs the palette, the materials and the slot registry to check anything
+	# against, so a broken core skips it rather than refusing every pack in the game for
+	# naming a material that core forgot to load.
+	if data_ok:
+		validator.validate_all(resolver, index, installed, materials, palette, slots)
+		push_warning(AssetValidator.dormant_report())
+
 	# Read after resolving, because resolving can disable more of them.
 	for id in installed.disabled:
 		push_warning("pack `%s` is disabled — %s" % [id, installed.disabled[id]])
@@ -89,6 +98,8 @@ func _load_core_data() -> bool:
 	# once beats one problem per run.
 	ok = materials.load_core(palette) and ok
 	data_errors.append_array(materials.errors)
+	ok = slots.load_core() and ok
+	data_errors.append_array(slots.errors)
 	return ok
 
 
@@ -97,8 +108,9 @@ func _load_core_data() -> bool:
 func summary() -> String:
 	if not data_ok:
 		return "content: core data FAILED, %d problem(s)" % data_errors.size()
-	return "content: %d colours (%d exempt), %d materials, %d pack(s)%s, %d asset(s)" % [
+	return "content: %d colours (%d exempt), %d materials, %d slots, %d pack(s)%s, %d asset(s)%s" % [
 		palette.colours.size(), palette.exemptions.size(), materials.materials.size(),
-		installed.order.size(),
+		slots.slots.size(), installed.order.size(),
 		"" if installed.disabled.is_empty() else ", %d disabled" % installed.disabled.size(),
-		resolver.resolved.size()]
+		resolver.resolved.size(),
+		"" if validator.warnings.is_empty() else ", %d warning(s)" % validator.warnings.size()]

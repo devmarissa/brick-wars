@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "id": "heir",
+  "name": "Heir",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": [
+    {
+      "id": "broken",
+      "version": ">=0.1.0"
+    }
+  ]
+}
