@@ -81,8 +81,19 @@ static func for_speed(gaits: Array, speed: float) -> Dictionary:
 static func foot_cycle(phase: float, stride: float, lift: float,
 		duty := DEFAULT_DUTY) -> Dictionary:
 	var p := fposmod(phase, 1.0)
-	var half := stride * 0.5
 	var hold := clampf(duty, 0.05, 0.95)
+	# Scaled by `hold`, and this is the line that decides whether a planted foot slides.
+	#
+	# The foot travels `2 * half` backward *relative to the body* during the stance, and the stance
+	# lasts `hold` of a cycle — over which the body itself covers `hold * stride`, because one whole
+	# cycle is one whole stride. For the foot to stay put on the ground those two have to be equal,
+	# so `2 * half = hold * stride`. It was `stride` until the slide was measured, which meant every
+	# planted foot dragged backward by `(1 - hold) * stride` per step: 0.32 m a step for a soldier
+	# at a walk, which is exactly the skating this whole file exists to avoid.
+	#
+	# `stride` keeps its meaning. The foot still covers a full `stride` of ground from footfall to
+	# footfall — it just covers all of it during the swing, which is where a foot actually travels.
+	var half := stride * hold * 0.5
 
 	if p < hold:
 		var t := p / hold

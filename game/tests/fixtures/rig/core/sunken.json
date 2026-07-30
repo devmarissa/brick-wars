@@ -1,0 +1,35 @@
+{
+  "format": 1,
+  "id": "core:sunken",
+  "kind": "prop",
+  "name": "Test Biped, Collision Above Its Feet",
+  "class": "small_prop",
+  "_note": "Valid content that makes a broken creature, which is why it is a fixture rather than a bug. Its one collision box spans 1.0 m to 1.8 m — nothing at all below the hip — and every part of that is legal: FORMAT-SPEC says a collider is one to four hand-fitted boxes and says nothing about where they have to reach.",
+  "_why_it_breaks": "A `Walker`'s body origin is what its feet are measured from: `Locomotion.step` plants against the transform it is handed, which is the body's own. So a creature whose lowest box stops a metre above its soles settles a metre into the ground, and then every foot is asked to reach *upward* for a surface above its own ideal position and cannot. The symptom is a creature buried to the hip with all its feet reported unplanted, and nothing about it points at the collider — which is why `Walker._check_stance` says so in words at build time. `testpack:horse` shipped with a milder version of exactly this (its collision stopped at the barrel, where a horse's body is) and it took longer to find than it should have. This fixture exists so that guard has something that trips it: a check nobody has ever seen fire is a check nobody knows still works.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [8, 4, 4], "material": "plank" },
+    { "name": "thigh_l", "parent": "hip", "offset": [-3, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 20, "pivot": [0, 0, 6] } },
+    { "name": "shin_l", "parent": "thigh_l", "offset": [0, 0, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -40, "pivot": [0, 0, 6] } },
+    { "name": "thigh_r", "parent": "hip", "offset": [3, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 20, "pivot": [0, 0, 6] } },
+    { "name": "shin_r", "parent": "thigh_r", "offset": [0, 0, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -40, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 14, 0], "size": [8, 8, 4] }],
+  "locomotion": {
+    "type": "legged",
+    "legs": [
+      { "root": "thigh_l", "foot": "shin_l", "phase": 0.0 },
+      { "root": "thigh_r", "foot": "shin_r", "phase": 0.5 }
+    ],
+    "gaits": [
+      { "name": "walk", "speed": [0, 3], "phases": [0.0, 0.5], "stride": 1.0, "lift": 0.12, "duty": 0.7 }
+    ]
+  }
+}

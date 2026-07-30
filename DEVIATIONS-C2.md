@@ -147,22 +147,48 @@ the edit. Whoever next needs a line in either of them should fold it in then.
 
 ## D · Untested, and named rather than left quiet
 
-Both of these are RIG-SPEC §9 claims — the "two clients would disagree" kind — and the mutation
-harness (`caught 10, missed 0`) does not cover either. Recorded here rather than left as a silent
-gap, because #69 cannot honestly say C2 is verified while they are unmentioned.
+The harness that finds these is `tools/mutate.py`, and it is in the repo so the claim is
+reproducible rather than a number in a commit message. It currently reports **12 caught, 1 missed**.
+The one it misses is D1 below; D2 is not in its list at all, for the reason given there. Recorded
+here rather than left as a silent gap, because #69 cannot honestly say C2 is *verified* while they
+are unmentioned.
 
-### D1. The order inside `step()` has no test
+**One of these was found and fixed while writing this section.** The harness had a fourteenth entry
+that came back MISSED: `Gait.foot_cycle`'s stance amplitude was `stride * 0.5`, which travels a full
+stride relative to the body while the body only covers `duty * stride` — so every planted foot slid
+backward by `(1 - duty) * stride`, 0.32 m per step for a soldier at a walk. That is precisely the
+skating the whole file is written to prevent, and the existing test asserted the sliding formula.
+Measuring it made it undeniable: 0.00714 m of world slide per frame against a body covering
+0.01667, exactly `speed * (1/duty - 1) * dt`. Fixed, and `case_driver._a_planted_foot_stays_put`
+now pins it in world space against a moving body, which is the only place the claim is checkable.
+
+### D1. The order-of-operations policy has no test, in either of the two places it appears
 
 `Locomotion.step`'s docstring emphasises this hardest of anything in the file: feet are planted
 against the transform that came in, the new body height and tilt are computed from where they
 landed, and only then are the world foot targets brought into the *new* body's space to be solved.
-Doing it the other way round costs exactly one frame of lag — invisible standing still, and read
-as skating feet the moment the creature turns.
+`Walker._physics_process` makes the same claim one level up — move the body, then pose the rig
+against where it ended up. Doing either the other way round costs exactly one frame of lag.
 
-Nothing fails if that order is reversed. The discriminating invariant is that after a `step`, a
-stance leg's *posed* sole in world space should coincide with the `plant` position it was solved
-to, and that stops being true the moment the basis or the height changes between the two halves.
-Writing it needs a posed-sole-to-world helper that does not exist yet.
+Nothing fails if either is reversed, and the walker one is confirmed rather than suspected:
+`tools/mutate.py`'s "the walker poses the rig before moving the body" comes back MISSED.
+
+Two attempts at pinning it, and why neither worked, so the next person does not repeat them:
+
+- **World slide of a stance foot** does not discriminate. A stale body transform advances by the
+  same `speed * dt` each frame as a current one, and the swing advances identically, so the
+  per-frame delta is unchanged. The wrong order produces a *constant* offset of about 3.7 cm at a
+  walk — the rig trailing its own collider — not a growing one.
+- **Lean into a turn** looks like it should work, because the yaw rate only exists after the body
+  has moved, and a faithful swap has none to lean by. But the obvious measurement,
+  `rig.root.basis.x.angle_to(Vector3.RIGHT)`, conflates the roll with the *yaw error* — and the
+  wrong order leaves the rig a whole frame of turning behind, which at `TURN_RATE` is 8.6°. So the
+  assertion passes for the wrong reason. `case_walker` keeps that lean test because it does pin
+  something real, that the controller wires `lean_into_turn` through at all; it just does not pin
+  the order.
+
+What would work is isolating the roll about the creature's own forward axis, or comparing the
+posed sole to the plant it was solved to in world space. Both need a helper that does not exist.
 
 ### D2. The hang lag's frame-rate independence has no test
 

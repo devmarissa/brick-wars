@@ -46,6 +46,7 @@ func run(t: TestContext) -> void:
 	await _jumps(t, world, soldier)
 	await _climbs(t, world, soldier)
 	await _the_horse_walks_too(t, world)
+	_a_collider_that_stops_short_is_refused_in_words(t)
 
 
 ## What a walker is before it has moved: a rig, its legs, and its own declared collision — not a
@@ -164,6 +165,21 @@ func _climbs(t: TestContext, world: Dictionary, soldier: ResolvedAsset) -> void:
 	var tilt := rad_to_deg(walker.rig.root.basis.y.angle_to(Vector3.UP))
 	t.ok(tilt > 0.2, "with the body tilted onto the slope: %.2f degrees" % tilt)
 	t.ok(tilt < 14.04, "part of the way, not all of it — `body_pitch` is 0.08, not 1")
+
+	# Turning banks the creature, and this line pins more than it looks like it does. The lean is
+	# computed from the yaw *rate*, which only exists once the body has been moved — so the two
+	# halves of `_physics_process` have to run in that order, and a version that posed the rig
+	# first would have no rate to lean by. `case_body.gd` tests the lean against the driver
+	# directly; this tests that the controller actually wires it through.
+	walker.wish = Vector2(0.0, -1.0)
+	await t.ticks(20)
+	var banked := 0.0
+	for i in 30:
+		walker.wish = Vector2(1.0, -0.3).normalized()
+		await t.ticks(1)
+		banked = maxf(banked, rad_to_deg(walker.rig.root.basis.x.angle_to(Vector3.RIGHT)))
+	t.ok(banked > 0.5, "and turning hard banks it into the turn: %.2f degrees" % banked)
+	t.ok(banked <= Locomotion.MAX_LEAN + 0.001, "no further than MAX_LEAN")
 	walker.queue_free()
 
 
@@ -218,6 +234,44 @@ func _the_horse_walks_too(t: TestContext, world: Dictionary) -> void:
 	await t.ticks(SETTLE)
 	t.eq(String(walker.last["gait"]), "trot", "and trots when the controller asks for more speed")
 	walker.queue_free()
+
+
+## The guard that stops the worst failure in this file from being silent, and the fixture that
+## proves it still fires. `core:sunken` is legal content — a collider is one to four hand-fitted
+## boxes and the format says nothing about where they reach — whose one box stops a metre above its
+## soles. That settles the creature into the ground and then asks every foot to reach *upward* for
+## a surface above its own ideal position, which it cannot do.
+##
+## This section exists because the guard had nothing that tripped it. `testpack:horse` taught the
+## lesson and then the horse was fixed, so the triggering condition stopped existing anywhere in
+## the repo — and a check nobody has ever seen fire is a check nobody knows still works. It is the
+## same standard the driver's policy lines are held to.
+func _a_collider_that_stops_short_is_refused_in_words(t: TestContext) -> void:
+	var world := FixtureWorld.load_root("res://tests/fixtures/rig")
+	var sunken := FixtureWorld.asset(world, "core:sunken")
+	t.ok(sunken != null, "the fixture is valid content — this is not a validation failure")
+	if sunken == null:
+		return
+
+	var walker := Walker.of(sunken, world["materials"], world["palette"])
+	var said := "\n".join(walker.warnings)
+	t.ok(said.contains("above its origin"), "and a walker built from it complains: " + said)
+	t.ok(said.contains("settle") and said.contains("feet will not reach"),
+		"naming both halves of what will go wrong, since neither points at a collider on its own")
+	t.ok(walker.locomotion.legs.size() == 2,
+		"while still building — it is a warning, because the creature is legal and merely wrong")
+	walker.queue_free()
+
+	# And the shipped pair do not trip it, which is what makes the assertion above mean something
+	# rather than being a guard that fires on everything.
+	var shipped := FixtureWorld.load_root(SHIPPED)
+	for id in ["core:soldier", "testpack:horse"]:
+		var asset := FixtureWorld.asset(shipped, id)
+		if asset == null:
+			continue
+		var fine := Walker.of(asset, shipped["materials"], shipped["palette"])
+		t.ok(fine.warnings.is_empty(), "%s does not trip it: %s" % [id, "\n".join(fine.warnings)])
+		fine.queue_free()
 
 
 ## A walker and the ground under it, settled. The ground goes in first: a creature that spawns

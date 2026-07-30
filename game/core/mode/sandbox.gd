@@ -75,6 +75,7 @@ const WALKERS := [
 var spawned: Array[BuiltAsset] = []
 var walkers: Array[Walker] = []
 
+var _headings: Array[float] = []
 var _demo := 0.0
 
 
@@ -115,6 +116,7 @@ static func _on_ground(at: Vector3) -> Vector3:
 ## them in it.
 func _add_walkers(content: Module) -> void:
 	walkers.clear()
+	_headings.clear()
 	for entry in WALKERS:
 		var asset: ResolvedAsset = content.resolver.get_asset(String(entry["id"]))
 		if asset == null:
@@ -126,7 +128,12 @@ func _add_walkers(content: Module) -> void:
 		var around: Vector2 = entry["around"]
 		walker.position = _on_ground(Vector3(around.x, DROP_HEIGHT, around.y - _radius()))
 		add_child(walker)
+		# Paired with its phase rather than indexed against `WALKERS` later. A walker that fails
+		# to build is skipped, and then the two arrays are different lengths — no crash, because
+		# this one is always the shorter, but the surviving creature quietly walks the missing
+		# one's path. Cheaper to carry the number than to remember that.
 		walkers.append(walker)
+		_headings.append(float(entry["phase"]))
 
 
 ## Drive the demo. Each walker is asked for a heading that turns at a constant rate, which walks
@@ -134,7 +141,7 @@ func _add_walkers(content: Module) -> void:
 func _physics_process(delta: float) -> void:
 	_demo += delta
 	for i in walkers.size():
-		var heading := _demo * DEMO_TURN + float(WALKERS[i]["phase"])
+		var heading := _demo * DEMO_TURN + _headings[i]
 		walkers[i].wish = Vector2(cos(heading), sin(heading))
 
 

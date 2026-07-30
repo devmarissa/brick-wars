@@ -40,6 +40,7 @@ func run(t: TestContext) -> void:
 
 	_standing_still(t, world)
 	_no_skating(t, world)
+	_a_planted_foot_stays_put(t, world)
 	_gaits_hand_over_by_speed(t, world)
 	_stance_and_swing(t, world)
 
@@ -116,6 +117,51 @@ func _no_skating(t: TestContext, world: Dictionary) -> void:
 ## stance feet for all of them left the suite green, since every other case here stands on ground
 ## where the two agree. So the creature is walked across the steepest part of the bowl's wall,
 ## where the swing carries one foot up to half a metre below the other.
+
+
+## The no-skating claim in world space, against a body that is actually moving — which is the only
+## place it can be checked, and the reason it went unchecked for so long.
+##
+## `_no_skating` above tests the *cycle*: one stride of ground is one turn of the phase. That is
+## necessary and it is not sufficient. A foot can advance its phase perfectly and still drag along
+## the ground, because what matters is the distance the stance carries it *relative to the body*
+## versus the distance the body covers underneath it. Those two were not equal: the stance travelled
+## a full `stride` while the body covered `duty * stride`, so every planted foot slid backward by
+## `(1 - duty) * stride` — 0.32 m a step for a soldier at a walk. The cycle test passed throughout.
+##
+## What made it findable was measuring it: 0.00714 m of world slide per frame against a body
+## covering 0.01667, which is exactly `speed * (1/duty - 1) * dt`. Matching a predicted number
+## rather than "looks like it moves a bit" is what turned it from a suspicion into a one-line fix.
+func _a_planted_foot_stays_put(t: TestContext, world: Dictionary) -> void:
+	var loco := FixtureWorld.driver(world, "core:biped")
+	if loco == null:
+		return
+	# Flat ground, so any movement of a planted foot is the gait's doing and not the terrain's.
+	var ground := FixtureWorld.flat_ground()
+	var speed := 1.0
+	var dt := 1.0 / 60.0
+	var at := Transform3D.IDENTITY
+
+	var worst := 0.0
+	var samples := 0
+	var previous := Vector3.INF
+	var was_stance := false
+	for i in 200:
+		at.origin += Vector3(0.0, 0.0, -speed * dt)
+		loco.step(at, Vector3(0.0, 0.0, -speed), 0.0, dt, ground)
+		var leg := loco.legs[0]
+		if leg.stance and was_stance and previous != Vector3.INF:
+			var moved: Vector3 = (leg.plant["position"] as Vector3) - previous
+			worst = maxf(worst, Vector2(moved.x, moved.z).length())
+			samples += 1
+		was_stance = leg.stance
+		previous = leg.plant["position"]
+
+	t.ok(samples > 60, "the foot spent a good part of the run planted: %d frames" % samples)
+	# A tenth of a millimetre a frame. The body covers 16.7 mm in that time, so anything above
+	# this is the foot being dragged rather than a rounding error in the lerp.
+	t.ok(worst < 0.0001,
+		"and while planted it does not move in world space: %.5f m per frame at worst" % worst)
 
 
 ## Which gait a speed calls for, and the band two of them blend across. `biped.json`'s ranges

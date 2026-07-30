@@ -224,8 +224,11 @@ func _foot_cycle(t: TestContext) -> void:
 	var flat: Vector3 = Gait.foot_cycle(duty * 0.5, stride, 0.25, duty)["offset"]
 	var up: Vector3 = Gait.foot_cycle(duty * 0.999, stride, 0.25, duty)["offset"]
 
-	t.near(down.z, -0.6, EPSILON, "a foot that has just landed is a half-stride ahead, at -Z")
-	t.near(up.z, 0.6, 0.005, "and leaves the ground a half-stride behind")
+	# The stance travels `duty * stride` relative to the body, not `stride`, because that is how
+	# far the body itself moves while the foot is down — and a foot that travels any other
+	# distance is a foot dragging along the ground. 0.6 x 1.2 / 2 = 0.36.
+	t.near(down.z, -0.36, EPSILON, "a foot that has just landed is ahead of the body, at -Z")
+	t.near(up.z, 0.36, 0.005, "and leaves the ground behind it, by the distance the body covered")
 	t.near(flat.z, 0.0, EPSILON, "and is under the body halfway through")
 	t.near(flat.z, (down.z + up.z) * 0.5, 0.005, "exactly halfway, because stance is linear")
 	t.near(down.y, 0.0, EPSILON, "and it is on the ground for all of it")
@@ -252,3 +255,19 @@ func _foot_cycle(t: TestContext) -> void:
 	t.near(Gait.advance(-3.0, 1.5, 0.5), 1.0, EPSILON, "reversing is still a cycle, not a negative one")
 	t.near(Gait.advance(3.0, 0.0, 0.5), 0.0, EPSILON,
 		"and a stride of nothing advances nothing rather than dividing by it")
+
+	# And the other half of not skating, which `advance` alone does not give: over the stance the
+	# foot has to travel backward relative to the body by exactly what the body travels forward.
+	# One cycle is one stride of ground, so the body covers `duty * stride` while the foot is down.
+	var travelled := up.z - down.z
+	t.near(travelled, duty * stride, 0.005,
+		"a planted foot travels back by exactly the ground the body covers while it is down")
+	# Again at another stride and another duty, so the line above is a formula rather than one
+	# arithmetic coincidence. The phase has to be sampled just inside *this* duty, not the one
+	# above it — reusing the outer `duty` here sampled the swing instead and read 0.897.
+	var other_duty := 0.5
+	var other_stride := 2.0
+	t.near(Vector3(Gait.foot_cycle(other_duty * 0.999, other_stride, 0.2, other_duty)["offset"]).z
+			- Vector3(Gait.foot_cycle(0.0, other_stride, 0.2, other_duty)["offset"]).z,
+		other_duty * other_stride, 0.01,
+		"which holds at another stride and another duty, rather than by coincidence")
