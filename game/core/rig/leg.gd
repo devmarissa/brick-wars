@@ -75,7 +75,19 @@ var bend := Vector3.FORWARD
 var hang := Vector3.DOWN
 
 var plant: Dictionary = {}
-var stance := true
+
+## Where this foot actually came down, in world space, held for as long as it stays down.
+##
+## The gait recomputes an ideal foot position from the body every frame, and the body moves and
+## turns underneath it — so a foot that followed its ideal through a stance would be dragged along
+## the ground. Walking in a straight line hides it completely, because the stance travel and the
+## body travel cancel; the moment a creature turns, they do not, and a planted hoof scrubs sideways
+## by most of the distance the body covers. Latched at the footfall, released at the lift.
+var anchor := Vector3.ZERO
+
+## False to begin with, so the first frame of a creature's life reads as a fresh footfall and
+## latches an anchor rather than holding one nobody set.
+var stance := false
 var strain := 0.0
 
 

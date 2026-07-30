@@ -162,6 +162,7 @@ func _a_planted_foot_stays_put(t: TestContext, world: Dictionary) -> void:
 		previous = leg.plant["position"]
 
 	t.ok(samples > 60, "the foot spent a good part of the run planted: %d frames" % samples)
+	_and_especially_while_turning(t, world)
 	# A tenth of a millimetre a frame. The body covers 16.7 mm in that time, so anything above
 	# this is the foot being dragged rather than a rounding error in the lerp.
 	t.ok(worst < 0.0001,
@@ -246,3 +247,47 @@ func _stance_and_swing(t: TestContext, world: Dictionary) -> void:
 ## The body's height and orientation come back from `step` rather than being written to anything,
 ## because the caller owns the body: it is a physics object with a collider, and a driver that
 ## moved it directly would be a kinematic system arguing with a simulated one.
+
+
+## The same claim while the creature turns, which is where it was false for the whole milestone.
+##
+## Walking in a straight line hides this completely: the stance carries a foot backward relative
+## to the body by exactly what the body covers forward, so the two cancel and a planted foot sits
+## still without anything having to hold it there. Turning, they do not cancel — the ideal foot
+## position is derived from the body and sweeps around with it — and a planted hoof scrubs
+## sideways by most of a body-length per stride. Marissa saw it in the sandbox before any test
+## did, because the demo walks its creatures in circles and every straight-line test passed.
+##
+## `Leg.anchor` is the fix: latch the world position at the footfall, hold it until the lift.
+func _and_especially_while_turning(t: TestContext, world: Dictionary) -> void:
+	var loco := FixtureWorld.driver(world, "core:quadruped")
+	if loco == null:
+		return
+	var ground := FixtureWorld.flat_ground()
+	var at := Transform3D.IDENTITY
+	var yaw := 0.0
+	var worst := 0.0
+	var seen := 0
+	var previous: Dictionary = {}
+	for i in 240:
+		yaw += 0.9 / 60.0            # the sandbox demo's own turn rate
+		at.basis = Basis(Vector3.UP, yaw)
+		at.origin += (at.basis * Vector3(0.0, 0.0, -2.0)) / 60.0
+		loco.step(at, at.basis * Vector3(0.0, 0.0, -2.0), 0.9, 1.0 / 60.0, ground)
+		for n in loco.legs.size():
+			var leg := loco.legs[n]
+			var here := Vector2((leg.plant["position"] as Vector3).x,
+				(leg.plant["position"] as Vector3).z)
+			if leg.stance and previous.has(n):
+				worst = maxf(worst, here.distance_to(previous[n] as Vector2))
+				seen += 1
+			if leg.stance:
+				previous[n] = here
+			else:
+				previous.erase(n)
+
+	t.ok(seen > 200, "there were planted frames to measure across the turn: %d" % seen)
+	# It was 0.022 m per frame against a body covering 0.033 — two thirds of the creature's own
+	# travel, scrubbed across the ground by every foot that was supposed to be still.
+	t.near(worst, 0.0, 0.0001,
+		"a foot planted through a turn does not move at all: %.5f m per frame" % worst)

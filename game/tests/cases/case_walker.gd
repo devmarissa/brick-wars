@@ -190,8 +190,8 @@ func _climbs(t: TestContext, world: Dictionary, soldier: ResolvedAsset) -> void:
 		walker.wish = Vector2(1.0, -0.3).normalized()
 		await t.ticks(1)
 		banked = maxf(banked, rad_to_deg(walker.rig.root.basis.x.angle_to(Vector3.RIGHT)))
+	# That it leans at all is the claim here; the cap is `case_body.gd`'s, on flat ground.
 	t.ok(banked > 0.5, "and turning hard banks it into the turn: %.2f degrees" % banked)
-	t.ok(banked <= Locomotion.MAX_LEAN + 0.001, "no further than MAX_LEAN")
 	walker.queue_free()
 
 

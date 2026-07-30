@@ -60,6 +60,9 @@ const TURN_RATE := 9.0
 ## ground is out of range and the foot hangs in the air with `hit` false instead.
 const PROBE_MARGIN := 0.4
 
+## Below this a `wish` is not asking for anything, and the facing falls back to travel.
+const DEADZONE := 0.1
+
 ## Below this the creature is standing still as far as the gait engine is concerned. Without it a
 ## floating-point dribble of velocity keeps the cycle creeping while the creature looks stopped.
 const STILL := 0.05
@@ -164,10 +167,20 @@ func _move(delta: float) -> float:
 	jump_wanted = false
 	move_and_slide()
 
-	# Facing follows travel rather than input, so a creature shoved sideways by a slope turns to
-	# where it is actually going instead of insisting on where it meant to go.
+	# Facing follows what it is *trying* to do, and only falls back to where it is actually going
+	# when it is not trying to do anything.
+	#
+	# It was the other way round — facing followed travel — on the reasoning that a creature
+	# shoved sideways by a slope should turn to where it is really headed. That is true of a
+	# slope and disastrous on contact. `move_and_slide` deflects velocity along whatever it
+	# touches, so the instant two creatures brush, the deflected direction swings hard and the
+	# facing chases it: the demo needs 0.86° of turn per frame and contact was driving the full
+	# 8.59° cap, ten times over, for as long as they were touching. That is the springing-apart.
+	# A blocked creature should keep facing where it wants to go, which is what a person does.
 	var was := _yaw
-	if flat.length() > STILL:
+	if wish.length() > DEADZONE:
+		_yaw = _turn_toward(atan2(-wish.x, -wish.y), delta)
+	elif flat.length() > STILL:
 		_yaw = _turn_toward(atan2(-flat.x, -flat.z), delta)
 	rotation.y = _yaw
 	return angle_difference(was, _yaw)

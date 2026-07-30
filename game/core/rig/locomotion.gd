@@ -52,6 +52,14 @@ const MAX_LEAN := 30.0
 ## that dipped once per cycle would bob on one side only — which reads as a limp.
 const BOB_PER_CYCLE := 2.0
 
+## How fast the cycle keeps turning when the creature has stopped but still has a foot in the
+## air, in cycles per second. A creature that stops mid-stride should put the foot down and then
+## stand, which is what a person does; freezing the phase leaves it balanced on one leg with the
+## other hanging, and the moment anything nudges the body — another creature leaning on it, a
+## slope — that hanging foot is the whole of what looks wrong. Slow enough to read as finishing
+## the step rather than snapping to attention.
+const SETTLE_RATE := 0.8
+
 const TINY := 0.000001
 
 var rig: Rig = null
@@ -141,7 +149,13 @@ func step(at: Transform3D, motion: Vector3, turn: float, delta: float,
 	var lift := float(gait["lift"])
 	var duty := float(gait["duty"])
 	var phases: Array = gait["phases"]
-	phase = fposmod(phase + Gait.advance(speed, stride, delta), 1.0)
+	# Distance drives the cycle, except when there is no distance and a foot is still up. Then it
+	# turns on its own just far enough to land it. `Gait.advance` returns 0 at a standstill, which
+	# is right for a creature already standing and wrong for one that has just been stopped.
+	var moved := Gait.advance(speed, stride, delta)
+	if moved <= 0.0 and not _all_down(phases, duty):
+		moved = SETTLE_RATE * delta
+	phase = fposmod(phase + moved, 1.0)
 
 	var plants: Array = []
 	var standing: Array = []
@@ -160,9 +174,22 @@ func step(at: Transform3D, motion: Vector3, turn: float, delta: float,
 		# lift left out, and the lift is added to the answer. A foot arcing over a crater
 		# should clear its lip rather than be measured against thin air.
 		var ideal: Vector3 = at * (leg.home + Vector3(swing.x, 0.0, swing.z))
+		var down := bool(cycle["planted"])
+
+		# A foot that is already down does not move. The ideal above is derived from the body,
+		# and the body travels and turns underneath it, so following the ideal through a stance
+		# drags the foot across the ground. In a straight line the two cancel and nothing shows;
+		# turning, they do not, and a planted hoof scrubs by most of a body-length per stride.
+		# So the horizontal position is the one latched at the footfall, and only the height is
+		# asked again — the ground under a standing foot can still change, because this game's
+		# ground is dug up while people are standing on it.
+		if down and leg.stance:
+			ideal = Vector3(leg.anchor.x, ideal.y, leg.anchor.z)
 		var found := Footing.plant(probe, ideal, leg.reach)
+		if down and not leg.stance:
+			leg.anchor = found["position"]
 		leg.plant = found
-		leg.stance = bool(cycle["planted"])
+		leg.stance = down
 		plants.append(found)
 		normals.append(found["normal"])
 		targets.append((found["position"] as Vector3) + at.basis.y * swing.y)
@@ -219,6 +246,17 @@ func _solve(leg: Leg, target: Vector3, body: Basis, delta: float) -> float:
 
 	leg.strain = float(found["strain"])
 	return leg.strain
+
+
+## Whether every leg is in the stance half of its cycle at the phase the creature is holding.
+## Asked of the gait rather than of the legs' own `stance`, because that is last frame's answer
+## and this decides whether there is anything left to finish.
+func _all_down(phases: Array, duty: float) -> bool:
+	for i in legs.size():
+		var offset := float(phases[i]) if i < phases.size() else legs[i].phase
+		if not bool(Gait.foot_cycle(phase + offset, 1.0, 0.0, duty)["planted"]):
+			return false
+	return true
 
 
 func _roll(turn: float) -> float:

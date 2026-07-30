@@ -98,11 +98,15 @@ func _never_drops_into_a_ditch(t: TestContext, world: Dictionary) -> void:
 
 	# On the bowl's wall at its steepest, and held 0.4 m down so both feet stay inside their reach
 	# — a foot that cannot reach clamps, and then this would be measuring the clamp instead.
-	var at := Transform3D(Basis.IDENTITY, Vector3(-5.0, -0.4, -1.7))
+	var at := Transform3D(Basis.IDENTITY, Vector3(-5.0, -0.4, -1.0))
+	var motion := Vector3(0.0, 0.0, -1.5)
 	var worst := 0.0
 	var lowest_gap := 0.0
 	for i in 50:
-		var out: Dictionary = loco.step(at, Vector3(0.0, 0.0, -1.5), 0.0, 0.04, ground)
+		# The body has to travel, or a latched foot stays on the one patch of ground it landed on
+		# and the swinging one never gets anywhere different to be lower than.
+		at.origin += motion * 0.04
+		var out: Dictionary = loco.step(at, motion, 0.0, 0.04, ground)
 		var down := INF
 		var up := INF
 		for leg in loco.legs:
@@ -152,7 +156,10 @@ func _the_body_follows_the_ground(t: TestContext, world: Dictionary) -> void:
 		Vector3(0.0, 0.0, -1.0), 0.0, 0.1, ground)
 	# Against the flat rather than against zero, so the assertion is about the slope and not about
 	# where this particular creature's origin happens to sit relative to its soles.
-	var on_flat: Dictionary = loco.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -1.0), 0.0, 0.1,
+	# Its own driver: feet latch to where they came down, so stepping the ramp walker onto flat
+	# ground would measure a creature still standing on the ramp.
+	var level := FixtureWorld.driver(world, "core:biped")
+	var on_flat: Dictionary = level.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -1.0), 0.0, 0.1,
 		ground)
 	t.ok(float(on_ramp["height"]) - float(on_flat["height"]) > 0.3,
 		"walking up a slope raises the body with it: %.3f on the ramp against %.3f on the flat" % [
@@ -165,14 +172,20 @@ func _the_body_follows_the_ground(t: TestContext, world: Dictionary) -> void:
 
 	# Turning banks the body, and the bank is capped: past about MAX_LEAN a creature reads as
 	# falling over rather than as leaning.
-	var hard := loco.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -4.0), 40.0, 0.1, ground)
-	var roll := rad_to_deg((hard["basis"] as Basis).x.angle_to(Vector3.RIGHT))
+	# On flat ground, so the tilt onto the terrain is zero and every degree the body's up-vector
+	# is away from the world's is roll. Measuring it as `basis.x` against world right — which is
+	# the obvious thing — also picks up the yaw, and then a creature that is merely facing a
+	# different way reads as leaning.
+	var turner := FixtureWorld.driver(world, "core:biped")
+	var hard := turner.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -4.0), 40.0, 0.1, ground)
+	var roll := rad_to_deg((hard["basis"] as Basis).y.angle_to(Vector3.UP))
 	t.ok(roll <= Locomotion.MAX_LEAN + 0.001,
 		"a violent turn leans the body no further than MAX_LEAN: %s degrees" % roll)
 	t.ok(roll > 1.0, "but it does lean, rather than the cap swallowing the whole effect")
 
-	var straight_on := loco.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -4.0), 0.0, 0.1, ground)
-	t.near(rad_to_deg((straight_on["basis"] as Basis).x.angle_to(Vector3.RIGHT)), 0.0, 0.001,
+	var upright := FixtureWorld.driver(world, "core:biped")
+	var straight_on := upright.step(Transform3D.IDENTITY, Vector3(0.0, 0.0, -4.0), 0.0, 0.1, ground)
+	t.near(rad_to_deg((straight_on["basis"] as Basis).y.angle_to(Vector3.UP)), 0.0, 0.001,
 		"and running straight does not lean at all")
 
 
