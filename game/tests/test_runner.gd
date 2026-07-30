@@ -26,6 +26,7 @@ const CASES := [
 	"res://tests/cases/case_leg.gd",
 	"res://tests/cases/case_driver.gd",
 	"res://tests/cases/case_body.gd",
+	"res://tests/cases/case_walker.gd",
 	"res://tests/cases/case_rig.gd",
 	"res://tests/cases/case_cli.gd",
 	"res://tests/cases/case_bricks_fall.gd",
