@@ -233,9 +233,20 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       number now would be a guess about the largest consumer of the thing being budgeted.
       Both rules stay dormant regardless — there is not a physical constraint anywhere in
       the build, so a rule counting them would pass on all content.
-- [ ] Two policy lines are still untested and named in `DEVIATIONS-C2.md` §D rather than left
-      quiet: the order inside `Locomotion.step`, and the hang lag's frame-rate independence.
-      Both block C2 being honestly called *verified*.
+- [~] **C2's done-condition walked, and it holds.** A soldier defined entirely in data walks,
+      sprints and jumps over uneven ground with its feet planting; a four-legged creature does
+      it through the same system, out of a non-core pack. Both halves are in `case_walker.gd`
+      against real physics.
+      **What changed to make that honest:** every foot-planting assertion in this milestone
+      used to read `leg.plant` — where the driver *decided* the foot should go — and none read
+      the rig back to see where it went. Two fixtures had a 0.2 m gap at the knee and the suite
+      was green throughout. Both questions are asked now, the fixtures are re-authored, and
+      `Leg.MAX_CHAIN_GAP` refuses a disjointed chain in words.
+      `tools/mutate.py`: **15 caught, 1 missed.**
+- [ ] The one remaining untested policy line: the hang lag's frame-rate independence
+      (`DEVIATIONS-C2.md` §D2). It is a mutation in the harness now, so it reports itself on
+      every run rather than living in a document. It does not block the done-condition — it is
+      a testing gap, not a behaviour that is wrong.
 
 ## 3 · Combat core
 
