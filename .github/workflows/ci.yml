@@ -1,0 +1,43 @@
+# Dormant. There is no remote yet — this repository lives on one Mac and the gate that
+# actually runs is tools/pre-push. This file exists so that adding a remote later is a
+# `git push`, not a project.
+#
+# It deliberately contains no rules of its own. Everything it knows about what "green"
+# means it gets by running tools/check.sh, which is the same script the hook runs and the
+# same one you run by hand. Three places that can disagree about whether the build is good
+# is how a team ends up ignoring CI.
+name: check
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      # Pinned to the version the blast baseline was captured on. The baseline compares
+      # physics results across machines; bumping the engine under it is a decision to make
+      # deliberately, with a re-capture, not one to inherit from a floating tag.
+      - name: Install Godot 4.7.1
+        run: |
+          set -euo pipefail
+          VERSION=4.7.1-stable
+          URL="https://github.com/godotengine/godot/releases/download/${VERSION}/Godot_v${VERSION}_linux.x86_64.zip"
+          curl -fsSL -o godot.zip "$URL"
+          unzip -q godot.zip
+          sudo mv Godot_v${VERSION}_linux.x86_64 /usr/local/bin/godot
+          sudo chmod +x /usr/local/bin/godot
+          godot --version
+
+      # Godot needs one import pass before it can run anything from a fresh checkout.
+      - name: Import project
+        run: godot --headless --path game --import
+
+      - name: Run the gate
+        run: ./tools/check.sh

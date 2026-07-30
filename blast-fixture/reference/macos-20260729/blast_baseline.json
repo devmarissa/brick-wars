@@ -1,0 +1,6516 @@
+{
+  "clean": true,
+  "fixture_version": 2,
+  "godot": "4.7.1-stable (official)",
+  "physics_hz": 60,
+  "platform": "macOS",
+  "scenarios": [
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          608.0,
+          1.5,
+          600.0
+        ],
+        "observer_distance": 9.45,
+        "point": [
+          600.0,
+          1.0,
+          605.0
+        ],
+        "power": 42.0,
+        "radius": 8.0
+      },
+      "earth": {
+        "debris_spawned": 0,
+        "height_cells_removed": 0
+      },
+      "felt": {
+        "observer_drift": 0.83,
+        "player_knock_peak": 3.8,
+        "shake_peak": 0.747,
+        "shake_seconds": 0.3
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 120,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 10.18,
+        "mean_launch_speed": 7.06,
+        "peak_speed": 11.08
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "pad",
+      "name": "wall_standard_shell",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 10.41,
+        "mean_displacement": 4.52,
+        "moved_over_half_metre": 120,
+        "structure_bricks": 120,
+        "surviving": 120
+      },
+      "settle": {
+        "seconds": 2.68,
+        "ticks": 161,
+        "timed_out": false
+      },
+      "structure": "wall",
+      "timeline": [
+        {
+          "awake": 120,
+          "max_y": 2.83,
+          "mean_speed": 7.06,
+          "moving": 120,
+          "shake": 0.747,
+          "tick": 0
+        },
+        {
+          "awake": 120,
+          "max_y": 3.0,
+          "mean_speed": 6.74,
+          "moving": 120,
+          "shake": 0.66,
+          "tick": 2
+        },
+        {
+          "awake": 120,
+          "max_y": 3.14,
+          "mean_speed": 6.48,
+          "moving": 120,
+          "shake": 0.573,
+          "tick": 4
+        },
+        {
+          "awake": 120,
+          "max_y": 3.26,
+          "mean_speed": 6.29,
+          "moving": 120,
+          "shake": 0.487,
+          "tick": 6
+        },
+        {
+          "awake": 120,
+          "max_y": 3.35,
+          "mean_speed": 6.15,
+          "moving": 120,
+          "shake": 0.4,
+          "tick": 8
+        },
+        {
+          "awake": 120,
+          "max_y": 3.42,
+          "mean_speed": 6.03,
+          "moving": 120,
+          "shake": 0.313,
+          "tick": 10
+        },
+        {
+          "awake": 120,
+          "max_y": 3.47,
+          "mean_speed": 5.89,
+          "moving": 120,
+          "shake": 0.227,
+          "tick": 12
+        },
+        {
+          "awake": 120,
+          "max_y": 3.5,
+          "mean_speed": 5.74,
+          "moving": 120,
+          "shake": 0.14,
+          "tick": 14
+        },
+        {
+          "awake": 120,
+          "max_y": 3.51,
+          "mean_speed": 5.63,
+          "moving": 120,
+          "shake": 0.053,
+          "tick": 16
+        },
+        {
+          "awake": 120,
+          "max_y": 3.49,
+          "mean_speed": 5.43,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 18
+        },
+        {
+          "awake": 120,
+          "max_y": 3.45,
+          "mean_speed": 5.23,
+          "moving": 115,
+          "shake": 0.0,
+          "tick": 20
+        },
+        {
+          "awake": 120,
+          "max_y": 3.39,
+          "mean_speed": 5.05,
+          "moving": 115,
+          "shake": 0.0,
+          "tick": 22
+        },
+        {
+          "awake": 120,
+          "max_y": 3.3,
+          "mean_speed": 4.8,
+          "moving": 118,
+          "shake": 0.0,
+          "tick": 24
+        },
+        {
+          "awake": 120,
+          "max_y": 3.2,
+          "mean_speed": 4.39,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 120,
+          "max_y": 3.07,
+          "mean_speed": 4.09,
+          "moving": 111,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 120,
+          "max_y": 2.92,
+          "mean_speed": 4.0,
+          "moving": 111,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 120,
+          "max_y": 2.81,
+          "mean_speed": 4.05,
+          "moving": 112,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 120,
+          "max_y": 2.79,
+          "mean_speed": 4.15,
+          "moving": 107,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 120,
+          "max_y": 2.77,
+          "mean_speed": 4.26,
+          "moving": 103,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 120,
+          "max_y": 2.73,
+          "mean_speed": 4.43,
+          "moving": 101,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 120,
+          "max_y": 2.67,
+          "mean_speed": 4.54,
+          "moving": 101,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 120,
+          "max_y": 2.58,
+          "mean_speed": 4.55,
+          "moving": 99,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 120,
+          "max_y": 2.48,
+          "mean_speed": 4.45,
+          "moving": 100,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 120,
+          "max_y": 2.35,
+          "mean_speed": 4.18,
+          "moving": 99,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 120,
+          "max_y": 2.2,
+          "mean_speed": 3.81,
+          "moving": 99,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 119,
+          "max_y": 2.03,
+          "mean_speed": 3.07,
+          "moving": 95,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 119,
+          "max_y": 1.88,
+          "mean_speed": 2.59,
+          "moving": 94,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 119,
+          "max_y": 1.76,
+          "mean_speed": 2.28,
+          "moving": 88,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 118,
+          "max_y": 1.65,
+          "mean_speed": 2.13,
+          "moving": 84,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 119,
+          "max_y": 1.59,
+          "mean_speed": 1.88,
+          "moving": 77,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 119,
+          "max_y": 1.54,
+          "mean_speed": 1.6,
+          "moving": 70,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 119,
+          "max_y": 1.46,
+          "mean_speed": 1.51,
+          "moving": 67,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 117,
+          "max_y": 1.37,
+          "mean_speed": 1.36,
+          "moving": 58,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 118,
+          "max_y": 1.26,
+          "mean_speed": 1.24,
+          "moving": 56,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 118,
+          "max_y": 1.25,
+          "mean_speed": 1.17,
+          "moving": 54,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 118,
+          "max_y": 1.25,
+          "mean_speed": 1.12,
+          "moving": 49,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 118,
+          "max_y": 1.24,
+          "mean_speed": 1.04,
+          "moving": 46,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 118,
+          "max_y": 1.24,
+          "mean_speed": 0.84,
+          "moving": 45,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 113,
+          "max_y": 1.24,
+          "mean_speed": 0.69,
+          "moving": 41,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 112,
+          "max_y": 1.24,
+          "mean_speed": 0.59,
+          "moving": 35,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 108,
+          "max_y": 1.24,
+          "mean_speed": 0.54,
+          "moving": 31,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 106,
+          "max_y": 1.24,
+          "mean_speed": 0.39,
+          "moving": 31,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 106,
+          "max_y": 1.24,
+          "mean_speed": 0.34,
+          "moving": 27,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 104,
+          "max_y": 1.24,
+          "mean_speed": 0.32,
+          "moving": 26,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 104,
+          "max_y": 1.24,
+          "mean_speed": 0.31,
+          "moving": 24,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 104,
+          "max_y": 1.24,
+          "mean_speed": 0.27,
+          "moving": 23,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 101,
+          "max_y": 1.24,
+          "mean_speed": 0.18,
+          "moving": 16,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 50,
+          "max_y": 0.84,
+          "mean_speed": 0.34,
+          "moving": 14,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 47,
+          "max_y": 0.82,
+          "mean_speed": 0.24,
+          "moving": 14,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 47,
+          "max_y": 0.82,
+          "mean_speed": 0.21,
+          "moving": 12,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 44,
+          "max_y": 0.82,
+          "mean_speed": 0.22,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 44,
+          "max_y": 0.81,
+          "mean_speed": 0.23,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 40,
+          "max_y": 0.81,
+          "mean_speed": 0.29,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 38,
+          "max_y": 0.81,
+          "mean_speed": 0.15,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 37,
+          "max_y": 0.81,
+          "mean_speed": 0.14,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 29,
+          "max_y": 0.81,
+          "mean_speed": 0.19,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 23,
+          "max_y": 0.81,
+          "mean_speed": 0.17,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 23,
+          "max_y": 0.81,
+          "mean_speed": 0.11,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 22,
+          "max_y": 0.81,
+          "mean_speed": 0.07,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 21,
+          "max_y": 0.81,
+          "mean_speed": 0.04,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 21,
+          "max_y": 0.81,
+          "mean_speed": 0.05,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 21,
+          "max_y": 0.81,
+          "mean_speed": 0.07,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 20,
+          "max_y": 0.81,
+          "mean_speed": 0.06,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 20,
+          "max_y": 0.81,
+          "mean_speed": 0.07,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 20,
+          "max_y": 0.81,
+          "mean_speed": 0.07,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 19,
+          "max_y": 0.81,
+          "mean_speed": 0.05,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 19,
+          "max_y": 0.81,
+          "mean_speed": 0.06,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 13,
+          "max_y": 0.81,
+          "mean_speed": 0.08,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 12,
+          "max_y": 0.81,
+          "mean_speed": 0.09,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 12,
+          "max_y": 0.81,
+          "mean_speed": 0.11,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 3,
+          "max_y": 0.54,
+          "mean_speed": 0.22,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 3,
+          "max_y": 0.54,
+          "mean_speed": 0.15,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 1,
+          "max_y": 0.5,
+          "mean_speed": 0.26,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 1,
+          "max_y": 0.5,
+          "mean_speed": 0.07,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 1,
+          "max_y": 0.5,
+          "mean_speed": 0.12,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 1,
+          "max_y": 0.5,
+          "mean_speed": 0.31,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 1,
+          "max_y": 0.49,
+          "mean_speed": 0.5,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 1,
+          "max_y": 0.48,
+          "mean_speed": 0.71,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 1,
+          "max_y": 0.48,
+          "mean_speed": 0.25,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 1,
+          "max_y": 0.49,
+          "mean_speed": 0.03,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 1,
+          "max_y": 0.48,
+          "mean_speed": 0.19,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 1,
+          "max_y": 0.48,
+          "mean_speed": 0.1,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 178
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 180
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 182
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 184
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 186
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 188
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 190
+        }
+      ],
+      "wake": {
+        "peak_awake": 120,
+        "peak_awake_tick": 0,
+        "peak_height": 3.51,
+        "peak_height_tick": 15
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": false,
+        "observer_at": [
+          608.0,
+          1.5,
+          600.0
+        ],
+        "observer_distance": 9.45,
+        "point": [
+          600.0,
+          1.0,
+          605.0
+        ],
+        "power": 18.0,
+        "radius": 8.0
+      },
+      "earth": {
+        "debris_spawned": 0,
+        "height_cells_removed": 0
+      },
+      "felt": {
+        "observer_drift": 0.36,
+        "player_knock_peak": 1.63,
+        "shake_peak": 0.295,
+        "shake_seconds": 0.12
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 120,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 4.29,
+        "mean_launch_speed": 2.95,
+        "peak_speed": 10.3
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "pad",
+      "name": "wall_light_charge",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 4.75,
+        "mean_displacement": 1.99,
+        "moved_over_half_metre": 98,
+        "structure_bricks": 120,
+        "surviving": 120
+      },
+      "settle": {
+        "seconds": 2.53,
+        "ticks": 152,
+        "timed_out": false
+      },
+      "structure": "wall",
+      "timeline": [
+        {
+          "awake": 120,
+          "max_y": 2.78,
+          "mean_speed": 2.95,
+          "moving": 120,
+          "shake": 0.295,
+          "tick": 0
+        },
+        {
+          "awake": 120,
+          "max_y": 2.83,
+          "mean_speed": 2.73,
+          "moving": 120,
+          "shake": 0.209,
+          "tick": 2
+        },
+        {
+          "awake": 120,
+          "max_y": 2.87,
+          "mean_speed": 2.61,
+          "moving": 120,
+          "shake": 0.122,
+          "tick": 4
+        },
+        {
+          "awake": 120,
+          "max_y": 2.88,
+          "mean_speed": 2.48,
+          "moving": 120,
+          "shake": 0.035,
+          "tick": 6
+        },
+        {
+          "awake": 120,
+          "max_y": 2.86,
+          "mean_speed": 2.26,
+          "moving": 118,
+          "shake": 0.0,
+          "tick": 8
+        },
+        {
+          "awake": 120,
+          "max_y": 2.83,
+          "mean_speed": 1.83,
+          "moving": 109,
+          "shake": 0.0,
+          "tick": 10
+        },
+        {
+          "awake": 120,
+          "max_y": 2.77,
+          "mean_speed": 1.45,
+          "moving": 105,
+          "shake": 0.0,
+          "tick": 12
+        },
+        {
+          "awake": 120,
+          "max_y": 2.78,
+          "mean_speed": 1.26,
+          "moving": 93,
+          "shake": 0.0,
+          "tick": 14
+        },
+        {
+          "awake": 120,
+          "max_y": 2.79,
+          "mean_speed": 1.17,
+          "moving": 86,
+          "shake": 0.0,
+          "tick": 16
+        },
+        {
+          "awake": 120,
+          "max_y": 2.79,
+          "mean_speed": 1.11,
+          "moving": 85,
+          "shake": 0.0,
+          "tick": 18
+        },
+        {
+          "awake": 120,
+          "max_y": 2.78,
+          "mean_speed": 1.08,
+          "moving": 85,
+          "shake": 0.0,
+          "tick": 20
+        },
+        {
+          "awake": 120,
+          "max_y": 2.77,
+          "mean_speed": 1.09,
+          "moving": 88,
+          "shake": 0.0,
+          "tick": 22
+        },
+        {
+          "awake": 120,
+          "max_y": 2.75,
+          "mean_speed": 1.1,
+          "moving": 90,
+          "shake": 0.0,
+          "tick": 24
+        },
+        {
+          "awake": 120,
+          "max_y": 2.75,
+          "mean_speed": 1.1,
+          "moving": 86,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 120,
+          "max_y": 2.74,
+          "mean_speed": 1.11,
+          "moving": 83,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 120,
+          "max_y": 2.74,
+          "mean_speed": 1.16,
+          "moving": 82,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 120,
+          "max_y": 2.73,
+          "mean_speed": 1.23,
+          "moving": 88,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 120,
+          "max_y": 2.73,
+          "mean_speed": 1.31,
+          "moving": 90,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 120,
+          "max_y": 2.73,
+          "mean_speed": 1.39,
+          "moving": 85,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 120,
+          "max_y": 2.72,
+          "mean_speed": 1.49,
+          "moving": 85,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 120,
+          "max_y": 2.72,
+          "mean_speed": 1.63,
+          "moving": 86,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 120,
+          "max_y": 2.71,
+          "mean_speed": 1.78,
+          "moving": 87,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 120,
+          "max_y": 2.71,
+          "mean_speed": 1.96,
+          "moving": 87,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 120,
+          "max_y": 2.7,
+          "mean_speed": 2.15,
+          "moving": 89,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 120,
+          "max_y": 2.69,
+          "mean_speed": 2.35,
+          "moving": 85,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 120,
+          "max_y": 2.68,
+          "mean_speed": 2.57,
+          "moving": 87,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 120,
+          "max_y": 2.67,
+          "mean_speed": 2.78,
+          "moving": 87,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 120,
+          "max_y": 2.65,
+          "mean_speed": 2.52,
+          "moving": 85,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 120,
+          "max_y": 2.63,
+          "mean_speed": 2.32,
+          "moving": 78,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 120,
+          "max_y": 2.6,
+          "mean_speed": 2.24,
+          "moving": 81,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 120,
+          "max_y": 2.56,
+          "mean_speed": 2.33,
+          "moving": 80,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 120,
+          "max_y": 2.52,
+          "mean_speed": 2.1,
+          "moving": 74,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 120,
+          "max_y": 2.47,
+          "mean_speed": 1.85,
+          "moving": 71,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 120,
+          "max_y": 2.4,
+          "mean_speed": 1.51,
+          "moving": 63,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 120,
+          "max_y": 2.32,
+          "mean_speed": 1.33,
+          "moving": 56,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 120,
+          "max_y": 2.21,
+          "mean_speed": 1.24,
+          "moving": 54,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 120,
+          "max_y": 2.09,
+          "mean_speed": 0.95,
+          "moving": 47,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 120,
+          "max_y": 1.95,
+          "mean_speed": 0.79,
+          "moving": 41,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 120,
+          "max_y": 1.79,
+          "mean_speed": 0.74,
+          "moving": 34,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 120,
+          "max_y": 1.61,
+          "mean_speed": 0.65,
+          "moving": 28,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 120,
+          "max_y": 1.4,
+          "mean_speed": 0.63,
+          "moving": 31,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 119,
+          "max_y": 1.25,
+          "mean_speed": 0.55,
+          "moving": 30,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 118,
+          "max_y": 1.25,
+          "mean_speed": 0.53,
+          "moving": 27,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 119,
+          "max_y": 1.25,
+          "mean_speed": 0.41,
+          "moving": 26,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 119,
+          "max_y": 1.25,
+          "mean_speed": 0.22,
+          "moving": 19,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 119,
+          "max_y": 1.25,
+          "mean_speed": 0.16,
+          "moving": 12,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.12,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.1,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 115,
+          "max_y": 1.25,
+          "mean_speed": 0.1,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 115,
+          "max_y": 1.25,
+          "mean_speed": 0.11,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.08,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.05,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.05,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.03,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.03,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.02,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.02,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.01,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.01,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 114,
+          "max_y": 1.25,
+          "mean_speed": 0.02,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.03,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.03,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.03,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 60,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 59,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 59,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 59,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 59,
+          "max_y": 1.04,
+          "mean_speed": 0.02,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 59,
+          "max_y": 1.04,
+          "mean_speed": 0.03,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 1,
+          "max_y": 0.45,
+          "mean_speed": 1.54,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 1,
+          "max_y": 0.41,
+          "mean_speed": 1.82,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 1,
+          "max_y": 0.37,
+          "mean_speed": 2.13,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 1,
+          "max_y": 0.3,
+          "mean_speed": 2.49,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 2.88,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 1,
+          "max_y": 0.23,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 178
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 180
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 182
+        }
+      ],
+      "wake": {
+        "peak_awake": 120,
+        "peak_awake_tick": 0,
+        "peak_height": 2.88,
+        "peak_height_tick": 6
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          608.0,
+          1.5,
+          600.0
+        ],
+        "observer_distance": 8.25,
+        "point": [
+          600.0,
+          1.5,
+          602.0
+        ],
+        "power": 80.0,
+        "radius": 12.0
+      },
+      "earth": {
+        "debris_spawned": 0,
+        "height_cells_removed": 0
+      },
+      "felt": {
+        "observer_drift": 5.7,
+        "player_knock_peak": 23.11,
+        "shake_peak": 1.1,
+        "shake_seconds": 0.43
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 120,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 44.03,
+        "mean_launch_speed": 35.91,
+        "peak_speed": 44.03
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "pad",
+      "name": "wall_heavy_point_blank",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 75.22,
+        "mean_displacement": 54.05,
+        "moved_over_half_metre": 120,
+        "structure_bricks": 120,
+        "surviving": 120
+      },
+      "settle": {
+        "seconds": 4.17,
+        "ticks": 250,
+        "timed_out": false
+      },
+      "structure": "wall",
+      "timeline": [
+        {
+          "awake": 120,
+          "max_y": 3.24,
+          "mean_speed": 35.91,
+          "moving": 120,
+          "shake": 1.1,
+          "tick": 0
+        },
+        {
+          "awake": 120,
+          "max_y": 4.21,
+          "mean_speed": 35.34,
+          "moving": 120,
+          "shake": 1.013,
+          "tick": 2
+        },
+        {
+          "awake": 120,
+          "max_y": 5.15,
+          "mean_speed": 34.78,
+          "moving": 120,
+          "shake": 0.927,
+          "tick": 4
+        },
+        {
+          "awake": 120,
+          "max_y": 6.06,
+          "mean_speed": 34.23,
+          "moving": 120,
+          "shake": 0.84,
+          "tick": 6
+        },
+        {
+          "awake": 120,
+          "max_y": 6.95,
+          "mean_speed": 33.7,
+          "moving": 120,
+          "shake": 0.753,
+          "tick": 8
+        },
+        {
+          "awake": 120,
+          "max_y": 7.81,
+          "mean_speed": 33.18,
+          "moving": 120,
+          "shake": 0.667,
+          "tick": 10
+        },
+        {
+          "awake": 120,
+          "max_y": 8.64,
+          "mean_speed": 32.67,
+          "moving": 120,
+          "shake": 0.58,
+          "tick": 12
+        },
+        {
+          "awake": 120,
+          "max_y": 9.45,
+          "mean_speed": 32.17,
+          "moving": 120,
+          "shake": 0.493,
+          "tick": 14
+        },
+        {
+          "awake": 120,
+          "max_y": 10.23,
+          "mean_speed": 31.69,
+          "moving": 120,
+          "shake": 0.407,
+          "tick": 16
+        },
+        {
+          "awake": 120,
+          "max_y": 10.98,
+          "mean_speed": 31.23,
+          "moving": 120,
+          "shake": 0.32,
+          "tick": 18
+        },
+        {
+          "awake": 120,
+          "max_y": 11.7,
+          "mean_speed": 30.78,
+          "moving": 120,
+          "shake": 0.233,
+          "tick": 20
+        },
+        {
+          "awake": 120,
+          "max_y": 12.4,
+          "mean_speed": 30.34,
+          "moving": 120,
+          "shake": 0.147,
+          "tick": 22
+        },
+        {
+          "awake": 120,
+          "max_y": 13.07,
+          "mean_speed": 29.92,
+          "moving": 120,
+          "shake": 0.06,
+          "tick": 24
+        },
+        {
+          "awake": 120,
+          "max_y": 13.72,
+          "mean_speed": 29.52,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 120,
+          "max_y": 14.34,
+          "mean_speed": 29.13,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 120,
+          "max_y": 14.93,
+          "mean_speed": 28.76,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 120,
+          "max_y": 15.5,
+          "mean_speed": 28.4,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 120,
+          "max_y": 16.04,
+          "mean_speed": 28.06,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 120,
+          "max_y": 16.55,
+          "mean_speed": 27.74,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 120,
+          "max_y": 17.05,
+          "mean_speed": 27.44,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 120,
+          "max_y": 17.51,
+          "mean_speed": 27.15,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 120,
+          "max_y": 17.95,
+          "mean_speed": 26.88,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 120,
+          "max_y": 18.37,
+          "mean_speed": 26.63,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 120,
+          "max_y": 18.76,
+          "mean_speed": 26.4,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 120,
+          "max_y": 19.13,
+          "mean_speed": 26.18,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 120,
+          "max_y": 19.47,
+          "mean_speed": 25.98,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 120,
+          "max_y": 19.79,
+          "mean_speed": 25.8,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 120,
+          "max_y": 20.08,
+          "mean_speed": 25.64,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 120,
+          "max_y": 20.35,
+          "mean_speed": 25.5,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 120,
+          "max_y": 20.6,
+          "mean_speed": 25.38,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 120,
+          "max_y": 20.82,
+          "mean_speed": 25.27,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 120,
+          "max_y": 21.02,
+          "mean_speed": 25.18,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 120,
+          "max_y": 21.2,
+          "mean_speed": 25.11,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 120,
+          "max_y": 21.35,
+          "mean_speed": 25.06,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 120,
+          "max_y": 21.48,
+          "mean_speed": 25.02,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 120,
+          "max_y": 21.59,
+          "mean_speed": 25.0,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 120,
+          "max_y": 21.67,
+          "mean_speed": 25.0,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 120,
+          "max_y": 21.73,
+          "mean_speed": 25.01,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 120,
+          "max_y": 21.77,
+          "mean_speed": 25.04,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 120,
+          "max_y": 21.79,
+          "mean_speed": 25.09,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 120,
+          "max_y": 21.78,
+          "mean_speed": 25.15,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 120,
+          "max_y": 21.75,
+          "mean_speed": 25.23,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 120,
+          "max_y": 21.7,
+          "mean_speed": 25.09,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 120,
+          "max_y": 21.63,
+          "mean_speed": 25.11,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 120,
+          "max_y": 21.54,
+          "mean_speed": 24.81,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 120,
+          "max_y": 21.42,
+          "mean_speed": 24.36,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 120,
+          "max_y": 21.29,
+          "mean_speed": 23.92,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 120,
+          "max_y": 21.13,
+          "mean_speed": 23.62,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 120,
+          "max_y": 20.95,
+          "mean_speed": 23.3,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 120,
+          "max_y": 20.75,
+          "mean_speed": 22.35,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 120,
+          "max_y": 20.52,
+          "mean_speed": 21.65,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 120,
+          "max_y": 20.28,
+          "mean_speed": 21.34,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 120,
+          "max_y": 20.02,
+          "mean_speed": 21.12,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 120,
+          "max_y": 19.74,
+          "mean_speed": 20.03,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 120,
+          "max_y": 19.43,
+          "mean_speed": 19.25,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 120,
+          "max_y": 19.11,
+          "mean_speed": 18.36,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 120,
+          "max_y": 18.76,
+          "mean_speed": 17.95,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 120,
+          "max_y": 18.4,
+          "mean_speed": 17.64,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 120,
+          "max_y": 18.01,
+          "mean_speed": 17.23,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 120,
+          "max_y": 17.61,
+          "mean_speed": 16.54,
+          "moving": 119,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 120,
+          "max_y": 17.18,
+          "mean_speed": 15.8,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 120,
+          "max_y": 16.74,
+          "mean_speed": 14.53,
+          "moving": 112,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 120,
+          "max_y": 16.27,
+          "mean_speed": 13.68,
+          "moving": 109,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 120,
+          "max_y": 15.79,
+          "mean_speed": 13.07,
+          "moving": 108,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 120,
+          "max_y": 15.29,
+          "mean_speed": 12.6,
+          "moving": 105,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 120,
+          "max_y": 14.76,
+          "mean_speed": 12.01,
+          "moving": 103,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 120,
+          "max_y": 14.22,
+          "mean_speed": 10.95,
+          "moving": 103,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 120,
+          "max_y": 13.66,
+          "mean_speed": 10.16,
+          "moving": 100,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 120,
+          "max_y": 13.09,
+          "mean_speed": 9.51,
+          "moving": 97,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 120,
+          "max_y": 12.49,
+          "mean_speed": 9.11,
+          "moving": 95,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 117,
+          "max_y": 11.87,
+          "mean_speed": 7.87,
+          "moving": 91,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 116,
+          "max_y": 11.24,
+          "mean_speed": 7.61,
+          "moving": 89,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 116,
+          "max_y": 10.58,
+          "mean_speed": 7.21,
+          "moving": 88,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 111,
+          "max_y": 9.91,
+          "mean_speed": 6.66,
+          "moving": 84,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 109,
+          "max_y": 9.22,
+          "mean_speed": 6.45,
+          "moving": 83,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 106,
+          "max_y": 8.52,
+          "mean_speed": 6.51,
+          "moving": 76,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 104,
+          "max_y": 7.79,
+          "mean_speed": 6.23,
+          "moving": 74,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 100,
+          "max_y": 7.05,
+          "mean_speed": 5.6,
+          "moving": 71,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 97,
+          "max_y": 6.29,
+          "mean_speed": 4.8,
+          "moving": 67,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 94,
+          "max_y": 5.51,
+          "mean_speed": 4.52,
+          "moving": 60,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 91,
+          "max_y": 4.71,
+          "mean_speed": 4.44,
+          "moving": 61,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 90,
+          "max_y": 3.9,
+          "mean_speed": 4.39,
+          "moving": 58,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 89,
+          "max_y": 3.07,
+          "mean_speed": 4.19,
+          "moving": 54,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 86,
+          "max_y": 2.22,
+          "mean_speed": 4.07,
+          "moving": 53,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 82,
+          "max_y": 1.76,
+          "mean_speed": 4.08,
+          "moving": 52,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 80,
+          "max_y": 1.68,
+          "mean_speed": 4.03,
+          "moving": 51,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 79,
+          "max_y": 1.59,
+          "mean_speed": 3.03,
+          "moving": 50,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 73,
+          "max_y": 1.48,
+          "mean_speed": 3.0,
+          "moving": 48,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 71,
+          "max_y": 1.34,
+          "mean_speed": 2.83,
+          "moving": 45,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 70,
+          "max_y": 1.18,
+          "mean_speed": 2.68,
+          "moving": 45,
+          "shake": 0.0,
+          "tick": 178
+        },
+        {
+          "awake": 70,
+          "max_y": 1.0,
+          "mean_speed": 2.41,
+          "moving": 45,
+          "shake": 0.0,
+          "tick": 180
+        },
+        {
+          "awake": 66,
+          "max_y": 0.83,
+          "mean_speed": 2.3,
+          "moving": 42,
+          "shake": 0.0,
+          "tick": 182
+        },
+        {
+          "awake": 63,
+          "max_y": 0.69,
+          "mean_speed": 2.22,
+          "moving": 39,
+          "shake": 0.0,
+          "tick": 184
+        },
+        {
+          "awake": 58,
+          "max_y": 0.72,
+          "mean_speed": 2.23,
+          "moving": 36,
+          "shake": 0.0,
+          "tick": 186
+        },
+        {
+          "awake": 56,
+          "max_y": 0.72,
+          "mean_speed": 1.99,
+          "moving": 36,
+          "shake": 0.0,
+          "tick": 188
+        },
+        {
+          "awake": 53,
+          "max_y": 0.71,
+          "mean_speed": 1.99,
+          "moving": 32,
+          "shake": 0.0,
+          "tick": 190
+        },
+        {
+          "awake": 51,
+          "max_y": 0.67,
+          "mean_speed": 1.9,
+          "moving": 29,
+          "shake": 0.0,
+          "tick": 192
+        },
+        {
+          "awake": 51,
+          "max_y": 0.66,
+          "mean_speed": 1.66,
+          "moving": 29,
+          "shake": 0.0,
+          "tick": 194
+        },
+        {
+          "awake": 51,
+          "max_y": 0.67,
+          "mean_speed": 1.34,
+          "moving": 29,
+          "shake": 0.0,
+          "tick": 196
+        },
+        {
+          "awake": 50,
+          "max_y": 0.66,
+          "mean_speed": 1.25,
+          "moving": 27,
+          "shake": 0.0,
+          "tick": 198
+        },
+        {
+          "awake": 47,
+          "max_y": 0.63,
+          "mean_speed": 1.22,
+          "moving": 27,
+          "shake": 0.0,
+          "tick": 200
+        },
+        {
+          "awake": 44,
+          "max_y": 0.58,
+          "mean_speed": 1.2,
+          "moving": 21,
+          "shake": 0.0,
+          "tick": 202
+        },
+        {
+          "awake": 42,
+          "max_y": 0.57,
+          "mean_speed": 1.23,
+          "moving": 22,
+          "shake": 0.0,
+          "tick": 204
+        },
+        {
+          "awake": 42,
+          "max_y": 0.57,
+          "mean_speed": 1.02,
+          "moving": 21,
+          "shake": 0.0,
+          "tick": 206
+        },
+        {
+          "awake": 39,
+          "max_y": 0.57,
+          "mean_speed": 0.86,
+          "moving": 20,
+          "shake": 0.0,
+          "tick": 208
+        },
+        {
+          "awake": 35,
+          "max_y": 0.56,
+          "mean_speed": 0.8,
+          "moving": 17,
+          "shake": 0.0,
+          "tick": 210
+        },
+        {
+          "awake": 34,
+          "max_y": 0.56,
+          "mean_speed": 0.73,
+          "moving": 17,
+          "shake": 0.0,
+          "tick": 212
+        },
+        {
+          "awake": 31,
+          "max_y": 0.54,
+          "mean_speed": 0.64,
+          "moving": 13,
+          "shake": 0.0,
+          "tick": 214
+        },
+        {
+          "awake": 30,
+          "max_y": 0.54,
+          "mean_speed": 0.54,
+          "moving": 15,
+          "shake": 0.0,
+          "tick": 216
+        },
+        {
+          "awake": 27,
+          "max_y": 0.5,
+          "mean_speed": 0.46,
+          "moving": 12,
+          "shake": 0.0,
+          "tick": 218
+        },
+        {
+          "awake": 24,
+          "max_y": 0.51,
+          "mean_speed": 0.41,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 220
+        },
+        {
+          "awake": 22,
+          "max_y": 0.51,
+          "mean_speed": 0.38,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 222
+        },
+        {
+          "awake": 19,
+          "max_y": 0.5,
+          "mean_speed": 0.39,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 224
+        },
+        {
+          "awake": 19,
+          "max_y": 0.5,
+          "mean_speed": 0.29,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 226
+        },
+        {
+          "awake": 19,
+          "max_y": 0.5,
+          "mean_speed": 0.17,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 228
+        },
+        {
+          "awake": 18,
+          "max_y": 0.49,
+          "mean_speed": 0.2,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 230
+        },
+        {
+          "awake": 16,
+          "max_y": 0.49,
+          "mean_speed": 0.26,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 232
+        },
+        {
+          "awake": 12,
+          "max_y": 0.48,
+          "mean_speed": 0.42,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 234
+        },
+        {
+          "awake": 12,
+          "max_y": 0.47,
+          "mean_speed": 0.38,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 236
+        },
+        {
+          "awake": 10,
+          "max_y": 0.45,
+          "mean_speed": 0.46,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 238
+        },
+        {
+          "awake": 9,
+          "max_y": 0.42,
+          "mean_speed": 0.35,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 240
+        },
+        {
+          "awake": 7,
+          "max_y": 0.3,
+          "mean_speed": 0.22,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 242
+        },
+        {
+          "awake": 7,
+          "max_y": 0.27,
+          "mean_speed": 0.29,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 244
+        },
+        {
+          "awake": 5,
+          "max_y": 0.26,
+          "mean_speed": 0.07,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 246
+        },
+        {
+          "awake": 5,
+          "max_y": 0.26,
+          "mean_speed": 0.01,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 248
+        },
+        {
+          "awake": 4,
+          "max_y": 0.26,
+          "mean_speed": 0.08,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 250
+        },
+        {
+          "awake": 4,
+          "max_y": 0.26,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 252
+        },
+        {
+          "awake": 4,
+          "max_y": 0.26,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 254
+        },
+        {
+          "awake": 3,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 256
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 258
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 260
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 262
+        },
+        {
+          "awake": 1,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 264
+        },
+        {
+          "awake": 1,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 266
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 268
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 270
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 272
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 274
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 276
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 278
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 280
+        }
+      ],
+      "wake": {
+        "peak_awake": 120,
+        "peak_awake_tick": 0,
+        "peak_height": 21.79,
+        "peak_height_tick": 78
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          608.0,
+          1.5,
+          600.0
+        ],
+        "observer_distance": 9.18,
+        "point": [
+          600.0,
+          6.0,
+          600.0
+        ],
+        "power": 42.0,
+        "radius": 10.0
+      },
+      "earth": {
+        "debris_spawned": 0,
+        "height_cells_removed": 0
+      },
+      "felt": {
+        "observer_drift": 2.0,
+        "player_knock_peak": 6.9,
+        "shake_peak": 0.753,
+        "shake_seconds": 0.3
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 120,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 16.69,
+        "mean_launch_speed": 11.89,
+        "peak_speed": 17.86
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "pad",
+      "name": "wall_airburst",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 10.97,
+        "mean_displacement": 5.3,
+        "moved_over_half_metre": 120,
+        "structure_bricks": 120,
+        "surviving": 120
+      },
+      "settle": {
+        "seconds": 3.43,
+        "ticks": 206,
+        "timed_out": false
+      },
+      "structure": "wall",
+      "timeline": [
+        {
+          "awake": 120,
+          "max_y": 3.02,
+          "mean_speed": 11.89,
+          "moving": 120,
+          "shake": 0.753,
+          "tick": 0
+        },
+        {
+          "awake": 120,
+          "max_y": 3.55,
+          "mean_speed": 11.23,
+          "moving": 120,
+          "shake": 0.666,
+          "tick": 2
+        },
+        {
+          "awake": 120,
+          "max_y": 4.05,
+          "mean_speed": 10.58,
+          "moving": 120,
+          "shake": 0.579,
+          "tick": 4
+        },
+        {
+          "awake": 120,
+          "max_y": 4.53,
+          "mean_speed": 9.95,
+          "moving": 120,
+          "shake": 0.493,
+          "tick": 6
+        },
+        {
+          "awake": 120,
+          "max_y": 4.98,
+          "mean_speed": 9.34,
+          "moving": 120,
+          "shake": 0.406,
+          "tick": 8
+        },
+        {
+          "awake": 120,
+          "max_y": 5.41,
+          "mean_speed": 8.75,
+          "moving": 120,
+          "shake": 0.319,
+          "tick": 10
+        },
+        {
+          "awake": 120,
+          "max_y": 5.82,
+          "mean_speed": 8.19,
+          "moving": 120,
+          "shake": 0.233,
+          "tick": 12
+        },
+        {
+          "awake": 120,
+          "max_y": 6.2,
+          "mean_speed": 7.65,
+          "moving": 120,
+          "shake": 0.146,
+          "tick": 14
+        },
+        {
+          "awake": 120,
+          "max_y": 6.56,
+          "mean_speed": 7.15,
+          "moving": 120,
+          "shake": 0.059,
+          "tick": 16
+        },
+        {
+          "awake": 120,
+          "max_y": 6.89,
+          "mean_speed": 6.68,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 18
+        },
+        {
+          "awake": 120,
+          "max_y": 7.19,
+          "mean_speed": 6.27,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 20
+        },
+        {
+          "awake": 120,
+          "max_y": 7.48,
+          "mean_speed": 5.9,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 22
+        },
+        {
+          "awake": 120,
+          "max_y": 7.74,
+          "mean_speed": 5.58,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 24
+        },
+        {
+          "awake": 120,
+          "max_y": 7.97,
+          "mean_speed": 5.33,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 120,
+          "max_y": 8.19,
+          "mean_speed": 5.14,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 120,
+          "max_y": 8.37,
+          "mean_speed": 5.03,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 120,
+          "max_y": 8.54,
+          "mean_speed": 5.0,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 120,
+          "max_y": 8.68,
+          "mean_speed": 5.0,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 120,
+          "max_y": 8.8,
+          "mean_speed": 4.96,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 120,
+          "max_y": 8.9,
+          "mean_speed": 4.97,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 120,
+          "max_y": 8.97,
+          "mean_speed": 5.01,
+          "moving": 118,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 120,
+          "max_y": 9.02,
+          "mean_speed": 5.2,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 120,
+          "max_y": 9.05,
+          "mean_speed": 5.43,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 120,
+          "max_y": 9.06,
+          "mean_speed": 5.62,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 120,
+          "max_y": 9.04,
+          "mean_speed": 5.72,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 120,
+          "max_y": 9.0,
+          "mean_speed": 5.86,
+          "moving": 111,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 120,
+          "max_y": 8.94,
+          "mean_speed": 6.08,
+          "moving": 110,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 120,
+          "max_y": 8.86,
+          "mean_speed": 6.03,
+          "moving": 111,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 120,
+          "max_y": 8.75,
+          "mean_speed": 6.09,
+          "moving": 113,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 120,
+          "max_y": 8.63,
+          "mean_speed": 6.08,
+          "moving": 105,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 120,
+          "max_y": 8.48,
+          "mean_speed": 6.12,
+          "moving": 106,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 120,
+          "max_y": 8.31,
+          "mean_speed": 5.89,
+          "moving": 98,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 120,
+          "max_y": 8.12,
+          "mean_speed": 5.67,
+          "moving": 102,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 120,
+          "max_y": 7.91,
+          "mean_speed": 5.36,
+          "moving": 94,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 120,
+          "max_y": 7.68,
+          "mean_speed": 5.19,
+          "moving": 101,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 120,
+          "max_y": 7.43,
+          "mean_speed": 4.77,
+          "moving": 101,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 120,
+          "max_y": 7.16,
+          "mean_speed": 4.63,
+          "moving": 98,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 120,
+          "max_y": 6.86,
+          "mean_speed": 4.65,
+          "moving": 92,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 120,
+          "max_y": 6.55,
+          "mean_speed": 4.42,
+          "moving": 96,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 120,
+          "max_y": 6.22,
+          "mean_speed": 4.43,
+          "moving": 96,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 120,
+          "max_y": 5.86,
+          "mean_speed": 4.46,
+          "moving": 91,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 120,
+          "max_y": 5.49,
+          "mean_speed": 4.35,
+          "moving": 91,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 119,
+          "max_y": 5.09,
+          "mean_speed": 4.07,
+          "moving": 88,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 117,
+          "max_y": 4.68,
+          "mean_speed": 4.01,
+          "moving": 86,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 114,
+          "max_y": 4.25,
+          "mean_speed": 3.78,
+          "moving": 82,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 112,
+          "max_y": 3.79,
+          "mean_speed": 3.27,
+          "moving": 78,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 109,
+          "max_y": 3.32,
+          "mean_speed": 2.78,
+          "moving": 72,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 110,
+          "max_y": 2.83,
+          "mean_speed": 2.26,
+          "moving": 68,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 110,
+          "max_y": 2.32,
+          "mean_speed": 1.97,
+          "moving": 61,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 104,
+          "max_y": 1.79,
+          "mean_speed": 1.63,
+          "moving": 56,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 104,
+          "max_y": 1.58,
+          "mean_speed": 1.46,
+          "moving": 52,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 102,
+          "max_y": 1.51,
+          "mean_speed": 1.21,
+          "moving": 48,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 102,
+          "max_y": 1.43,
+          "mean_speed": 0.99,
+          "moving": 46,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 107,
+          "max_y": 1.37,
+          "mean_speed": 0.63,
+          "moving": 38,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 107,
+          "max_y": 1.29,
+          "mean_speed": 0.67,
+          "moving": 37,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 108,
+          "max_y": 1.22,
+          "mean_speed": 0.61,
+          "moving": 38,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 107,
+          "max_y": 1.16,
+          "mean_speed": 0.56,
+          "moving": 32,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 106,
+          "max_y": 1.12,
+          "mean_speed": 0.57,
+          "moving": 32,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 105,
+          "max_y": 1.07,
+          "mean_speed": 0.47,
+          "moving": 31,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 98,
+          "max_y": 1.0,
+          "mean_speed": 0.4,
+          "moving": 28,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 91,
+          "max_y": 0.99,
+          "mean_speed": 0.41,
+          "moving": 25,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 85,
+          "max_y": 0.99,
+          "mean_speed": 0.47,
+          "moving": 25,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 79,
+          "max_y": 0.99,
+          "mean_speed": 0.34,
+          "moving": 22,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 77,
+          "max_y": 0.99,
+          "mean_speed": 0.34,
+          "moving": 20,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 71,
+          "max_y": 0.99,
+          "mean_speed": 0.35,
+          "moving": 17,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 61,
+          "max_y": 0.99,
+          "mean_speed": 0.46,
+          "moving": 18,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 59,
+          "max_y": 0.99,
+          "mean_speed": 0.4,
+          "moving": 18,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 43,
+          "max_y": 0.99,
+          "mean_speed": 0.54,
+          "moving": 18,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 43,
+          "max_y": 0.99,
+          "mean_speed": 0.45,
+          "moving": 15,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 43,
+          "max_y": 0.99,
+          "mean_speed": 0.43,
+          "moving": 14,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 41,
+          "max_y": 0.99,
+          "mean_speed": 0.28,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 38,
+          "max_y": 0.99,
+          "mean_speed": 0.23,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 37,
+          "max_y": 0.99,
+          "mean_speed": 0.2,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 35,
+          "max_y": 0.99,
+          "mean_speed": 0.11,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 33,
+          "max_y": 0.99,
+          "mean_speed": 0.11,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 29,
+          "max_y": 0.98,
+          "mean_speed": 0.14,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 28,
+          "max_y": 0.98,
+          "mean_speed": 0.19,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 28,
+          "max_y": 0.98,
+          "mean_speed": 0.16,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 22,
+          "max_y": 0.62,
+          "mean_speed": 0.18,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 22,
+          "max_y": 0.62,
+          "mean_speed": 0.15,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 21,
+          "max_y": 0.62,
+          "mean_speed": 0.15,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 21,
+          "max_y": 0.62,
+          "mean_speed": 0.15,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 20,
+          "max_y": 0.62,
+          "mean_speed": 0.18,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 17,
+          "max_y": 0.62,
+          "mean_speed": 0.25,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 16,
+          "max_y": 0.62,
+          "mean_speed": 0.08,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 14,
+          "max_y": 0.62,
+          "mean_speed": 0.1,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 14,
+          "max_y": 0.62,
+          "mean_speed": 0.07,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 13,
+          "max_y": 0.62,
+          "mean_speed": 0.05,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 13,
+          "max_y": 0.62,
+          "mean_speed": 0.04,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 13,
+          "max_y": 0.62,
+          "mean_speed": 0.04,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 178
+        },
+        {
+          "awake": 13,
+          "max_y": 0.62,
+          "mean_speed": 0.06,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 180
+        },
+        {
+          "awake": 13,
+          "max_y": 0.62,
+          "mean_speed": 0.08,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 182
+        },
+        {
+          "awake": 13,
+          "max_y": 0.62,
+          "mean_speed": 0.08,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 184
+        },
+        {
+          "awake": 7,
+          "max_y": 0.57,
+          "mean_speed": 0.11,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 186
+        },
+        {
+          "awake": 7,
+          "max_y": 0.56,
+          "mean_speed": 0.14,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 188
+        },
+        {
+          "awake": 7,
+          "max_y": 0.55,
+          "mean_speed": 0.14,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 190
+        },
+        {
+          "awake": 7,
+          "max_y": 0.54,
+          "mean_speed": 0.16,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 192
+        },
+        {
+          "awake": 6,
+          "max_y": 0.52,
+          "mean_speed": 0.22,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 194
+        },
+        {
+          "awake": 6,
+          "max_y": 0.52,
+          "mean_speed": 0.18,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 196
+        },
+        {
+          "awake": 6,
+          "max_y": 0.52,
+          "mean_speed": 0.09,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 198
+        },
+        {
+          "awake": 6,
+          "max_y": 0.52,
+          "mean_speed": 0.01,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 200
+        },
+        {
+          "awake": 5,
+          "max_y": 0.51,
+          "mean_speed": 0.05,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 202
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.05,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 204
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.07,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 206
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.02,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 208
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.01,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 210
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.01,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 212
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 214
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 216
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 218
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 220
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 222
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 224
+        },
+        {
+          "awake": 8,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 226
+        },
+        {
+          "awake": 5,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 228
+        },
+        {
+          "awake": 5,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 230
+        },
+        {
+          "awake": 5,
+          "max_y": 0.51,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 232
+        },
+        {
+          "awake": 1,
+          "max_y": 0.28,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 234
+        },
+        {
+          "awake": 1,
+          "max_y": 0.28,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 236
+        }
+      ],
+      "wake": {
+        "peak_awake": 120,
+        "peak_awake_tick": 0,
+        "peak_height": 9.06,
+        "peak_height_tick": 46
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          608.0,
+          1.5,
+          600.0
+        ],
+        "observer_distance": 9.45,
+        "point": [
+          600.0,
+          1.0,
+          605.0
+        ],
+        "power": 42.0,
+        "radius": 8.0
+      },
+      "earth": {
+        "debris_spawned": 0,
+        "height_cells_removed": 0
+      },
+      "felt": {
+        "observer_drift": 0.83,
+        "player_knock_peak": 3.8,
+        "shake_peak": 0.747,
+        "shake_seconds": 0.3
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 119,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 20.19,
+        "mean_launch_speed": 9.18,
+        "peak_speed": 20.19
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "pad",
+      "name": "pile_standard_shell",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 19.61,
+        "mean_displacement": 5.45,
+        "moved_over_half_metre": 120,
+        "structure_bricks": 120,
+        "surviving": 120
+      },
+      "settle": {
+        "seconds": 2.48,
+        "ticks": 149,
+        "timed_out": false
+      },
+      "structure": "pile",
+      "timeline": [
+        {
+          "awake": 119,
+          "max_y": 2.59,
+          "mean_speed": 9.18,
+          "moving": 118,
+          "shake": 0.747,
+          "tick": 0
+        },
+        {
+          "awake": 120,
+          "max_y": 2.85,
+          "mean_speed": 8.8,
+          "moving": 120,
+          "shake": 0.66,
+          "tick": 2
+        },
+        {
+          "awake": 120,
+          "max_y": 3.09,
+          "mean_speed": 8.48,
+          "moving": 119,
+          "shake": 0.573,
+          "tick": 4
+        },
+        {
+          "awake": 120,
+          "max_y": 3.3,
+          "mean_speed": 8.2,
+          "moving": 119,
+          "shake": 0.487,
+          "tick": 6
+        },
+        {
+          "awake": 120,
+          "max_y": 3.5,
+          "mean_speed": 7.94,
+          "moving": 120,
+          "shake": 0.4,
+          "tick": 8
+        },
+        {
+          "awake": 120,
+          "max_y": 3.68,
+          "mean_speed": 7.67,
+          "moving": 120,
+          "shake": 0.313,
+          "tick": 10
+        },
+        {
+          "awake": 120,
+          "max_y": 3.84,
+          "mean_speed": 7.39,
+          "moving": 120,
+          "shake": 0.227,
+          "tick": 12
+        },
+        {
+          "awake": 120,
+          "max_y": 3.97,
+          "mean_speed": 7.03,
+          "moving": 120,
+          "shake": 0.14,
+          "tick": 14
+        },
+        {
+          "awake": 120,
+          "max_y": 4.09,
+          "mean_speed": 6.75,
+          "moving": 120,
+          "shake": 0.053,
+          "tick": 16
+        },
+        {
+          "awake": 120,
+          "max_y": 4.18,
+          "mean_speed": 6.46,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 18
+        },
+        {
+          "awake": 120,
+          "max_y": 4.24,
+          "mean_speed": 6.18,
+          "moving": 120,
+          "shake": 0.0,
+          "tick": 20
+        },
+        {
+          "awake": 120,
+          "max_y": 4.29,
+          "mean_speed": 5.9,
+          "moving": 119,
+          "shake": 0.0,
+          "tick": 22
+        },
+        {
+          "awake": 120,
+          "max_y": 4.31,
+          "mean_speed": 5.72,
+          "moving": 118,
+          "shake": 0.0,
+          "tick": 24
+        },
+        {
+          "awake": 120,
+          "max_y": 4.31,
+          "mean_speed": 5.51,
+          "moving": 116,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 120,
+          "max_y": 4.29,
+          "mean_speed": 5.31,
+          "moving": 109,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 120,
+          "max_y": 4.25,
+          "mean_speed": 5.14,
+          "moving": 106,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 120,
+          "max_y": 4.18,
+          "mean_speed": 5.01,
+          "moving": 103,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 120,
+          "max_y": 4.1,
+          "mean_speed": 4.94,
+          "moving": 100,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 120,
+          "max_y": 3.99,
+          "mean_speed": 4.79,
+          "moving": 96,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 120,
+          "max_y": 3.86,
+          "mean_speed": 4.77,
+          "moving": 97,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 120,
+          "max_y": 3.7,
+          "mean_speed": 4.62,
+          "moving": 94,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 120,
+          "max_y": 3.53,
+          "mean_speed": 4.3,
+          "moving": 95,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 120,
+          "max_y": 3.34,
+          "mean_speed": 4.06,
+          "moving": 91,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 120,
+          "max_y": 3.12,
+          "mean_speed": 3.93,
+          "moving": 91,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 118,
+          "max_y": 2.89,
+          "mean_speed": 3.75,
+          "moving": 89,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 118,
+          "max_y": 2.63,
+          "mean_speed": 3.56,
+          "moving": 93,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 117,
+          "max_y": 2.41,
+          "mean_speed": 3.34,
+          "moving": 91,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 118,
+          "max_y": 2.18,
+          "mean_speed": 3.05,
+          "moving": 89,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 118,
+          "max_y": 1.94,
+          "mean_speed": 2.82,
+          "moving": 83,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 118,
+          "max_y": 1.67,
+          "mean_speed": 2.7,
+          "moving": 77,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 118,
+          "max_y": 1.54,
+          "mean_speed": 2.36,
+          "moving": 77,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 118,
+          "max_y": 1.56,
+          "mean_speed": 2.11,
+          "moving": 76,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 118,
+          "max_y": 1.56,
+          "mean_speed": 1.79,
+          "moving": 77,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 118,
+          "max_y": 1.55,
+          "mean_speed": 1.63,
+          "moving": 67,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 118,
+          "max_y": 1.53,
+          "mean_speed": 1.42,
+          "moving": 63,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 118,
+          "max_y": 1.52,
+          "mean_speed": 1.28,
+          "moving": 63,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 117,
+          "max_y": 1.53,
+          "mean_speed": 1.13,
+          "moving": 59,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 115,
+          "max_y": 1.55,
+          "mean_speed": 1.03,
+          "moving": 55,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 115,
+          "max_y": 1.57,
+          "mean_speed": 0.89,
+          "moving": 47,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 115,
+          "max_y": 1.57,
+          "mean_speed": 0.77,
+          "moving": 45,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 115,
+          "max_y": 1.58,
+          "mean_speed": 0.69,
+          "moving": 42,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 112,
+          "max_y": 1.58,
+          "mean_speed": 0.64,
+          "moving": 37,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 111,
+          "max_y": 1.57,
+          "mean_speed": 0.58,
+          "moving": 36,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 110,
+          "max_y": 1.56,
+          "mean_speed": 0.52,
+          "moving": 33,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 110,
+          "max_y": 1.55,
+          "mean_speed": 0.48,
+          "moving": 31,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 109,
+          "max_y": 1.54,
+          "mean_speed": 0.47,
+          "moving": 31,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 109,
+          "max_y": 1.52,
+          "mean_speed": 0.38,
+          "moving": 26,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 108,
+          "max_y": 1.51,
+          "mean_speed": 0.3,
+          "moving": 27,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 106,
+          "max_y": 1.48,
+          "mean_speed": 0.25,
+          "moving": 21,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 103,
+          "max_y": 1.45,
+          "mean_speed": 0.21,
+          "moving": 18,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 102,
+          "max_y": 1.4,
+          "mean_speed": 0.18,
+          "moving": 14,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 101,
+          "max_y": 1.34,
+          "mean_speed": 0.19,
+          "moving": 14,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 99,
+          "max_y": 1.27,
+          "mean_speed": 0.16,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 97,
+          "max_y": 1.24,
+          "mean_speed": 0.14,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 99,
+          "max_y": 1.24,
+          "mean_speed": 0.14,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 97,
+          "max_y": 1.24,
+          "mean_speed": 0.13,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 96,
+          "max_y": 1.24,
+          "mean_speed": 0.14,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 95,
+          "max_y": 1.24,
+          "mean_speed": 0.15,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 95,
+          "max_y": 1.24,
+          "mean_speed": 0.13,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 93,
+          "max_y": 1.24,
+          "mean_speed": 0.12,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 90,
+          "max_y": 1.24,
+          "mean_speed": 0.13,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 86,
+          "max_y": 1.24,
+          "mean_speed": 0.08,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 81,
+          "max_y": 1.24,
+          "mean_speed": 0.09,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 80,
+          "max_y": 1.24,
+          "mean_speed": 0.1,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 79,
+          "max_y": 1.24,
+          "mean_speed": 0.08,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 78,
+          "max_y": 1.24,
+          "mean_speed": 0.08,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 77,
+          "max_y": 1.24,
+          "mean_speed": 0.09,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 77,
+          "max_y": 1.24,
+          "mean_speed": 0.08,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 8,
+          "max_y": 0.47,
+          "mean_speed": 0.8,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 8,
+          "max_y": 0.43,
+          "mean_speed": 0.67,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 6,
+          "max_y": 0.39,
+          "mean_speed": 0.9,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 6,
+          "max_y": 0.34,
+          "mean_speed": 0.98,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 4,
+          "max_y": 0.27,
+          "mean_speed": 0.76,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 4,
+          "max_y": 0.25,
+          "mean_speed": 0.21,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 4,
+          "max_y": 0.25,
+          "mean_speed": 0.08,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 4,
+          "max_y": 0.25,
+          "mean_speed": 0.02,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 3,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 3,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 178
+        }
+      ],
+      "wake": {
+        "peak_awake": 120,
+        "peak_awake_tick": 2,
+        "peak_height": 4.32,
+        "peak_height_tick": 25
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          608.0,
+          1.5,
+          600.0
+        ],
+        "observer_distance": 8.02,
+        "point": [
+          600.0,
+          1.0,
+          600.0
+        ],
+        "power": 42.0,
+        "radius": 8.0
+      },
+      "earth": {
+        "debris_spawned": 0,
+        "height_cells_removed": 0
+      },
+      "felt": {
+        "observer_drift": 1.48,
+        "player_knock_peak": 7.3,
+        "shake_peak": 0.779,
+        "shake_seconds": 0.3
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 0,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 0.0,
+        "mean_launch_speed": 0.0,
+        "peak_speed": 0.0
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "pad",
+      "name": "empty_standard_shell",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 0.0,
+        "mean_displacement": 0.0,
+        "moved_over_half_metre": 0,
+        "structure_bricks": 0,
+        "surviving": 0
+      },
+      "settle": {
+        "seconds": 0.0,
+        "ticks": 0,
+        "timed_out": false
+      },
+      "structure": "none",
+      "timeline": [
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.779,
+          "tick": 0
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.692,
+          "tick": 2
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.605,
+          "tick": 4
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.519,
+          "tick": 6
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.432,
+          "tick": 8
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.345,
+          "tick": 10
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.259,
+          "tick": 12
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.172,
+          "tick": 14
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.085,
+          "tick": 16
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 18
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 20
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 22
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 24
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 28
+        }
+      ],
+      "wake": {
+        "peak_awake": 0,
+        "peak_awake_tick": 0,
+        "peak_height": 0.0,
+        "peak_height_tick": 0
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          -17.0,
+          1.5,
+          0.0
+        ],
+        "observer_distance": 8.06,
+        "point": [
+          -25.0,
+          0.5,
+          0.0
+        ],
+        "power": 42.0,
+        "radius": 8.0
+      },
+      "earth": {
+        "debris_spawned": 7,
+        "height_cells_removed": 18
+      },
+      "felt": {
+        "observer_drift": 1.56,
+        "player_knock_peak": 7.14,
+        "shake_peak": 0.778,
+        "shake_seconds": 0.3
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 11,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 34.35,
+        "mean_launch_speed": 21.44,
+        "peak_speed": 34.35
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "world",
+      "name": "earth_standard_shell",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 0.0,
+        "mean_displacement": 0.0,
+        "moved_over_half_metre": 0,
+        "structure_bricks": 0,
+        "surviving": 0
+      },
+      "settle": {
+        "seconds": 2.6,
+        "ticks": 156,
+        "timed_out": false
+      },
+      "structure": "none",
+      "timeline": [
+        {
+          "awake": 11,
+          "max_y": 2.16,
+          "mean_speed": 21.44,
+          "moving": 11,
+          "shake": 0.778,
+          "tick": 0
+        },
+        {
+          "awake": 11,
+          "max_y": 3.05,
+          "mean_speed": 20.92,
+          "moving": 11,
+          "shake": 0.691,
+          "tick": 2
+        },
+        {
+          "awake": 11,
+          "max_y": 3.92,
+          "mean_speed": 20.47,
+          "moving": 11,
+          "shake": 0.604,
+          "tick": 4
+        },
+        {
+          "awake": 14,
+          "max_y": 4.76,
+          "mean_speed": 15.77,
+          "moving": 14,
+          "shake": 0.518,
+          "tick": 6
+        },
+        {
+          "awake": 14,
+          "max_y": 5.58,
+          "mean_speed": 15.31,
+          "moving": 14,
+          "shake": 0.431,
+          "tick": 8
+        },
+        {
+          "awake": 14,
+          "max_y": 6.36,
+          "mean_speed": 14.72,
+          "moving": 13,
+          "shake": 0.344,
+          "tick": 10
+        },
+        {
+          "awake": 14,
+          "max_y": 7.12,
+          "mean_speed": 14.2,
+          "moving": 12,
+          "shake": 0.258,
+          "tick": 12
+        },
+        {
+          "awake": 14,
+          "max_y": 7.86,
+          "mean_speed": 13.85,
+          "moving": 12,
+          "shake": 0.171,
+          "tick": 14
+        },
+        {
+          "awake": 14,
+          "max_y": 8.56,
+          "mean_speed": 13.49,
+          "moving": 11,
+          "shake": 0.084,
+          "tick": 16
+        },
+        {
+          "awake": 14,
+          "max_y": 9.24,
+          "mean_speed": 13.18,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 18
+        },
+        {
+          "awake": 14,
+          "max_y": 9.9,
+          "mean_speed": 12.81,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 20
+        },
+        {
+          "awake": 14,
+          "max_y": 10.53,
+          "mean_speed": 12.49,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 22
+        },
+        {
+          "awake": 14,
+          "max_y": 11.13,
+          "mean_speed": 12.07,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 24
+        },
+        {
+          "awake": 14,
+          "max_y": 11.7,
+          "mean_speed": 11.77,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 14,
+          "max_y": 12.25,
+          "mean_speed": 11.49,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 14,
+          "max_y": 12.78,
+          "mean_speed": 11.23,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 14,
+          "max_y": 13.28,
+          "mean_speed": 10.97,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 14,
+          "max_y": 13.75,
+          "mean_speed": 10.71,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 10,
+          "max_y": 14.2,
+          "mean_speed": 14.66,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 10,
+          "max_y": 14.63,
+          "mean_speed": 14.33,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 7,
+          "max_y": 15.02,
+          "mean_speed": 20.02,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 7,
+          "max_y": 15.4,
+          "mean_speed": 19.59,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 7,
+          "max_y": 15.75,
+          "mean_speed": 19.18,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 7,
+          "max_y": 16.08,
+          "mean_speed": 18.79,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 7,
+          "max_y": 16.38,
+          "mean_speed": 18.43,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 7,
+          "max_y": 16.66,
+          "mean_speed": 18.08,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 7,
+          "max_y": 16.91,
+          "mean_speed": 17.77,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 7,
+          "max_y": 17.14,
+          "mean_speed": 17.47,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 7,
+          "max_y": 17.35,
+          "mean_speed": 17.2,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 7,
+          "max_y": 17.53,
+          "mean_speed": 16.96,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 7,
+          "max_y": 17.69,
+          "mean_speed": 16.74,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 7,
+          "max_y": 17.83,
+          "mean_speed": 16.55,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 7,
+          "max_y": 17.94,
+          "mean_speed": 16.39,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 7,
+          "max_y": 18.04,
+          "mean_speed": 16.25,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 7,
+          "max_y": 18.1,
+          "mean_speed": 16.14,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 7,
+          "max_y": 18.15,
+          "mean_speed": 16.06,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 7,
+          "max_y": 18.17,
+          "mean_speed": 16.01,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 7,
+          "max_y": 18.18,
+          "mean_speed": 15.98,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 7,
+          "max_y": 18.15,
+          "mean_speed": 15.99,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 7,
+          "max_y": 18.11,
+          "mean_speed": 16.01,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 7,
+          "max_y": 18.05,
+          "mean_speed": 16.07,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 7,
+          "max_y": 17.96,
+          "mean_speed": 16.15,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 7,
+          "max_y": 17.85,
+          "mean_speed": 16.26,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 7,
+          "max_y": 17.72,
+          "mean_speed": 16.39,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 7,
+          "max_y": 17.57,
+          "mean_speed": 16.54,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 7,
+          "max_y": 17.4,
+          "mean_speed": 16.71,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 7,
+          "max_y": 17.2,
+          "mean_speed": 16.91,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 7,
+          "max_y": 16.99,
+          "mean_speed": 17.12,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 7,
+          "max_y": 16.75,
+          "mean_speed": 17.35,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 7,
+          "max_y": 16.5,
+          "mean_speed": 17.6,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 7,
+          "max_y": 16.22,
+          "mean_speed": 17.87,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 7,
+          "max_y": 15.92,
+          "mean_speed": 18.15,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 7,
+          "max_y": 15.6,
+          "mean_speed": 18.45,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 7,
+          "max_y": 15.26,
+          "mean_speed": 18.76,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 7,
+          "max_y": 14.91,
+          "mean_speed": 19.08,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 7,
+          "max_y": 14.53,
+          "mean_speed": 19.41,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 7,
+          "max_y": 14.13,
+          "mean_speed": 19.76,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 7,
+          "max_y": 13.71,
+          "mean_speed": 20.11,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 7,
+          "max_y": 13.27,
+          "mean_speed": 20.47,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 7,
+          "max_y": 12.81,
+          "mean_speed": 20.84,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 7,
+          "max_y": 12.34,
+          "mean_speed": 17.76,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 7,
+          "max_y": 11.84,
+          "mean_speed": 18.08,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 7,
+          "max_y": 11.33,
+          "mean_speed": 18.41,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 7,
+          "max_y": 10.79,
+          "mean_speed": 18.75,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 7,
+          "max_y": 10.24,
+          "mean_speed": 19.09,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 7,
+          "max_y": 9.66,
+          "mean_speed": 16.05,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 7,
+          "max_y": 9.07,
+          "mean_speed": 16.32,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 7,
+          "max_y": 8.46,
+          "mean_speed": 16.61,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 7,
+          "max_y": 7.83,
+          "mean_speed": 16.9,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 15,
+          "max_y": 7.19,
+          "mean_speed": 6.65,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 15,
+          "max_y": 6.52,
+          "mean_speed": 6.59,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 15,
+          "max_y": 5.84,
+          "mean_speed": 6.62,
+          "moving": 5,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 15,
+          "max_y": 5.14,
+          "mean_speed": 6.68,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 15,
+          "max_y": 4.42,
+          "mean_speed": 6.77,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 14,
+          "max_y": 3.68,
+          "mean_speed": 7.38,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 14,
+          "max_y": 2.93,
+          "mean_speed": 5.6,
+          "moving": 4,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 14,
+          "max_y": 2.15,
+          "mean_speed": 5.66,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 14,
+          "max_y": 2.05,
+          "mean_speed": 3.81,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 14,
+          "max_y": 2.05,
+          "mean_speed": 1.91,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 14,
+          "max_y": 2.05,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 13,
+          "max_y": 2.02,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 13,
+          "max_y": 2.02,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 13,
+          "max_y": 2.02,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 13,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 4,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 4,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 4,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 4,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 4,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 4,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 178
+        },
+        {
+          "awake": 3,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 180
+        },
+        {
+          "awake": 3,
+          "max_y": 2.03,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 182
+        },
+        {
+          "awake": 2,
+          "max_y": 0.25,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 184
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 186
+        }
+      ],
+      "wake": {
+        "peak_awake": 15,
+        "peak_awake_tick": 138,
+        "peak_height": 18.18,
+        "peak_height_tick": 73
+      }
+    },
+    {
+      "charge": {
+        "above_shatter_threshold": true,
+        "observer_at": [
+          33.0,
+          1.5,
+          0.0
+        ],
+        "observer_distance": 8.06,
+        "point": [
+          25.0,
+          0.5,
+          0.0
+        ],
+        "power": 80.0,
+        "radius": 12.0
+      },
+      "earth": {
+        "debris_spawned": 8,
+        "height_cells_removed": 72
+      },
+      "felt": {
+        "observer_drift": 6.95,
+        "player_knock_peak": 23.56,
+        "shake_peak": 1.106,
+        "shake_seconds": 0.43
+      },
+      "impulse": {
+        "bricks_launched_first_tick": 13,
+        "ejection_artefacts": 0,
+        "max_launch_speed": 57.04,
+        "mean_launch_speed": 38.13,
+        "peak_speed": 57.04
+      },
+      "integrity": {
+        "stray_projectiles": 0
+      },
+      "isolation": "world",
+      "name": "earth_heavy_charge",
+      "scatter": {
+        "left_the_world": 0,
+        "max_displacement": 0.0,
+        "mean_displacement": 0.0,
+        "moved_over_half_metre": 0,
+        "structure_bricks": 0,
+        "surviving": 0
+      },
+      "settle": {
+        "seconds": 2.95,
+        "ticks": 177,
+        "timed_out": false
+      },
+      "structure": "none",
+      "timeline": [
+        {
+          "awake": 13,
+          "max_y": 2.47,
+          "mean_speed": 38.13,
+          "moving": 13,
+          "shake": 1.106,
+          "tick": 0
+        },
+        {
+          "awake": 13,
+          "max_y": 3.97,
+          "mean_speed": 37.48,
+          "moving": 13,
+          "shake": 1.019,
+          "tick": 2
+        },
+        {
+          "awake": 13,
+          "max_y": 5.45,
+          "mean_speed": 36.86,
+          "moving": 13,
+          "shake": 0.933,
+          "tick": 4
+        },
+        {
+          "awake": 13,
+          "max_y": 6.9,
+          "mean_speed": 36.25,
+          "moving": 13,
+          "shake": 0.846,
+          "tick": 6
+        },
+        {
+          "awake": 13,
+          "max_y": 8.31,
+          "mean_speed": 35.67,
+          "moving": 13,
+          "shake": 0.759,
+          "tick": 8
+        },
+        {
+          "awake": 13,
+          "max_y": 9.69,
+          "mean_speed": 35.12,
+          "moving": 13,
+          "shake": 0.673,
+          "tick": 10
+        },
+        {
+          "awake": 15,
+          "max_y": 11.05,
+          "mean_speed": 29.96,
+          "moving": 14,
+          "shake": 0.586,
+          "tick": 12
+        },
+        {
+          "awake": 16,
+          "max_y": 12.37,
+          "mean_speed": 27.63,
+          "moving": 16,
+          "shake": 0.499,
+          "tick": 14
+        },
+        {
+          "awake": 16,
+          "max_y": 13.66,
+          "mean_speed": 27.12,
+          "moving": 16,
+          "shake": 0.413,
+          "tick": 16
+        },
+        {
+          "awake": 17,
+          "max_y": 14.93,
+          "mean_speed": 25.12,
+          "moving": 17,
+          "shake": 0.326,
+          "tick": 18
+        },
+        {
+          "awake": 17,
+          "max_y": 16.16,
+          "mean_speed": 24.51,
+          "moving": 16,
+          "shake": 0.239,
+          "tick": 20
+        },
+        {
+          "awake": 17,
+          "max_y": 17.36,
+          "mean_speed": 23.96,
+          "moving": 16,
+          "shake": 0.153,
+          "tick": 22
+        },
+        {
+          "awake": 17,
+          "max_y": 18.54,
+          "mean_speed": 23.6,
+          "moving": 16,
+          "shake": 0.066,
+          "tick": 24
+        },
+        {
+          "awake": 17,
+          "max_y": 19.68,
+          "mean_speed": 23.24,
+          "moving": 15,
+          "shake": 0.0,
+          "tick": 26
+        },
+        {
+          "awake": 17,
+          "max_y": 20.8,
+          "mean_speed": 22.74,
+          "moving": 14,
+          "shake": 0.0,
+          "tick": 28
+        },
+        {
+          "awake": 17,
+          "max_y": 21.89,
+          "mean_speed": 21.91,
+          "moving": 12,
+          "shake": 0.0,
+          "tick": 30
+        },
+        {
+          "awake": 17,
+          "max_y": 22.95,
+          "mean_speed": 21.55,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 32
+        },
+        {
+          "awake": 17,
+          "max_y": 23.98,
+          "mean_speed": 21.23,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 34
+        },
+        {
+          "awake": 17,
+          "max_y": 24.98,
+          "mean_speed": 20.92,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 36
+        },
+        {
+          "awake": 17,
+          "max_y": 25.95,
+          "mean_speed": 20.62,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 38
+        },
+        {
+          "awake": 16,
+          "max_y": 26.9,
+          "mean_speed": 21.61,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 40
+        },
+        {
+          "awake": 16,
+          "max_y": 27.81,
+          "mean_speed": 21.15,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 42
+        },
+        {
+          "awake": 15,
+          "max_y": 28.7,
+          "mean_speed": 22.25,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 44
+        },
+        {
+          "awake": 15,
+          "max_y": 29.57,
+          "mean_speed": 21.96,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 46
+        },
+        {
+          "awake": 14,
+          "max_y": 30.4,
+          "mean_speed": 22.85,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 48
+        },
+        {
+          "awake": 14,
+          "max_y": 31.21,
+          "mean_speed": 21.86,
+          "moving": 11,
+          "shake": 0.0,
+          "tick": 50
+        },
+        {
+          "awake": 14,
+          "max_y": 31.99,
+          "mean_speed": 21.04,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 52
+        },
+        {
+          "awake": 14,
+          "max_y": 32.74,
+          "mean_speed": 20.66,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 54
+        },
+        {
+          "awake": 13,
+          "max_y": 33.47,
+          "mean_speed": 21.87,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 56
+        },
+        {
+          "awake": 11,
+          "max_y": 34.17,
+          "mean_speed": 25.43,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 58
+        },
+        {
+          "awake": 11,
+          "max_y": 34.85,
+          "mean_speed": 25.02,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 60
+        },
+        {
+          "awake": 11,
+          "max_y": 35.5,
+          "mean_speed": 24.64,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 62
+        },
+        {
+          "awake": 11,
+          "max_y": 36.12,
+          "mean_speed": 24.11,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 64
+        },
+        {
+          "awake": 11,
+          "max_y": 36.71,
+          "mean_speed": 23.7,
+          "moving": 10,
+          "shake": 0.0,
+          "tick": 66
+        },
+        {
+          "awake": 11,
+          "max_y": 37.28,
+          "mean_speed": 23.32,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 68
+        },
+        {
+          "awake": 11,
+          "max_y": 37.83,
+          "mean_speed": 23.0,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 70
+        },
+        {
+          "awake": 11,
+          "max_y": 38.35,
+          "mean_speed": 22.5,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 72
+        },
+        {
+          "awake": 11,
+          "max_y": 38.84,
+          "mean_speed": 22.17,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 74
+        },
+        {
+          "awake": 11,
+          "max_y": 39.31,
+          "mean_speed": 21.85,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 76
+        },
+        {
+          "awake": 11,
+          "max_y": 39.75,
+          "mean_speed": 21.55,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 78
+        },
+        {
+          "awake": 10,
+          "max_y": 40.17,
+          "mean_speed": 23.39,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 80
+        },
+        {
+          "awake": 10,
+          "max_y": 40.57,
+          "mean_speed": 23.1,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 82
+        },
+        {
+          "awake": 10,
+          "max_y": 40.94,
+          "mean_speed": 22.83,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 84
+        },
+        {
+          "awake": 10,
+          "max_y": 41.28,
+          "mean_speed": 22.57,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 86
+        },
+        {
+          "awake": 10,
+          "max_y": 41.6,
+          "mean_speed": 22.34,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 88
+        },
+        {
+          "awake": 9,
+          "max_y": 41.9,
+          "mean_speed": 24.58,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 90
+        },
+        {
+          "awake": 9,
+          "max_y": 42.17,
+          "mean_speed": 24.36,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 92
+        },
+        {
+          "awake": 9,
+          "max_y": 42.42,
+          "mean_speed": 24.15,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 94
+        },
+        {
+          "awake": 9,
+          "max_y": 42.65,
+          "mean_speed": 23.97,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 96
+        },
+        {
+          "awake": 9,
+          "max_y": 42.85,
+          "mean_speed": 23.81,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 98
+        },
+        {
+          "awake": 9,
+          "max_y": 43.03,
+          "mean_speed": 23.6,
+          "moving": 9,
+          "shake": 0.0,
+          "tick": 100
+        },
+        {
+          "awake": 9,
+          "max_y": 43.18,
+          "mean_speed": 22.97,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 102
+        },
+        {
+          "awake": 9,
+          "max_y": 43.32,
+          "mean_speed": 22.81,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 104
+        },
+        {
+          "awake": 9,
+          "max_y": 43.43,
+          "mean_speed": 22.66,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 106
+        },
+        {
+          "awake": 9,
+          "max_y": 43.51,
+          "mean_speed": 22.53,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 108
+        },
+        {
+          "awake": 9,
+          "max_y": 43.58,
+          "mean_speed": 22.42,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 110
+        },
+        {
+          "awake": 9,
+          "max_y": 43.62,
+          "mean_speed": 22.32,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 112
+        },
+        {
+          "awake": 9,
+          "max_y": 43.64,
+          "mean_speed": 22.24,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 114
+        },
+        {
+          "awake": 9,
+          "max_y": 43.63,
+          "mean_speed": 22.17,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 116
+        },
+        {
+          "awake": 9,
+          "max_y": 43.61,
+          "mean_speed": 22.12,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 118
+        },
+        {
+          "awake": 9,
+          "max_y": 43.56,
+          "mean_speed": 22.09,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 120
+        },
+        {
+          "awake": 9,
+          "max_y": 43.49,
+          "mean_speed": 22.07,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 122
+        },
+        {
+          "awake": 9,
+          "max_y": 43.4,
+          "mean_speed": 22.07,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 124
+        },
+        {
+          "awake": 9,
+          "max_y": 43.28,
+          "mean_speed": 22.08,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 126
+        },
+        {
+          "awake": 9,
+          "max_y": 43.15,
+          "mean_speed": 22.1,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 128
+        },
+        {
+          "awake": 8,
+          "max_y": 42.99,
+          "mean_speed": 24.91,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 130
+        },
+        {
+          "awake": 8,
+          "max_y": 42.82,
+          "mean_speed": 24.97,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 132
+        },
+        {
+          "awake": 8,
+          "max_y": 42.62,
+          "mean_speed": 25.05,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 134
+        },
+        {
+          "awake": 8,
+          "max_y": 42.4,
+          "mean_speed": 25.15,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 136
+        },
+        {
+          "awake": 8,
+          "max_y": 42.16,
+          "mean_speed": 25.25,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 138
+        },
+        {
+          "awake": 8,
+          "max_y": 41.9,
+          "mean_speed": 25.37,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 140
+        },
+        {
+          "awake": 8,
+          "max_y": 41.62,
+          "mean_speed": 25.51,
+          "moving": 8,
+          "shake": 0.0,
+          "tick": 142
+        },
+        {
+          "awake": 7,
+          "max_y": 41.31,
+          "mean_speed": 25.59,
+          "moving": 7,
+          "shake": 0.0,
+          "tick": 144
+        },
+        {
+          "awake": 6,
+          "max_y": 40.99,
+          "mean_speed": 25.79,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 146
+        },
+        {
+          "awake": 6,
+          "max_y": 40.65,
+          "mean_speed": 25.97,
+          "moving": 6,
+          "shake": 0.0,
+          "tick": 148
+        },
+        {
+          "awake": 3,
+          "max_y": 38.37,
+          "mean_speed": 26.43,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 150
+        },
+        {
+          "awake": 3,
+          "max_y": 37.97,
+          "mean_speed": 26.65,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 152
+        },
+        {
+          "awake": 3,
+          "max_y": 37.55,
+          "mean_speed": 26.88,
+          "moving": 3,
+          "shake": 0.0,
+          "tick": 154
+        },
+        {
+          "awake": 2,
+          "max_y": 37.1,
+          "mean_speed": 25.62,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 156
+        },
+        {
+          "awake": 2,
+          "max_y": 36.64,
+          "mean_speed": 25.86,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 158
+        },
+        {
+          "awake": 2,
+          "max_y": 36.16,
+          "mean_speed": 26.12,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 160
+        },
+        {
+          "awake": 2,
+          "max_y": 35.66,
+          "mean_speed": 26.38,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 162
+        },
+        {
+          "awake": 2,
+          "max_y": 35.14,
+          "mean_speed": 26.66,
+          "moving": 2,
+          "shake": 0.0,
+          "tick": 164
+        },
+        {
+          "awake": 1,
+          "max_y": 34.6,
+          "mean_speed": 25.08,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 166
+        },
+        {
+          "awake": 1,
+          "max_y": 34.04,
+          "mean_speed": 25.37,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 168
+        },
+        {
+          "awake": 1,
+          "max_y": 33.47,
+          "mean_speed": 25.67,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 170
+        },
+        {
+          "awake": 1,
+          "max_y": 32.87,
+          "mean_speed": 25.97,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 172
+        },
+        {
+          "awake": 1,
+          "max_y": 32.26,
+          "mean_speed": 26.28,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 174
+        },
+        {
+          "awake": 1,
+          "max_y": 31.62,
+          "mean_speed": 26.6,
+          "moving": 1,
+          "shake": 0.0,
+          "tick": 176
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 178
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 180
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 182
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 184
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 186
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 188
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 190
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 192
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 194
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 196
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 198
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 200
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 202
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 204
+        },
+        {
+          "awake": 0,
+          "max_y": 0.0,
+          "mean_speed": 0.0,
+          "moving": 0,
+          "shake": 0.0,
+          "tick": 206
+        }
+      ],
+      "wake": {
+        "peak_awake": 17,
+        "peak_awake_tick": 18,
+        "peak_height": 43.64,
+        "peak_height_tick": 115
+      }
+    }
+  ],
+  "seed": 20260730,
+  "settle_speed_threshold": 0.3,
+  "stray_projectiles": 0
+}

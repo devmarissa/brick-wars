@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+#
+# Git pre-push hook. Install it with tools/install-hooks.sh.
+#
+# It runs tools/check.sh and refuses the push if anything fails. That is the entire hook —
+# the rules live in check.sh so that the hook, a manual run, and CI can never disagree
+# about what "green" means.
+#
+# To push anyway: git push --no-verify. That exists on purpose, because a gate you cannot
+# override in an emergency is a gate people stop using. It should feel like a decision.
+
+ROOT="$(git rev-parse --show-toplevel)"
+
+if ! "$ROOT/tools/check.sh"; then
+  echo
+  echo "push refused — check.sh is not green."
+  echo "fix it, or push with --no-verify if you know exactly why you're doing that."
+  exit 1
+fi

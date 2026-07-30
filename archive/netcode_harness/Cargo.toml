@@ -1,0 +1,28 @@
+[package]
+name = "brickfield-harness"
+version = "0.1.0"
+edition = "2021"
+description = "BRICKFIELD harness: netcode sim, physics, sharding, real-socket load test, and fused server."
+
+[[bin]]
+name = "harness"
+path = "src/main.rs"
+[[bin]]
+name = "physics"
+path = "src/physics.rs"
+[[bin]]
+name = "shard"
+path = "src/shard.rs"
+[[bin]]
+name = "netload"
+path = "src/netload.rs"
+[[bin]]
+name = "fused"
+path = "src/fused.rs"
+
+[dependencies]
+rapier3d = "0.22"
+
+[profile.release]
+opt-level = 3
+codegen-units = 1

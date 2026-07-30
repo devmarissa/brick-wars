@@ -1,0 +1,18 @@
+# Godot's import cache. Regenerated on first open, different on every machine, and a
+# constant source of meaningless diffs.
+.godot/
+game/android/
+export_presets.cfg
+
+# The archived Bevy prototype's Rust build output — 7.8 GB of it, next to 56 KB of source.
+# The source is the part worth keeping; this is regenerable and enormous.
+archive/rust_bevy_prototype/target/
+
+# Fixture *runs*. The captures under blast-fixture/reference/ are committed deliberately —
+# they are the baseline, and a baseline that isn't in version control isn't a baseline.
+# Everything a comparison run produces on the way to checking against them is disposable.
+blast-fixture/out/
+blast-fixture/runs/
+
+.DS_Store
+*.tmp

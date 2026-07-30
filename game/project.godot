@@ -1,0 +1,33 @@
+; BRICK WARS — the rebuild. Godot 4.7 + Jolt Physics.
+;
+; The three physics values below are PROVEN FACTS, not preferences
+; (BUILD-ORDER §1a). They are the fix for the entire "world never sleeps,
+; FPS tanks" class of bug that cost us the Rust build. `core/physics`
+; verifies them at boot and the headless test fails if they drift, so
+; changing one here without meaning to cannot pass CI.
+
+config_version=5
+
+[application]
+
+config/name="Brick Wars"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+
+[display]
+
+window/size/viewport_width=1440
+window/size/viewport_height=900
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+3d/default_gravity=20.0
+; Jolt's default sleep threshold (0.03 m/s) is so strict that settled rubble
+; piles micro-jitter above it forever and never sleep. 0.35 lets visibly-still
+; bricks doze off, which is what makes thousands of them affordable.
+jolt_physics_3d/simulation/sleep_velocity_threshold=0.35
+
+[rendering]
+
+renderer/rendering_method="forward_plus"

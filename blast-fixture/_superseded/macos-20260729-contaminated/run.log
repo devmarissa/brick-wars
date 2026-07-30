@@ -1,0 +1,25 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+Metal 4.0 - Forward+ - Using Device #0: Apple - Apple M4 (Apple9)
+
+BLAST at 600.0,1.0,605.0 affected 120 bricks
+BLAST at 606.0,1.5,599.2 affected 14 bricks
+  → wall_standard_shell      120 moved · peak  112.3 m/s ·   3.5 m high · shake 0.75 · knock   4.7 · settled 3.40 s
+BLAST at 600.0,1.0,605.0 affected 120 bricks
+BLAST at 599.1,0.7,599.6 affected 29 bricks
+BLAST at 600.9,1.0,600.0 affected 25 bricks
+  → wall_light_charge        100 moved · peak   36.3 m/s ·   2.9 m high · shake 0.29 · knock   1.6 · settled 4.28 s
+BLAST at 600.0,1.5,602.0 affected 120 bricks
+  → wall_heavy_point_blank   120 moved · peak   44.0 m/s ·  21.8 m high · shake 1.10 · knock  23.1 · settled 4.17 s
+BLAST at 600.0,6.0,600.0 affected 120 bricks
+  → wall_airburst            120 moved · peak   17.9 m/s ·   9.1 m high · shake 0.75 · knock   6.9 · settled 3.43 s
+BLAST at 600.0,1.0,605.0 affected 119 bricks
+  → pile_standard_shell      120 moved · peak   20.2 m/s ·   4.3 m high · shake 0.75 · knock   3.8 · settled 2.48 s
+  → empty_standard_shell       0 moved · peak    0.0 m/s ·   0.0 m high · shake 0.78 · knock   7.3 · settled 0.00 s
+EARTH carved 18 cells
+BLAST at -25.0,0.5,0.0 affected 11 bricks
+  → earth_standard_shell       0 moved · peak   34.4 m/s ·  18.2 m high · shake 0.78 · knock   7.1 · settled 2.60 s
+EARTH carved 72 cells
+BLAST at 25.0,0.5,0.0 affected 13 bricks
+  → earth_heavy_charge         0 moved · peak   57.0 m/s ·  43.6 m high · shake 1.11 · knock  23.6 · settled 2.95 s
+
+FIXTURE DONE → res://fixture_out/blast_baseline.json
