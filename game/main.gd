@@ -26,3 +26,12 @@ func _ready() -> void:
 	print("boot ok — %d modules, %d still stubs" % [
 		kernel.order.size(), kernel.stub_names().size()])
 	print("order: ", ", ".join(kernel.order))
+
+	# In boot order, so what a module says arrives after whatever it was built on top of.
+	for name in kernel.order:
+		var module := kernel.get_module(StringName(name))
+		if module == null:
+			continue
+		var said := module.summary()
+		if said != "":
+			print(said)

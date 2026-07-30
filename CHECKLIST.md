@@ -88,7 +88,16 @@ period, it belongs in Part IV.*
 
 - [x] Palette as core data (`core/data/palette.json`) — authored fresh rather than lifted out
       of `main.gd`, since the old build is archived; six colours carry a written exemption
-- [ ] Part tables extracted from build code into data files
+- [x] Part tables extracted from build code into data files — `core/mode/greybox.gd` is
+      deleted; its 114 `spawn_brick` calls are now `packs/core/wall_sandbag.json`, and the
+      C0 "brick" turned out to be a 1.0 × 0.5 × 0.5 m sandbag weighing 540 kg. The shipped
+      bag is 0.5 × 0.2 × 0.2 m at ~30 kg
+- [x] **Shipped content declares `mass` where the module floor lies** — the 0.1 m module
+      makes a crate's boards 10 cm thick, so a plank crate *derives* to 360 kg and a barrel's
+      steel hoop to two tonnes. The crates, the barrel and the watchtower now state a mass;
+      the cairn stays derived, because 4.6 t is honest for a pile of stone. First use of the
+      override in real content, and the boot log marks every one of them `(declared)`.
+      **Worth your eye — this is a scale decision, not a bug fix**
 - [x] Materials as core data (`core/data/materials.json`), loaded before anything else — 33
       of them, not the 30 MATERIAL-SPEC §5 says in its first line
 - [x] Pack loader: read manifest, validate, register content

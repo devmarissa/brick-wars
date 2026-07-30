@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "id": "core:barrel",
+  "kind": "prop",
+  "name": "Barrel",
+  "class": "small_prop",
+  "hollow": true,
+  "mass": 45,
+  "parts": [
+    { "name": "stave_n",  "offset": [  0, 7, -5], "size": [ 7, 14, 2], "material": "plank" },
+    { "name": "stave_s",  "offset": [  0, 7,  5], "size": [ 7, 14, 2], "material": "plank" },
+    { "name": "stave_e",  "offset": [  5, 7,  0], "size": [ 2, 14, 7], "material": "plank" },
+    { "name": "stave_w",  "offset": [ -5, 7,  0], "size": [ 2, 14, 7], "material": "plank" },
+    { "name": "stave_ne", "offset": [  4, 7, -4], "size": [ 4, 14, 4], "rotation": [0, 45, 0], "material": "plank", "colour": "wood2" },
+    { "name": "stave_sw", "offset": [ -4, 7,  4], "size": [ 4, 14, 4], "rotation": [0, 45, 0], "material": "plank", "colour": "wood2" },
+    { "name": "hoop",     "shape": "cylinder", "offset": [0, 7, 0], "rotation": [90, 0, 0], "size": [13, 13, 2], "material": "steel" }
+  ],
+  "collider": [
+    { "offset": [0, 7, 0], "size": [12, 14, 12] }
+  ]
+}

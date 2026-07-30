@@ -120,7 +120,9 @@ func _brick_body(asset: ResolvedAsset, entry: Dictionary, hollow: bool,
 
 	var mesh := _mesh_of(asset, part, entry["index"], palette)
 	var jitter := PartPlacement.jitter_basis(asset, part, entry["index"])
-	mesh.transform = Transform3D(jitter * mesh.basis, mesh.origin)
+	# `basis` and `position`, not `origin` — `Node3D` exposes the first two and a `Transform3D`
+	# exposes the third, and the two vocabularies sit close enough together to cost an hour.
+	mesh.transform = Transform3D(jitter * mesh.basis, mesh.position)
 	body.add_child(mesh)
 
 	var shape := CollisionShape3D.new()

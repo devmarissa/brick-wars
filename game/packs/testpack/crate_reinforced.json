@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "id": "crate_reinforced",
+  "extends": "core:crate",
+  "name": "Reinforced Crate",
+  "class": "large_prop",
+  "mass": 60,
+  "parts+": [
+    {"name": "corner_nw", "offset": [-5, 5, -5], "size": [2, 10, 2], "material": "steel", "colour": "gunmetal"},
+    {"name": "corner_ne", "offset": [5, 5, -5], "size": [2, 10, 2], "material": "steel", "colour": "gunmetal"},
+    {"name": "corner_sw", "offset": [-5, 5, 5], "size": [2, 10, 2], "material": "steel", "colour": "gunmetal"},
+    {"name": "corner_se", "offset": [5, 5, 5], "size": [2, 10, 2], "material": "steel", "colour": "gunmetal"}
+  ]
+}

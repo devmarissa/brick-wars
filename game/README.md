@@ -10,13 +10,16 @@ Open `game/` in Godot and press play, or from the repo root:
     godot --path game                                    # play it
     godot --headless --path game res://tests/test_main.tscn   # run the tests
     ./tools/check.sh                                     # run the whole gate
-    ./tools/screenshot.sh docs/c0_greybox.png            # take a picture of it
+    ./tools/screenshot.sh docs/c1_sandbox.png            # take a picture of it
 
-At C0 there is nothing to *do* — a wall of 114 bricks drops, settles, and goes to sleep,
-and the HUD tells you how many are awake. That number reaching zero and staying there is
-the entire point of the milestone.
+There is still nothing to *do*. What there is, is a world made entirely out of files: a
+sandbag wall, a watchtower, three crates and a barrel from `packs/core`, plus a cairn and a
+reinforced crate from `packs/testpack` — every one of them read, resolved, validated and
+built through the same path a workshop upload would take. The HUD counts bricks and how
+many are still awake; that second number reaching zero and staying there is inherited from
+C0 and still the cheapest proof the physics is behaving.
 
-![the C0 grey box](docs/c0_greybox.png)
+![the C1 sandbox](docs/c1_sandbox.png)
 
 ## How it's put together
 
@@ -35,14 +38,26 @@ deliberate act visible in a diff, and reaching for a global is not.
 Ten of the thirteen modules are stubs. They say so — `module_is_stub()` returns true and
 the test suite prints the count — so a skeleton is never mistaken for a core.
 
-## What's real at C0
+## What's real at C1
 
 - **`physics`** — spawns bricks, verifies the three proven Jolt values at boot, and owns
   the delayed-sleep pattern. `SLEEP_DELAY_TICKS` is not a workaround to tidy up later; see
   `tests/cases/case_sleep_pattern.gd` for what happens without it.
-- **`mode`** — builds the grey box world. Thrown away entirely when C1 can build a wall
-  from JSON, which is why nothing in `core/mode/greybox.gd` is worth arguing about.
+- **`content`** — the palette, the material table, the slot registry, pack discovery and
+  ordering, the reader, the `extends` resolver, the validator and the builder. This is the
+  milestone: `core/mode/greybox.gd` used to build its wall with 114 `spawn_brick` calls and
+  it has been deleted, because the same wall now comes out of
+  `packs/core/wall_sandbag.json`.
+- **`mode`** — `core/mode/sandbox.gd`: a plate, a sun, a camera, and a `LAYOUT` table
+  naming which asset stands where. *Where* things go is still code, deliberately — a
+  map format is C7's problem, and a table turns into a file with a reader rather than a
+  rewrite.
 - **`ui`** — two numbers in the corner.
+
+Each module gets one line in the boot log via `summary()`, which is the cheapest diagnostic
+in the project. If the palette loses a colour or the sandbox builds six assets instead of
+seven, it shows up there rather than in a screenshot somebody has to squint at — and the
+mass column is how the 540 kg sandbag got caught.
 
 ## Rules that are enforced, not suggested
 

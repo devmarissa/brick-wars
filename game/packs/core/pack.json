@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "core",
+  "name": "Brick Wars Core",
+  "author": "Brick Wars",
+  "version": "0.1.0",
+  "core_version": ">=0.1.0",
+  "depends": []
+}

@@ -46,6 +46,13 @@ func module_init() -> void:
 func module_ready() -> void:
 	pass
 
+## What this module has to say for itself once it is up, or "" for nothing. Printed by
+## `main.gd` in boot order, and it is the cheapest diagnostic in the project: if the palette
+## suddenly has nineteen colours, or the sandbox spawns six assets instead of seven, that
+## shows up in one line of the boot log rather than in a screenshot somebody has to squint at.
+func summary() -> String:
+	return ""
+
 ## Reach another module. Refuses anything not declared in `module_depends()`, which is
 ## what stops this from decaying back into one file where everything knows everything.
 func use(other: StringName) -> Module:

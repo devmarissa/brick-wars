@@ -1,0 +1,20 @@
+{
+  "format": 1,
+  "id": "core:crate",
+  "kind": "prop",
+  "name": "Crate",
+  "class": "small_prop",
+  "hollow": true,
+  "mass": 32,
+  "parts": [
+    { "name": "floor",  "offset": [ 0,  1,  0], "size": [10,  1, 10], "material": "plank" },
+    { "name": "lid",    "offset": [ 0, 10,  0], "size": [10,  1, 10], "material": "plank" },
+    { "name": "side_n", "offset": [ 0,  5, -5], "size": [10, 10,  1], "material": "plank", "colour": "wood2" },
+    { "name": "side_s", "offset": [ 0,  5,  5], "size": [10, 10,  1], "material": "plank", "colour": "wood2" },
+    { "name": "side_e", "offset": [ 5,  5,  0], "size": [ 1, 10, 10], "material": "plank" },
+    { "name": "side_w", "offset": [-5,  5,  0], "size": [ 1, 10, 10], "material": "plank" }
+  ],
+  "collider": [
+    { "offset": [0, 5, 0], "size": [10, 11, 10] }
+  ]
+}

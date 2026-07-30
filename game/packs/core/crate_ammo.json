@@ -1,0 +1,11 @@
+{
+  "format": 1,
+  "id": "core:crate_ammo",
+  "extends": "core:crate",
+  "name": "Ammunition Crate",
+  "mass": 55,
+  "parts+": [
+    { "name": "band_lower", "offset": [0, 3, 0], "size": [12, 1, 12], "material": "steel" },
+    { "name": "band_upper", "offset": [0, 8, 0], "size": [12, 1, 12], "material": "steel" }
+  ]
+}

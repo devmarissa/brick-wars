@@ -1,0 +1,11 @@
+{
+  "format": 1,
+  "id": "testpack",
+  "name": "TESTPACK",
+  "author": "Brick Wars",
+  "version": "0.1.0",
+  "core_version": ">=0.1.0",
+  "depends": [
+    { "id": "core", "version": ">=0.1.0" }
+  ]
+}

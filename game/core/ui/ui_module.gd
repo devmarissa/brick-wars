@@ -44,5 +44,5 @@ func _process(dt: float) -> void:
 	if _acc < REFRESH_SECONDS:
 		return
 	_acc = 0.0
-	label.text = "BRICK WARS — C0 skeleton\nbricks %d · awake %d · %d fps" % [
+	label.text = "BRICK WARS — C1 content\nbricks %d · awake %d · %d fps" % [
 		_physics.count_bricks(), _physics.count_awake(), Engine.get_frames_per_second()]
