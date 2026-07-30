@@ -191,6 +191,18 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 - [~] Jump (height, gravity, air control) — same, retuned. Jump 6 m/s against 22 m/s² of
       gravity, a little over 0.8 m of clearance: enough for a crater lip, not for a wall.
       No air control at all yet, which is a decision nobody has made rather than one made.
+- [ ] **Creature-vs-creature collision response** — *added 30 Jul from Marissa watching the
+      sandbox*: when the soldier and the horse meet they "kind of fling out then continue
+      back on their paths". Not on any list before this; it becomes visible the moment there
+      are two creatures, which is now.
+      **Ruled out by measurement, so nobody repeats it:** a head-on meeting is clean — worst
+      single-frame move 0.0367 m for the body and 0.0384 for the meshes, against 0.0367 of
+      walking, so neither the collider nor the rig jumps. Yaw never exceeds its own cap. The
+      two do meet in the sandbox, but only after about forty seconds of drifting off their
+      demo circles on the slope.
+      **Not yet tried:** a glancing meeting rather than head-on, and one creature catching the
+      top edge of the other's lower collider box — the horse's is a 0.8 m step, and a
+      `CharacterBody3D` that half-mounts a box and falls off it would look exactly like a fling.
 - [ ] Explosion knockback
 - [ ] Mantle / vault (against real terrain slope and trench walls, not a fixed step height)
 - [ ] Crouch (lower profile, slower move)
@@ -233,7 +245,10 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       number now would be a guess about the largest consumer of the thing being budgeted.
       Both rules stay dormant regardless — there is not a physical constraint anywhere in
       the build, so a rule counting them would pass on all content.
-- [~] **C2's done-condition walked, and it holds.** A soldier defined entirely in data walks,
+- [x] **C2's done-condition walked, and it holds.** Signed off by Marissa 30 Jul, after
+      watching it, running the gate, and reading the deviations. Her two observations from
+      that pass — the planted-foot slip while turning, and the collision fling — are one
+      fixed and one filed above. A soldier defined entirely in data walks,
       sprints and jumps over uneven ground with its feet planting; a four-legged creature does
       it through the same system, out of a non-core pack. Both halves are in `case_walker.gd`
       against real physics.
