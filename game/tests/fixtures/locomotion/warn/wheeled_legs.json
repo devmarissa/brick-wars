@@ -1,0 +1,23 @@
+{
+  "format": 1,
+  "id": "warn:wheeled_legs",
+  "kind": "prop",
+  "name": "A Wheeled Thing With A Leg Table",
+  "class": "small_prop",
+  "_warns": "`type: wheeled` with `legs` and `gaits` still in the file. Warned rather than refused, and the reason is a real workflow: this is what a pack looks like halfway through being converted from one locomotion type to another, and refusing it would stop a vehicle loading over two fields nothing reads. The warning has to say the fields are ignored, because the failure it prevents is an author retuning a stride for an hour on a thing that has wheels.",
+  "parts": [
+    { "name": "hull", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "strut", "parent": "hull", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shoe", "parent": "strut", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": {
+    "type": "wheeled",
+    "legs": [{ "root": "strut", "foot": "shoe", "phase": 0.0 }],
+    "gaits": [{ "name": "roll", "speed": [0, 9], "phases": [0.0], "stride": 2.0, "lift": 0.0 }]
+  }
+}

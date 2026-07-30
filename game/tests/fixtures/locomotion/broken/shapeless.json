@@ -1,0 +1,19 @@
+{
+  "format": 1,
+  "id": "broken:shapeless",
+  "kind": "prop",
+  "name": "Locomotion That Is Not An Object",
+  "class": "small_prop",
+  "_breaks": "`locomotion` is a string. The natural mistake — the field's most interesting value is its `type`, so writing the type alone reads as reasonable. It is also the shape that would take the rules down with a script error rather than report themselves, which is why the check is a `typeof` before anything else touches the block.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": "legged"
+}

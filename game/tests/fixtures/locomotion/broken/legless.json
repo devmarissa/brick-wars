@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "id": "broken:legless",
+  "kind": "prop",
+  "name": "Legged With Neither Legs Nor Gaits",
+  "class": "small_prop",
+  "_breaks": "`type: legged` and nothing for the driver to run — no `legs`, no `gaits`. This is the silent failure the whole file exists for: `Locomotion.setup` returns false, `step` returns an empty dictionary, and the creature holds its rest pose for the rest of the match without one line in the log. Two errors from one asset, and both have to appear — an author who added `legs` and ran again should not then discover `gaits`.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": {
+    "type": "legged",
+    "body_bob": 0.1
+  }
+}

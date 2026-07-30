@@ -1,0 +1,35 @@
+{
+  "format": 1,
+  "id": "core:straight",
+  "kind": "prop",
+  "name": "Test Biped, Straight At Rest",
+  "class": "small_prop",
+  "_note": "The degenerate case, on purpose, and the reason it is a fixture rather than a thing to avoid: this is what an author writes when they lay a leg out without thinking about the knee. Both bones of each leg run straight down the same line, so the knee sits exactly on the hip-to-ankle line and there is nothing in the rest pose that says which way it bends. `Leg._bend` has to notice, warn in words that name the fix, and fall back to FORWARD rather than hand the solver a zero vector; `reach` has to bottom out at `MIN_REACH` rather than go negative. `biped.json` is the same creature authored properly, and the pair is what makes either of them mean anything.",
+  "_soles_below_the_origin": "The other reason this fixture exists, and it is why it has two legs rather than one. Its hip is 20 modules up and its legs are 24 long, so both soles rest 0.4 m BELOW the asset's origin — which makes `stand` 0.4 rather than 0. Every other fixture here is authored the sane way, with its soles at the origin, and for those `stand` comes out 0 whatever formula produced it: a sign error and a sum-instead-of-a-mean are both invisible. Here a lost sign reads -0.4 and a sum reads 0.8, so `Locomotion._measure` is actually pinned. Found by mutation-testing the line and watching the suite stay green.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [8, 4, 4], "material": "plank" },
+    { "name": "thigh_l", "parent": "hip", "offset": [-3, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin_l", "parent": "thigh_l", "offset": [0, 0, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "thigh_r", "parent": "hip", "offset": [3, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin_r", "parent": "thigh_r", "offset": [0, 0, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 9, 0], "size": [8, 26, 4] }],
+  "locomotion": {
+    "type": "legged",
+    "legs": [
+      { "root": "thigh_l", "foot": "shin_l", "phase": 0.0 },
+      { "root": "thigh_r", "foot": "shin_r", "phase": 0.5 }
+    ],
+    "gaits": [
+      { "name": "walk", "speed": [0, 3], "phases": [0.0, 0.5], "stride": 1.2, "lift": 0.15, "duty": 0.7 }
+    ]
+  }
+}

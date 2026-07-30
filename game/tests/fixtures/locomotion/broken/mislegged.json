@@ -1,0 +1,32 @@
+{
+  "format": 1,
+  "id": "broken:mislegged",
+  "kind": "prop",
+  "name": "Three Legs, Three Different Mistakes",
+  "class": "small_prop",
+  "_breaks": "The three ways a leg fails to name a chain in this asset, one per entry. Leg 1's `root` is `thig`, a typo, and the message has to offer `thigh` — a leg that silently does not resolve is a limb frozen mid-walk while its opposite number strides. Leg 2 names `thigh` as both `root` and `foot`, which is one bone and nothing for a two-bone solver to bend. Leg 3 runs from `thigh` to `arm`, and `arm` hangs off the hip rather than off the thigh — the entry looks entirely reasonable in isolation and is only wrong relative to the hierarchy, which is why the check has to walk `parent` rather than trust the names. `phases` is sized 3 on purpose so the gait rules stay quiet and these three are the only complaints.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "arm", "parent": "hip", "offset": [4, 0, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 8], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-45, 45], "rest": 0, "pivot": [0, 0, 4] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": {
+    "type": "legged",
+    "legs": [
+      { "root": "thig", "foot": "shin", "phase": 0.0 },
+      { "root": "thigh", "foot": "thigh", "phase": 0.33 },
+      { "root": "thigh", "foot": "arm", "phase": 0.66 }
+    ],
+    "gaits": [
+      { "name": "walk", "speed": [0, 4], "phases": [0.0, 0.33, 0.66], "stride": 1.2, "lift": 0.2, "duty": 0.7 }
+    ]
+  }
+}

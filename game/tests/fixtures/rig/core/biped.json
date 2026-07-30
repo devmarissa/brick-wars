@@ -1,0 +1,88 @@
+{
+  "format": 1,
+  "id": "core:biped",
+  "kind": "prop",
+  "name": "Test Biped",
+  "class": "small_prop",
+  "_note": "Two legs and a pelvis, authored so every number the locomotion driver derives can be worked out with a pencil. Like `leg.json` this is whole modules and right angles only: each bone points down its own -Z (ART-BIBLE §7), is sized `[thickness, thickness, length]`, and pivots at its own top end. It is a `prop` rather than a `character` because what is under test is arithmetic, and a kind with a slot would drag a stat block into it.",
+  "_bent": "The one thing that is NOT a straight line, and it is the point of the fixture: each shin's top sits 2 modules FORWARD of its thigh's bottom. That jog is what gives `Leg._bend` something to read — the knee is off the hip-to-ankle line, so the bend direction comes out FORWARD (-Z), which is what a human knee does. A shin hung straight below its thigh would leave `bend` a guess and collapse `reach` to `MIN_REACH`, which is the degenerate case `core:leg` is and this one deliberately is not. It is bent by geometry rather than by a `rest` angle so the rest pose is the authored pose and stays hand-checkable. The visible 0.2 m step at the knee is the cost, and on a box creature it is a fair price for exact numbers.",
+  "_derived": "Hip joint (-0.3, 2.4, 0); knee (-0.3, 1.2, -0.2); ankle (-0.3, 0, -0.2); sole (-0.3, 0, -0.8). span = 1.2 + 1.2 + 0.6 = 3.0. reach = 3.0 - sqrt(6.4) = 0.4702. drop = 3.0 - 2.4 = 0.6. stand = 0, because the soles sit at the asset's own origin — an asset stands on its origin.",
+  "parts": [
+    {
+      "name": "pelvis",
+      "offset": [0, 24, 0],
+      "size": [8, 4, 4],
+      "material": "plank"
+    },
+    {
+      "name": "thigh_l",
+      "parent": "pelvis",
+      "offset": [-3, -6, 0],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "shin_l",
+      "parent": "thigh_l",
+      "offset": [0, 2, -12],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "foot_l",
+      "parent": "shin_l",
+      "offset": [0, 3, -6],
+      "rotation": [90, 0, 0],
+      "size": [2, 2, 6],
+      "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 3] }
+    },
+    {
+      "name": "thigh_r",
+      "parent": "pelvis",
+      "offset": [3, -6, 0],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "shin_r",
+      "parent": "thigh_r",
+      "offset": [0, 2, -12],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "foot_r",
+      "parent": "shin_r",
+      "offset": [0, 3, -6],
+      "rotation": [90, 0, 0],
+      "size": [2, 2, 6],
+      "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 3] }
+    }
+  ],
+  "collider": [
+    { "offset": [0, 12, 0], "size": [8, 28, 4] }
+  ],
+  "locomotion": {
+    "type": "legged",
+    "_note": "Two gaits whose ranges touch rather than overlap, which is the case `Gait._band` blends across a tenth of the narrower range. Phases half a cycle apart, because that is what walking on two legs is.",
+    "legs": [
+      { "root": "thigh_l", "foot": "foot_l", "phase": 0.0 },
+      { "root": "thigh_r", "foot": "foot_r", "phase": 0.5 }
+    ],
+    "gaits": [
+      { "name": "walk", "speed": [0, 3], "phases": [0.0, 0.5], "stride": 1.2, "lift": 0.15, "duty": 0.7 },
+      { "name": "run", "speed": [3, 8], "phases": [0.0, 0.5], "stride": 2.0, "lift": 0.35, "duty": 0.45 }
+    ],
+    "body_bob": 0.06,
+    "body_pitch": 0.1,
+    "lean_into_turn": 0.2
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "id": "broken:typeless",
+  "kind": "prop",
+  "name": "Locomotion With No Type",
+  "class": "small_prop",
+  "_breaks": "No `type`, so nothing knows which driver to run. Also carries `body_lean`, which is not a `locomotion` field — a plausible misremembering of `lean_into_turn`, and the warning has to name it rather than silently ignore it. The pair is deliberate: the unknown-field warning is emitted before the type check bails, so this asset proves the bail does not swallow it.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": {
+    "body_lean": 0.3,
+    "legs": [{ "root": "thigh", "foot": "shin", "phase": 0.0 }]
+  }
+}

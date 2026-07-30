@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "warn",
+  "name": "Locomotion Fixtures — Odd But Loadable",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": [],
+  "_note": "The other half of the story, and the half that is easy to get wrong: these assets are odd enough to be worth a word and not wrong enough to refuse. They live in their own pack precisely so the test can assert that `broken` being disabled does not take them with it — a warning that quietly costs a pack its place in the world is a rule nobody can afford to trip."
+}

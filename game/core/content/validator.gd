@@ -89,6 +89,12 @@ func _validate(asset: ResolvedAsset, index: AssetIndex, materials: MaterialSet,
 	var rig_rules := RigRules.new()
 	rig_rules.check(asset, asset_at)
 
+	# The `locomotion` block is checked against the same whole table, for the same reason: a
+	# leg is a claim about which parts descend from which, and no single part can answer it.
+	# `LocomotionRules` folds `GaitRules` in and reports both under its own lists.
+	var locomotion_rules := LocomotionRules.new()
+	locomotion_rules.check(asset, asset_at)
+
 	var parts := asset.parts()
 	var part_rules := PartRules.new()
 	for i in parts.size():
@@ -109,6 +115,7 @@ func _validate(asset: ResolvedAsset, index: AssetIndex, materials: MaterialSet,
 	_collect(asset, rules.errors, rules.warnings, problems)
 	_collect(asset, part_rules.errors, part_rules.warnings, problems)
 	_collect(asset, rig_rules.errors, rig_rules.warnings, problems)
+	_collect(asset, locomotion_rules.errors, locomotion_rules.warnings, problems)
 
 
 ## FORMAT-SPEC §11. Not a §10 rule, but it decides whether the rest of the checks mean

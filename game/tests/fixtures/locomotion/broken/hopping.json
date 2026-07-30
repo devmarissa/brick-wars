@@ -1,0 +1,23 @@
+{
+  "format": 1,
+  "id": "broken:hopping",
+  "kind": "prop",
+  "name": "A Locomotion Type Core Does Not Have",
+  "class": "small_prop",
+  "_breaks": "`type: hopping`, which is not one of RIG-SPEC §5's six. A pack cannot invent one for the same reason it cannot invent a joint type: each name in that set is a driver somebody in core had to write, and an invented one is an asset that loads and then never moves. The message has to list the six, because an author who wanted a hopping thing needs to know `legged` is the row they are looking for.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": {
+    "type": "hopping",
+    "legs": [{ "root": "thigh", "foot": "shin", "phase": 0.0 }],
+    "gaits": [{ "name": "hop", "speed": [0, 4], "phases": [0.0], "stride": 1.0, "lift": 0.4 }]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "format": 1,
+  "id": "broken:misgaited",
+  "kind": "prop",
+  "name": "One Leg, Every Gait Number Wrong",
+  "class": "small_prop",
+  "_breaks": "Every gait number the driver reads and then quietly does nothing useful with. `stride: 0` makes `Gait.advance` return 0, so the phase never moves and the foot stays planted while the body slides — the symptom is a creature skating and the cause is a field with no name on screen. `duty: 1.5` is clamped to 0.95 by `Gait.foot_cycle`, so it loads and means a foot that never leaves the ground. `lift: -0.05` is a foot that digs in. `speed: [6, 2]` is a range no speed is inside, so the gait never runs at all. `phases` has two entries for one leg, which `Locomotion.step` half-ignores and `Gait._mix_phases` refuses to blend. The second gait has no `name`, so nothing can report or match on it. `bounce` is not a gait field.",
+  "parts": [
+    { "name": "hip", "offset": [0, 20, 0], "size": [4, 4, 4], "material": "plank" },
+    { "name": "thigh", "parent": "hip", "offset": [0, -6, 0], "rotation": [-90, 0, 0],
+      "size": [2, 2, 12], "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] } },
+    { "name": "shin", "parent": "thigh", "offset": [0, 2, -12], "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] } }
+  ],
+  "collider": [{ "offset": [0, 10, 0], "size": [4, 24, 4] }],
+  "locomotion": {
+    "type": "legged",
+    "legs": [{ "root": "thigh", "foot": "shin", "phase": 0.0 }],
+    "gaits": [
+      { "name": "shuffle", "speed": [6, 2], "phases": [0.0, 0.5], "stride": 0, "lift": -0.05,
+        "duty": 1.5, "bounce": 2 },
+      { "speed": [0, 1], "stride": 1.0, "lift": 0.1 }
+    ]
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "format": 1,
+  "id": "core:quadruped",
+  "kind": "prop",
+  "name": "Test Quadruped",
+  "class": "large_prop",
+  "_note": "Four legs on a body, and the fixture that holds down the sentence RIG-SPEC §4 spends a paragraph on: a human knee points forward and a horse's hock points backward, and the difference is read off the rest pose rather than declared. The forelegs' shins jog 2 modules FORWARD of their thighs, so their `bend` comes out -Z; the hind legs' jog 2 modules BACKWARD, so theirs comes out +Z. Same code, opposite answer, no field. Whole modules and right angles throughout, as `leg.json` and `biped.json` are.",
+  "_asymmetric": "The front and back legs are deliberately different lengths, and not for looks. `Locomotion._measure` takes `drop` as the MINIMUM across the legs — the most constrained leg is what decides how far the body may ride above the lowest foot — and a fixture whose legs all had the same drop could not tell a minimum from a maximum. Forelegs: span 2.8, hip at 2.4, drop 0.4. Hind legs: span 2.6, hip at 2.0, drop 0.6. So `drop` is 0.4, and a `_measure` that took the maximum would say 0.6.",
+  "_derived": "Foreleg: hip (±0.3, 2.4, -0.9), knee (±0.3, 1.2, -1.1), ankle (±0.3, 0, -1.1), sole (±0.3, 0, -1.5); span 2.8, reach = 2.8 - sqrt(6.12) = 0.3261. Hind leg: hip (±0.3, 2.0, 0.9), knee (±0.3, 0.8, 1.1), ankle (±0.3, 0, 1.1), sole (±0.3, 0, 0.5); span 2.6, reach = 2.6 - sqrt(4.16) = 0.5604. Every sole sits at y = 0, so stand = 0.",
+  "parts": [
+    {
+      "name": "body",
+      "offset": [0, 24, 0],
+      "size": [8, 6, 24],
+      "material": "plank"
+    },
+    {
+      "name": "foreleg_l_upper",
+      "parent": "body",
+      "offset": [-3, -6, -9],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "foreleg_l_lower",
+      "parent": "foreleg_l_upper",
+      "offset": [0, 2, -12],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "hoof_l",
+      "parent": "foreleg_l_lower",
+      "offset": [0, 2, -6],
+      "rotation": [90, 0, 0],
+      "size": [2, 2, 4],
+      "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 2] }
+    },
+    {
+      "name": "foreleg_r_upper",
+      "parent": "body",
+      "offset": [3, -6, -9],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "foreleg_r_lower",
+      "parent": "foreleg_r_upper",
+      "offset": [0, 2, -12],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "hoof_r",
+      "parent": "foreleg_r_lower",
+      "offset": [0, 2, -6],
+      "rotation": [90, 0, 0],
+      "size": [2, 2, 4],
+      "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 2] }
+    },
+    {
+      "name": "hindleg_l_upper",
+      "parent": "body",
+      "offset": [-3, -10, 9],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "hindleg_l_lower",
+      "parent": "hindleg_l_upper",
+      "offset": [0, -2, -10],
+      "size": [2, 2, 8],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 4] }
+    },
+    {
+      "name": "hoof_bl",
+      "parent": "hindleg_l_lower",
+      "offset": [0, 3, -4],
+      "rotation": [90, 0, 0],
+      "size": [2, 2, 6],
+      "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 3] }
+    },
+    {
+      "name": "hindleg_r_upper",
+      "parent": "body",
+      "offset": [3, -10, 9],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 12],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-90, 20], "rest": 0, "pivot": [0, 0, 6] }
+    },
+    {
+      "name": "hindleg_r_lower",
+      "parent": "hindleg_r_upper",
+      "offset": [0, -2, -10],
+      "size": [2, 2, 8],
+      "material": "plank",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 140], "rest": 0, "pivot": [0, 0, 4] }
+    },
+    {
+      "name": "hoof_br",
+      "parent": "hindleg_r_lower",
+      "offset": [0, 3, -4],
+      "rotation": [90, 0, 0],
+      "size": [2, 2, 6],
+      "material": "plank",
+      "joint": { "type": "fixed", "pivot": [0, 0, 3] }
+    }
+  ],
+  "collider": [
+    { "offset": [0, 24, 0], "size": [8, 6, 24] }
+  ],
+  "locomotion": {
+    "type": "legged",
+    "_note": "RIG-SPEC §5's own gait table, near enough: three gaits whose ranges touch, a trot that fires the diagonal pairs together, and a gallop whose duty puts the whole animal briefly in the air. Leg order is fore-left, fore-right, hind-left, hind-right, and every `phases` array is in that order.",
+    "legs": [
+      { "root": "foreleg_l_upper", "foot": "hoof_l", "phase": 0.0 },
+      { "root": "foreleg_r_upper", "foot": "hoof_r", "phase": 0.5 },
+      { "root": "hindleg_l_upper", "foot": "hoof_bl", "phase": 0.5 },
+      { "root": "hindleg_r_upper", "foot": "hoof_br", "phase": 0.0 }
+    ],
+    "gaits": [
+      { "name": "walk", "speed": [0, 4], "phases": [0.0, 0.5, 0.25, 0.75], "stride": 1.2, "lift": 0.25, "duty": 0.7 },
+      { "name": "trot", "speed": [4, 9], "phases": [0.0, 0.5, 0.5, 0.0], "stride": 2.0, "lift": 0.45, "duty": 0.5 },
+      { "name": "gallop", "speed": [9, 20], "phases": [0.0, 0.1, 0.5, 0.6], "stride": 3.4, "lift": 0.8, "duty": 0.35 }
+    ],
+    "body_bob": 0.12,
+    "body_pitch": 0.08,
+    "lean_into_turn": 0.3
+  }
+}

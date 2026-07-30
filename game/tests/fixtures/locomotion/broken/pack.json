@@ -1,0 +1,9 @@
+{
+  "format": 1,
+  "id": "broken",
+  "name": "Locomotion Fixtures — Wrong On Purpose",
+  "version": "0.1.0",
+  "core_version": "*",
+  "depends": [],
+  "_note": "Every asset in here breaks `locomotion` rules deliberately, so the whole pack is expected to be refused. It cannot live under `fixtures/rig/` — `case_rig.gd` asserts that nothing in that root is refused, and it is right to. Each file's `_breaks` field lists the rules it is here to trip, and each part table is a minimal three-bone leg so the mistake under test is the only thing wrong with it."
+}
