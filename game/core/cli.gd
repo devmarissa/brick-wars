@@ -5,11 +5,12 @@ extends RefCounted
 ## Everything here is a *diagnostic* flag, and that is a deliberate limit. The moment the
 ## command line can change how the game plays, two people running the same build are running
 ## different games and neither of them knows it. These three only ask the game questions:
-## which packs did you look at, what did this asset resolve to, and where did each field of
-## it come from.
+## which packs did you look at, what did this asset resolve to, where did each field of it come
+## from, and what did the rig system make of it.
 ##
 ##     godot --headless --path game -- --resolve core:crate_ammo
 ##     godot --headless --path game -- --resolve core:barrel --part hoop
+##     godot --headless --path game -- --rig core:soldier
 ##     godot --headless --path game -- --pack-root res://tests/fixtures/broken
 ##
 ## `--pack-root` is the one that earns its keep beyond authoring. A pack that fails has to
@@ -22,12 +23,13 @@ extends RefCounted
 
 ## Flags that take exactly one value. Anything else is a usage error rather than a silent
 ## no-op, since a mistyped diagnostic that prints nothing looks identical to a clean result.
-const TAKES_VALUE := ["--resolve", "--part", "--pack-root", "--shot", "--settle"]
+const TAKES_VALUE := ["--resolve", "--part", "--rig", "--pack-root", "--shot", "--settle"]
 
 static var _shared: CLI = null
 
 var resolve_id := ""                    ## `--resolve <pack:asset>`
 var part_name := ""                     ## `--part <name>`, narrows the dump to one part
+var rig_id := ""                        ## `--rig <pack:asset>`
 var pack_roots: Array[String] = []      ## `--pack-root <path>`, repeatable
 var errors: Array[String] = []          ## problems with the arguments themselves
 
@@ -43,6 +45,10 @@ var settle_seconds := 0.0               ## `--settle <seconds>`, 0 meaning the t
 ## such asset" is still a useful answer, but it is not a successful one, and a script driving
 ## this needs the exit code to say so.
 var resolve_ok := false
+
+## Same for `--rig`. Separate flags rather than one, because a script that asks both questions
+## needs to know which of the two it got a useful answer to.
+var rig_ok := false
 
 
 ## The real command line, parsed on first use and remembered. Both `main.gd` and the content
@@ -63,6 +69,7 @@ static func use(cli: CLI) -> void:
 func parse(args: PackedStringArray) -> void:
 	resolve_id = ""
 	part_name = ""
+	rig_id = ""
 	pack_roots.clear()
 	errors.clear()
 	shot_path = ""
@@ -93,6 +100,8 @@ func parse(args: PackedStringArray) -> void:
 				resolve_id = value
 			"--part":
 				part_name = value
+			"--rig":
+				rig_id = value
 			"--pack-root":
 				pack_roots.append(value)
 			"--shot":
@@ -111,9 +120,13 @@ func wants_resolve() -> bool:
 	return resolve_id != ""
 
 
+func wants_rig() -> bool:
+	return rig_id != ""
+
+
 static func usage() -> String:
-	return ("Known: --resolve <pack:asset>, --part <name>, --pack-root <path>, "
-		+ "--shot <path>, --settle <seconds>.")
+	return ("Known: --resolve <pack:asset>, --part <name>, --rig <pack:asset>, "
+		+ "--pack-root <path>, --shot <path>, --settle <seconds>.")
 
 
 ## The dump the flag asks for, or a refusal that says which of the two things went wrong —
@@ -143,3 +156,19 @@ func _no_such_asset(content: Module) -> String:
 			resolve_id, pack, ", ".join(content.pack_roots())]
 	return "no `%s` — that pack is loaded and has no asset by that name. It has: %s" % [
 		resolve_id, ", ".join(content.index.ids_in(StringName(pack)))]
+
+
+## What the rig system made of an asset — `RigReport`, which owns the formatting. Built here
+## rather than in the report because building needs the material set and the palette, and the
+## content module is what has them.
+func rig_report(content: Module) -> String:
+	rig_ok = false
+	var asset: ResolvedAsset = content.resolver.get_asset(rig_id)
+	if asset == null:
+		var was := resolve_id
+		resolve_id = rig_id
+		var said := _no_such_asset(content)
+		resolve_id = was
+		return said
+	rig_ok = true
+	return RigReport.of(asset, AssetBuilder.new().build(asset, content.materials, content.palette))

@@ -48,12 +48,19 @@ func _ready() -> void:
 	# Last, and only if asked. A `--resolve` dump arrives *after* the boot log on purpose:
 	# the most common reason a field came from somewhere surprising is that a pack above it
 	# got disabled, and that is three lines up rather than in the dump.
-	if cli.wants_resolve():
+	if cli.wants_resolve() or cli.wants_rig():
 		var content := kernel.get_module(&"content")
 		if content == null:
-			print("--resolve: the content module did not boot, so nothing is resolved")
+			print("the content module did not boot, so there is nothing to report on")
 			get_tree().quit(CLI_FAILED)
 			return
-		print("")
-		print(cli.resolve_report(content))
-		get_tree().quit(0 if cli.resolve_ok else CLI_FAILED)
+		var answered := true
+		if cli.wants_resolve():
+			print("")
+			print(cli.resolve_report(content))
+			answered = cli.resolve_ok
+		if cli.wants_rig():
+			print("")
+			print(cli.rig_report(content))
+			answered = answered and cli.rig_ok
+		get_tree().quit(0 if answered else CLI_FAILED)

@@ -84,6 +84,24 @@ lowest foot the body's origin may sit*, and `Locomotion` passes `drop`, which is
 legs' `span − hip height`. Both are the same quantity under two names. If either gets renamed,
 rename both.
 
+### B6. `skin` was a palette colour no material would accept, and now `hide` accepts it
+
+Core data, changed rather than worked around. `palette.json` declares `skin` and argues for it at
+length — it is the only entry that breaks two palette laws, and its own `why` says that is
+deliberate because *"faces have to read at range against every terrain colour in the file, and
+every terrain colour in the file is a mid-value brown"*. So the palette was written in the
+expectation of faces.
+
+No material listed it in `colour_allow`. Not `hide`, not `canvas`, not anything — which means
+that from C1 until now the colour was unreachable: declared, argued for, and refused by every
+material in the game. `core:soldier` is the first asset that ever asked for it, and the refusal it
+got was correct and useless.
+
+`skin` is now on `hide`'s list, which is where it belongs — `hide` *is* skin, and a face is the
+only thing that would use it. One word of data, no spec edit, because `colour_allow` is a data
+concept that MATERIAL-SPEC's table does not describe. Reversible by deleting it, at the cost of
+the soldier's head and hands going back to `tan`.
+
 ### B5. The test fixtures are bent by an offset jog, not by a `rest` angle
 
 `biped.json` and `quadruped.json` need genuinely bent legs, or `bend` is a guess and `reach`
@@ -124,3 +142,34 @@ Three cases needed the same fifteen lines of "load a fixture root through the re
 is one static helper now. `case_rig.gd` (300 lines) and `case_validator.gd` (299) still carry their
 own copies and were left alone, because folding them in means editing a file that has no room for
 the edit. Whoever next needs a line in either of them should fold it in then.
+
+---
+
+## D · Untested, and named rather than left quiet
+
+Both of these are RIG-SPEC §9 claims — the "two clients would disagree" kind — and the mutation
+harness (`caught 10, missed 0`) does not cover either. Recorded here rather than left as a silent
+gap, because #69 cannot honestly say C2 is verified while they are unmentioned.
+
+### D1. The order inside `step()` has no test
+
+`Locomotion.step`'s docstring emphasises this hardest of anything in the file: feet are planted
+against the transform that came in, the new body height and tilt are computed from where they
+landed, and only then are the world foot targets brought into the *new* body's space to be solved.
+Doing it the other way round costs exactly one frame of lag — invisible standing still, and read
+as skating feet the moment the creature turns.
+
+Nothing fails if that order is reversed. The discriminating invariant is that after a `step`, a
+stance leg's *posed* sole in world space should coincide with the `plant` position it was solved
+to, and that stops being true the moment the basis or the height changes between the two halves.
+Writing it needs a posed-sole-to-world helper that does not exist yet.
+
+### D2. The hang lag's frame-rate independence has no test
+
+`_solve` uses `1 − e^(−rate·dt)` rather than `rate · dt` precisely so that a fetlock does not lag
+further on a slow machine. `case_body.gd`'s `_same_answer_every_time` proves two identical runs
+agree, which is determinism and a different claim. The test would be that one step of `dt` and two
+of `dt/2` land on the same hang direction — exact for the exponential and visibly not for a lerp —
+and it needs a non-level body basis to have anything to converge toward, since with an identity
+basis the hang starts at its own target and never moves.
+

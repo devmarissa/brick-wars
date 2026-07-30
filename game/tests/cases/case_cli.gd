@@ -31,6 +31,7 @@ func run(t: TestContext) -> void:
 	_refusals(t)
 	_a_broken_pack_takes_nothing_with_it(t)
 	_the_provenance_dump(t)
+	_the_rig_report(t)
 	_the_milestones_own_two_files(t)
 
 
@@ -204,6 +205,52 @@ func _the_provenance_dump(t: TestContext) -> void:
 		"asking for a part that is not there lists the ones that are")
 
 
+## `--rig`, which is the instrument `core:soldier` was authored with. What it prints is
+## everything the rig system *derived*, and none of that is written in the file: a leg pivots
+## half its own length along its own axis and `offset` must be whole modules, so a soldier is
+## authored axis-aligned and bent by `rest` angles — and then the numbers that decide whether it
+## works (is the sole on the ground? does the knee bend forward?) are trigonometry nobody does in
+## their head. Asserted here because a flag with no test is a flag that quietly stops printing.
+func _the_rig_report(t: TestContext) -> void:
+	var world := _boot_with("")
+	var soldier: ResolvedAsset = (world["resolver"] as AssetResolver).get_asset("core:soldier")
+	t.ok(soldier != null, "the soldier resolved — 15 parts, `kind` character, `slot` infantry")
+	if soldier == null:
+		return
+
+	var built := AssetBuilder.new().build(soldier, world["materials"], world["palette"])
+	var report := RigReport.of(soldier, built)
+	t.ok(report.begins_with("core:soldier"), "the report opens with what it is about")
+	t.ok(report.contains("bones — 15"), "and counts the bones: " + report.get_slice("\n", 2))
+	t.ok(report.contains("thigh_l → shin_l → foot_l"),
+		"names each leg as the chain the solver will run on")
+	t.ok(report.contains("hinge [-40, 120] about x, rest 24"),
+		"prints each joint with the limits and the rest angle it idles at")
+
+	# The line the authoring loop is for. A soldier standing at its own origin has `stand` at
+	# zero, and a knee that bends the wrong way is the failure that reads as a broken creature
+	# long before anybody can say which number did it.
+	t.ok(report.contains("(forward, like a knee)"),
+		"and says in words which way the knee bends, not only as a vector")
+	t.ok(not report.contains("like a hock"), "which for a soldier is not backward")
+	t.ok(not report.contains("reach is at its floor"),
+		"with no leg left straight enough for its reach to bottom out")
+
+	# An asset with no joints has no rig, which is most of them. Saying so and naming the flag
+	# that *would* help is the difference between a dead end and a redirect.
+	var crate: ResolvedAsset = (world["resolver"] as AssetResolver).get_asset("core:crate")
+	var flat := RigReport.of(crate, AssetBuilder.new().build(crate, world["materials"],
+		world["palette"]))
+	t.ok(flat.contains("no rig"), "an asset with no joints is told it has no rig")
+	t.ok(flat.contains("--resolve core:crate"), "and pointed at the dump that does apply to it")
+
+	var cli := CLI.new()
+	cli.parse(PackedStringArray(["--rig", "core:soldier"]))
+	t.ok(cli.errors.is_empty() and cli.wants_rig(), "`--rig <asset>` parses")
+	t.eq(cli.rig_id, "core:soldier", "and carries the id it was given")
+	t.ok(CLI.usage().contains("--rig"), "and the usage line mentions it")
+
+
 ## Boot the shipped pack roots, optionally with one more — the same call the content module
 ## makes, so this cannot pass against a path the game does not use.
 func _boot_with(extra_root: String) -> Dictionary:
@@ -227,7 +274,8 @@ func _boot_with(extra_root: String) -> Dictionary:
 	var validator := AssetValidator.new()
 	validator.validate_all(resolver, index, packs, materials, palette, slots)
 
-	return { "packs": packs, "index": index, "resolver": resolver }
+	return { "packs": packs, "index": index, "resolver": resolver,
+		"materials": materials, "palette": palette }
 
 
 ## One line of a dump by its leading label, or "" if there isn't one. Matching on the label

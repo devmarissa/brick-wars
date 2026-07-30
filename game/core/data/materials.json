@@ -295,7 +295,8 @@
       "work_rate": 1.10, "flammability": 0.50,
       "fire": { "burn_rate": 0.8, "fuel": 12, "spread_radius": 0.8, "on_burnt": "charred", "becomes": null, "smoke": 0.9 },
       "failure": "tear",
-      "colour": "tan", "colour_allow": ["tan", "webbing", "wood2"]
+      "_skin": "`skin` is on this list because `hide` is the only material a face can be made of, and the palette put `skin` there for faces — its own note says it breaks two palette laws on purpose because 'faces have to read at range against every terrain colour in the file'. No material claimed it, so until `core:soldier` needed a head the colour was unreachable: declared, argued for, and refused by every material in the game. Added at C2 rather than at C1 because a soldier is the first asset that ever asked. DEVIATIONS-C2 B6.",
+      "colour": "tan", "colour_allow": ["tan", "webbing", "wood2", "skin"]
     },
     "rope": {
       "class": "fabric", "density": 900, "hardness": 1, "integrity": 12,

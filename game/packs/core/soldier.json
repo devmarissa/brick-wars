@@ -1,0 +1,177 @@
+{
+  "format": 1,
+  "id": "core:soldier",
+  "kind": "character",
+  "name": "Soldier",
+  "class": "soldier",
+  "slot": "infantry",
+  "body": "single",
+  "mass": 80,
+  "_note": "The core body, and nothing on top of it: no helmet, no kit, no faction colour (BUILD-ORDER C2). 1.8 m tall — 18 modules, ART-BIBLE §2's own figure — and 15 parts, which is that table's soldier standard. A pack dresses this; core owns the skeleton and the way it moves.",
+  "_bent_by_rest_angles": "Every bone here is authored pointing straight down its own -Z with a whole-module `offset`, and the legs are bent by `rest` angles on their joints rather than by the geometry. That is not a style choice, it is the only thing that works: `offset` must be a whole number of modules and a bone pivots half its own length along its own axis, so a bone rotated by anything that is not a multiple of 90° puts its joint at an irrational position and there is no legal `offset` that reconnects the chain to it. `rest` is plain degrees on a joint and is constrained by nothing, and `Rig.build` applies it — so the rest pose comes out bent while the file stays on the grid. The fixtures under `tests/fixtures/rig/` do it the other way, with a small offset jog, because their whole point is that every number can be checked with a pencil; see DEVIATIONS-C2 B5.",
+  "_derived": "Read with `--rig core:soldier` rather than worked out here. The numbers that matter — where the sole ends up, how far the body can drop, which way each knee bends — are all consequences of the rest angles below, and the report is what they were tuned against.",
+  "parts": [
+    {
+      "name": "pelvis",
+      "offset": [0, 11, 0],
+      "size": [6, 3, 3],
+      "material": "canvas",
+      "colour": "canvas"
+    },
+    {
+      "name": "torso",
+      "parent": "pelvis",
+      "offset": [0, 2, 0],
+      "size": [6, 4, 3],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-20, 30], "rest": 0 }
+    },
+    {
+      "name": "head",
+      "parent": "torso",
+      "offset": [0, 3, 0],
+      "size": [4, 4, 4],
+      "material": "hide",
+      "colour": "skin",
+      "joint": { "type": "ball", "limits": [-70, 70], "rest": 0 }
+    },
+
+    {
+      "name": "upper_arm_l",
+      "parent": "torso",
+      "offset": [-4, -1, 0],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 4],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 60], "rest": 8, "pivot": [0, 0, 2] }
+    },
+    {
+      "name": "forearm_l",
+      "parent": "upper_arm_l",
+      "offset": [0, 0, -4],
+      "size": [2, 2, 4],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 150], "rest": 12, "pivot": [0, 0, 2] }
+    },
+    {
+      "name": "hand_l",
+      "parent": "forearm_l",
+      "offset": [0, 0, -3],
+      "size": [2, 2, 2],
+      "material": "hide",
+      "colour": "skin",
+      "joint": { "type": "fixed", "pivot": [0, 0, 1] }
+    },
+
+    {
+      "name": "upper_arm_r",
+      "parent": "torso",
+      "offset": [4, -1, 0],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 4],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 60], "rest": 8, "pivot": [0, 0, 2] }
+    },
+    {
+      "name": "forearm_r",
+      "parent": "upper_arm_r",
+      "offset": [0, 0, -4],
+      "size": [2, 2, 4],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [0, 150], "rest": 12, "pivot": [0, 0, 2] }
+    },
+    {
+      "name": "hand_r",
+      "parent": "forearm_r",
+      "offset": [0, 0, -3],
+      "size": [2, 2, 2],
+      "material": "hide",
+      "colour": "skin",
+      "joint": { "type": "fixed", "pivot": [0, 0, 1] }
+    },
+
+    {
+      "name": "thigh_l",
+      "parent": "pelvis",
+      "offset": [-2, -3, 0],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 6],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 24, "pivot": [0, 0, 3] }
+    },
+    {
+      "name": "shin_l",
+      "parent": "thigh_l",
+      "offset": [0, 0, -6],
+      "size": [2, 2, 6],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -48, "pivot": [0, 0, 3] }
+    },
+    {
+      "name": "foot_l",
+      "parent": "shin_l",
+      "offset": [0, 1, -3],
+      "rotation": [90, 0, 0],
+      "size": [3, 2, 2],
+      "material": "hide",
+      "colour": "webbing",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": 24, "pivot": [0, 0, 1] }
+    },
+
+    {
+      "name": "thigh_r",
+      "parent": "pelvis",
+      "offset": [2, -3, 0],
+      "rotation": [-90, 0, 0],
+      "size": [2, 2, 6],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 24, "pivot": [0, 0, 3] }
+    },
+    {
+      "name": "shin_r",
+      "parent": "thigh_r",
+      "offset": [0, 0, -6],
+      "size": [2, 2, 6],
+      "material": "canvas",
+      "colour": "canvas",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -48, "pivot": [0, 0, 3] }
+    },
+    {
+      "name": "foot_r",
+      "parent": "shin_r",
+      "offset": [0, 1, -3],
+      "rotation": [90, 0, 0],
+      "size": [3, 2, 2],
+      "material": "hide",
+      "colour": "webbing",
+      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": 24, "pivot": [0, 0, 1] }
+    }
+  ],
+  "collider": [
+    { "offset": [0, 13, 0], "size": [6, 10, 4] },
+    { "offset": [0, 4, 0], "size": [6, 8, 4] }
+  ],
+  "locomotion": {
+    "type": "legged",
+    "_note": "Two gaits, tuned from scratch against `TestGround` rather than ported — the old build's WALK 12 / SPRINT 22 were set before there was foot planting to feel them alongside. The ranges touch rather than overlap, so `Gait._band` blends across a tenth of the narrower one; give them a real overlap once there is a controller to feel the handover in.",
+    "legs": [
+      { "root": "thigh_l", "foot": "foot_l", "phase": 0.0 },
+      { "root": "thigh_r", "foot": "foot_r", "phase": 0.5 }
+    ],
+    "gaits": [
+      { "name": "walk", "speed": [0, 2.6], "phases": [0.0, 0.5], "stride": 1.0, "lift": 0.12, "duty": 0.68 },
+      { "name": "sprint", "speed": [2.6, 7.0], "phases": [0.0, 0.5], "stride": 1.8, "lift": 0.3, "duty": 0.44 }
+    ],
+    "body_bob": 0.05,
+    "body_pitch": 0.08,
+    "lean_into_turn": 0.15
+  }
+}
