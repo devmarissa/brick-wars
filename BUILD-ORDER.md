@@ -248,6 +248,39 @@ have been exercised by anything. This is the milestone where the weapon and empl
 start carrying real numbers, so it is the first point at which reviewing them is about numbers
 rather than about words. Deferred deliberately on 30 Jul 2026, not inherited by accident.
 
+### C4b · Hands on it *(added 31 Jul 2026 — the plan had no milestone that reads a key)*
+
+Not in the original nine, and its absence was found by looking for the milestone that unblocks
+Marissa's feel-checks and not finding one. C0–C8 build verbs, combat, destruction, vehicles, modes
+and netcode; **none of them builds a thing that reads an input.** `CHECKLIST` §13 enumerates the
+work, so it was never forgotten as a task — only as a milestone, which is the same thing when the
+plan is what decides order.
+
+Deliberately small, and deliberately not §13. Input map, first- and third-person camera, and a
+controller on the `Walker` that C2 already built. The rest of §13 — HUD framework, kill feed,
+server browser, gamepad parity, accessibility — is UI work that belongs with the UI milestone and
+is not what this is for.
+
+**Also the right moment for §13's control philosophy lock**: *Roblox-simple, one key per verb, no
+modifier combos.* That decision is cheap to make against a closed ten-verb vocabulary and expensive
+to make later against a bound keyboard, and C4 is what closes the vocabulary.
+
+**Done when:** Marissa can walk, sprint and jump across C3's ground, dig a trench with her own
+hands, fire the C4 weapon, and say whether the locomotion feels right — which closes three things
+that have been waiting since C2: **the locomotion feel-check, the horse's trot and walk timings,
+and the creature-vs-creature collision fling** (`CHECKLIST` §2).
+
+**Why here and not later.** C5's done-condition is judged almost entirely by eye and by hand — the
+blast fixture reproducing, a wall collapsing when its base goes, a sandbag parapet toppling sideways
+where a clay one slumps — and C6's names her signing off on handling feel for a wheeled, a tracked
+and a flying vehicle. C6 is the hard deadline; C5 is where not having it starts costing something.
+Between C4 and C5 is the last cheap place to put it.
+
+**Why not folded into C4.** C4's done-condition is *"a weapon defined in data fires"*, which a test
+asks for directly, and every milestone so far has been demonstrated with nobody at the controls —
+`Walker` in C2, `DemoGround` in C3. Folding input into C4 would mix a thing that can be proven with
+a thing that can only be felt, and the two want different kinds of finishing.
+
 ### C5 · Destruction & physics
 
 Blast model ported against the §1e fixture, **material behaviour switched on** — the six

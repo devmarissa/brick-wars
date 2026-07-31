@@ -1,0 +1,127 @@
+{
+  "format": 1,
+  "id": "testpack:bow",
+  "kind": "weapon",
+  "name": "Test Bow",
+  "class": "weapon_world",
+  "slot": "ranged_slow",
+  "mass": 1,
+  "_note": "The canary for C4, and the same job `testpack:horse` did for C2. It is in `ranged_slow` on purpose \u2014 the same slot as the bolt rifle \u2014 because that slot's own note has said `bolt rifle, musket, crossbow, bow` since C1, and this is that claim being cashed rather than restated. If firing it needs one line of core code the rifle did not need, the eras-are-data bet is broken and this file is where it shows.",
+  "_no_ads": "`ads_fov` is deliberately absent. A bow is not brought to the eye the way a rifle is, and `ranged_slow` lists that stat optional \u2014 so this asset is also the test that optional means optional, and that the firing path does not quietly require a gunpowder-shaped field.",
+  "stats": {
+    "damage": 80,
+    "velocity": 55,
+    "cycle": 1.4,
+    "capacity": 1,
+    "reload": 1.2,
+    "spread": 0.1,
+    "recoil": 0.15,
+    "range": 90
+  },
+  "anim": {
+    "fire": 0.2,
+    "cycle": 1.4,
+    "reload": 1.2,
+    "raise": 0.4
+  },
+  "parts": [
+    {
+      "name": "grip",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        2,
+        3,
+        2
+      ],
+      "material": "hide"
+    },
+    {
+      "name": "limb_upper",
+      "offset": [
+        0,
+        5,
+        0
+      ],
+      "size": [
+        1,
+        7,
+        2
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "limb_lower",
+      "offset": [
+        0,
+        -5,
+        0
+      ],
+      "size": [
+        1,
+        7,
+        2
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "tip_upper",
+      "offset": [
+        0,
+        9,
+        -1
+      ],
+      "size": [
+        1,
+        2,
+        1
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "tip_lower",
+      "offset": [
+        0,
+        -9,
+        -1
+      ],
+      "size": [
+        1,
+        2,
+        1
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "string",
+      "offset": [
+        0,
+        0,
+        -1
+      ],
+      "size": [
+        1,
+        19,
+        1
+      ],
+      "material": "rope"
+    },
+    {
+      "name": "nock",
+      "offset": [
+        0,
+        0,
+        -1
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "rope"
+    }
+  ]
+}

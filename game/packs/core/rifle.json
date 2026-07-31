@@ -1,0 +1,140 @@
+{
+  "format": 1,
+  "id": "core:rifle",
+  "kind": "weapon",
+  "name": "Bolt Rifle",
+  "class": "weapon_world",
+  "slot": "ranged_slow",
+  "mass": 4,
+  "_note": "The core's reference weapon, and half of C4's done-condition. It exists to be the thing TESTPACK's bow is identical to: same slot, same stats block, same code path, and nothing anywhere in core that knows the word `rifle`. If a line ever has to, the era boundary has already failed.",
+  "stats": {
+    "damage": 95,
+    "velocity": 150,
+    "cycle": 1.15,
+    "capacity": 5,
+    "reload": 3.4,
+    "spread": 0.16,
+    "recoil": 0.8,
+    "ads_fov": 60
+  },
+  "anim": {
+    "fire": 0.12,
+    "cycle": 1.15,
+    "reload": 3.4,
+    "raise": 0.35
+  },
+  "parts": [
+    {
+      "name": "butt",
+      "offset": [
+        0,
+        0,
+        4
+      ],
+      "size": [
+        2,
+        3,
+        4
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "wrist",
+      "offset": [
+        0,
+        -1,
+        1
+      ],
+      "size": [
+        2,
+        2,
+        2
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "receiver",
+      "offset": [
+        0,
+        0,
+        -1
+      ],
+      "size": [
+        2,
+        2,
+        3
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "bolt",
+      "offset": [
+        1,
+        1,
+        -1
+      ],
+      "size": [
+        2,
+        1,
+        1
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "handguard",
+      "offset": [
+        0,
+        0,
+        -4
+      ],
+      "size": [
+        2,
+        2,
+        3
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "barrel",
+      "offset": [
+        0,
+        0,
+        -8
+      ],
+      "size": [
+        1,
+        1,
+        5
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "sight_rear",
+      "offset": [
+        0,
+        1,
+        -2
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "sight_front",
+      "offset": [
+        0,
+        1,
+        -10
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "iron"
+    }
+  ]
+}

@@ -296,9 +296,18 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       first is how you get a verb system shaped like a weapon system. Cuts, throws its spoil one
       cell, conserves every centimetre, wakes the settle queue, and refuses bedrock, over-large
       bites and spoil thrown into its own hole.
-- [ ] FIRE · THROW · MELEE — declared, C4's, not yet dispatched. **A verb's status flips in the
-      diff that builds it, never ahead of it**, and `case_verbs.gd` asserts the live list as a
-      literal so the two cannot drift apart.
+- [~] **FIRE — live, and it is C4's done-condition.** `core:rifle` and `testpack:bow` both in
+      `ranged_slow`, both fired by the same call with nothing distinguishing them but their stat
+      blocks, and neither named anywhere in core (asserted against the source, not trusted). The
+      bow supplies no `ads_fov` and fires anyway — that stat is optional and the firing path does
+      not quietly require a gunpowder-shaped field. Ballistics is one formula: at 40 m a rifle
+      round drops 0.7 m and an arrow 5.3 m, out of nothing but two numbers in two pack files.
+      Spread is seeded, so a shot reproduces on a machine that did not roll it.
+- [ ] THROW · MELEE — declared, C4's, not yet dispatched. **A verb's status flips in the diff that
+      builds it, never ahead of it**, and `case_verbs.gd` asserts the live list as a literal so the
+      two cannot drift apart.
+- [ ] Damage and hit resolution — `fire` produces a shot and stops there, the same split C3 drew
+      between `EarthCrater` and the blast.
 - [ ] BUILD — declared, **reserved to C5** (`DEVIATIONS-C4.md` B3): a sandbag wall that does not
       yet topple sideways where a clay one slumps is a prop with a placement cost.
 - [ ] ENTER / MAN — declared, reserved to C6. CARRY / INTERACT / SIGNAL — declared, reserved to C7.

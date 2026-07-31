@@ -140,6 +140,30 @@ Per the same reasoning `dig` is its own file. Each verb owns its arguments and i
 `verbs.gd` knows only how to route. A dispatcher that knew every verb's arguments would be the file
 this project exists to not rebuild.
 
+### C3. The suite could report a case as passing when it had crashed
+
+Not a deviation from a spec — a hole in the gate, found by accident and worth writing down because
+it silently weakened every milestone before this one.
+
+When GDScript hits a runtime error it prints, abandons the current function, and returns to the
+caller. A test case whose body dies halfway through therefore reports as **passed**, with fewer
+checks than it should have had and nothing anywhere saying so. `case_fire.gd` called a method that
+does not exist on `ResolvedAsset`; four of its five sections died on their first line; the suite
+said `ok fire 9 checks` and the gate went green.
+
+`tools/check.sh` now fails when the test log contains an error that is never deliberate —
+`Nonexistent function`, `Invalid call`, `Invalid access`, and the two `Trying to` forms. Cases that
+provoke `push_error` on purpose (the module boundary refusals, the validator's) do not match,
+because those are error *messages* rather than the engine reporting the script itself is wrong.
+
+It earned itself on the run it was added: the very next failure was `VerbFire.reload(...)` silently
+resolving to `GDScript.reload()`, the engine's own script-reload method, which takes one argument
+and has nothing to do with weapons. Renamed to `refill`. That would have shipped.
+
+**Worth knowing:** this guard is a net, not a proof. A case that returns early for a reason other
+than a crash still passes quietly. The stronger fix is a sentinel every case has to reach, which is
+28 files of ceremony and has not been done.
+
 ---
 
 ## D · Policy lines with no test that fails when you break them

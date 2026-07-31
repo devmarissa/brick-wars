@@ -57,18 +57,18 @@ func _the_ten(t: TestContext, set: VerbSet) -> void:
 ## of the test rather than an incidental detail of it.
 ##
 ## A verb's status flips in the same diff that builds it and never ahead of it. The list below is
-## therefore a running claim about HEAD, not about C4's plan: `fire`, `throw` and `melee` are C4's
-## and are reserved right now because nothing dispatches them yet. Same device as
+## therefore a running claim about HEAD, not about C4's plan: `throw` and `melee` are C4's and are
+## reserved right now because nothing dispatches them yet. Same device as
 ## `case_module_graph`'s stub literal, and it is here for the same reason — a data file that says a
 ## verb works when nothing carries it out is the drift the status field exists to catch, and it is
 ## exactly the drift that nothing else would notice.
 func _which_ones_are_live(t: TestContext, set: VerbSet) -> void:
-	t.eq(",".join(set.live_names()), "dig",
+	t.eq(",".join(set.live_names()), "fire,dig",
 		"exactly these verbs do something at HEAD")
 
 	# Everything else, against the milestone that owns it. C4's own three sit here too, and moving
 	# one of them out of this list is what building it looks like.
-	for pair in [["fire", "C4"], ["throw", "C4"], ["melee", "C4"], ["build", "C5"],
+	for pair in [["throw", "C4"], ["melee", "C4"], ["build", "C5"],
 			["enter", "C6"], ["man", "C6"], ["carry", "C7"], ["interact", "C7"], ["signal", "C7"]]:
 		var verb: String = pair[0]
 		t.eq(set.status_of(verb), "reserved", "`%s` is declared and not built" % verb)

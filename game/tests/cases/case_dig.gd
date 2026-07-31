@@ -45,7 +45,7 @@ func _the_door(t: TestContext, set: VerbSet, materials: MaterialSet) -> void:
 	t.ok(String(nonsense["why"]).contains("vocabulary is fixed"),
 		"and told the vocabulary is closed rather than that it made a typo")
 
-	var later := Verbs.dispatch(set, "fire", { "field": field })
+	var later := Verbs.dispatch(set, "melee", { "field": field })
 	t.ok(not later["ok"], "a declared-but-unbuilt verb is refused too")
 	t.ok(String(later["why"]).contains("C4"),
 		"naming the milestone that owns it: %s" % later["why"])
