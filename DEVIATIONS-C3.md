@@ -87,6 +87,73 @@ pixel detail, and full-colour pixel — on the same trench section, and Marissa 
 §8 has always said the decision wants eyes rather than an argument, and this note exists so the
 argument is not had twice.
 
+### A3. Voxel terrain — Marissa, 30 Jul, and what a prototype actually measured
+
+> *"instead of it being smooth why dont we make it voxel esque? then we can do tunnels and dirt
+> collapsing and stuff... it should be small voxels like Teardown though"*
+
+This argues with `EARTH-SPEC` §1 and §2, which are the most carefully reasoned pages in the
+project, so it is written up rather than acted on. It was prototyped first, because "would it look
+nice" is not answerable in prose. **The prototype was reverted; nothing in the repo changed.**
+
+**Teardown's voxel is 0.1 m — the same as this game's `MODULE`.** So "small voxels like Teardown"
+has an exact meaning here, and that is what was tried.
+
+**Finding 1: a finer plan grid does not look like voxels. It looks smoother.** Dropping the cell
+from 0.5 m to 0.1 m and rendering it produced a *smoother* surface, not a blockier one — because
+the current representation is a heightfield, and smaller columns interpolate more finely. This was
+the surprise, and it is worth keeping: the chunkiness Marissa is reacting to and the chunkiness a
+voxel look would add are not the same axis. Heights are quantised to **1 cm**; the plan grid is
+0.5 m. It reads smooth because the *height* is smooth, and no amount of plan resolution changes
+that.
+
+**Finding 2: the voxel look needs the height quantised too**, to whole 10 cm steps, and axis-aligned
+faces instead of averaged corners. That is a change to the *mesher*, and it can be had at any plan
+resolution.
+
+**Finding 3: the cost, measured rather than guessed.** At 0.1 m over the 28 m sandbox: 147,456
+columns, ~235,000 triangles, 432 kB of field, and **61 fps against 145** for the same world at
+0.5 m. Building trimesh colliders for the resulting 144 chunks was slow enough to time out a
+ten-second capture — so **collision, not meshing, is the first thing that breaks.**
+
+| plan cell | columns @400 m | memory | vs today |
+|---|---|---|---|
+| 0.50 m (today) | 640,000 | 2 MB | — |
+| 0.25 m | 2,560,000 | 8 MB | 4× triangles |
+| 0.10 m | 16,000,000 | 48 MB | 25× triangles |
+
+Memory is survivable at every row. Triangles are not, naively: 400 m is roughly 200× the sandbox's
+area. **Greedy meshing is the standard answer** — it collapses flat ground into a handful of large
+quads and would change these numbers by orders of magnitude — and it is untested here.
+
+**Finding 4: this collides head-on with A1.** Marissa wants large-scale combat with aerial
+vehicles, which pushes the map *up* from 400–800 m. Voxels push everything that scales with area
+*down*. Those two cannot both be maximised, and the pair should be decided together rather than
+separately.
+
+**Worth knowing before deciding:** tunnels and collapse — the reasons given for wanting voxels —
+**do not require them.** §1's spans are already a sparse voxel encoding in the vertical: a column
+holds an ordered list of solid runs, so a tunnel is a split span and that is what C3b is for. The
+span table went in on day one specifically so this would not be a rewrite. So the question is
+narrower than it looks: it is about the **look**, and the look is a mesher change.
+
+**Three options, and the recommendation.**
+
+- **A — quantise the look, keep the representation.** Snap rendered heights to 10 cm, drop corner
+  averaging, axis-aligned faces. Cheapest by far; keeps spans, keeps the netcode story, keeps the
+  budgets. At a 0.5 m plan grid the blocks are half a metre wide, which is the chunkiness §10
+  rejected — so this probably wants pairing with B.
+- **B — 0.25 m plan grid with quantised height.** 8 MB at 400 m, 4× the triangles, blocks a quarter
+  of a metre. Reads voxel without reading as Minecraft.
+- **C — true 0.1 m voxels.** Looks exactly right and needs greedy meshing, LOD, a different
+  collision model, and a smaller map than aerial combat wants.
+
+**My recommendation is B, prototyped as a side-by-side before committing** — same as the texture
+decision, and for the same reason: this is a look, and a look is settled by looking. If B reads
+right, C buys very little for a great deal of cost.
+
+Whichever way it goes, `EARTH-SPEC` §1, §2 and §9 need amending rather than quietly diverging.
+
 ---
 
 ## B · Calls where the spec said nothing
