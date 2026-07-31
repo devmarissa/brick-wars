@@ -23,6 +23,7 @@ const CASES := [
 	"res://tests/cases/case_ground.gd",
 	"res://tests/cases/case_earth_field.gd",
 	"res://tests/cases/case_earth_mesh.gd",
+	"res://tests/cases/case_earth_settle.gd",
 	"res://tests/cases/case_footing.gd",
 	"res://tests/cases/case_locomotion.gd",
 	"res://tests/cases/case_locomotion_rules.gd",

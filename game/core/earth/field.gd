@@ -104,8 +104,16 @@ func chunk_for(cell: Vector2i, make := true) -> EarthChunk:
 
 
 ## The surface of a column, in absolute centimetres.
+##
+## Reads never allocate. That is not an optimisation, it is a correctness rule: the settle queue
+## asks every cell about its eight neighbours, so a read that made a chunk would have the earth
+## growing 3 kB every time something looked over the edge of the world — and, worse, would change
+## the field's rolling hash by being *observed*. A cell in a chunk nobody has touched is the ground
+## the field was made of, which is exactly what an unallocated chunk means.
 func surface_cm(cell: Vector2i) -> int:
-	var chunk := chunk_for(cell)
+	var chunk := chunk_for(cell, false)
+	if chunk == null:
+		return _surface_cm
 	var local := local_of(cell)
 	return chunk.base_cm + chunk.surface_cm(local.x, local.y)
 
@@ -114,7 +122,10 @@ func surface_cm(cell: Vector2i) -> int:
 ## tunnels all read this rather than a height, so a split column is a longer array and not a
 ## different path through the code.
 func spans_at(cell: Vector2i) -> Array[EarthSpan]:
-	var chunk := chunk_for(cell)
+	var chunk := chunk_for(cell, false)
+	if chunk == null:
+		return [EarthSpan.make(EarthChunk.HEIGHT_MIN, _surface_cm,
+			palette[_material_index] if _material_index < palette.size() else &"")]
 	var local := local_of(cell)
 	var out := chunk.spans_at(local.x, local.y, palette)
 	if chunk.base_cm != 0:
@@ -131,14 +142,18 @@ func height_at(world_x: float, world_z: float) -> float:
 
 
 func material_at(cell: Vector2i) -> StringName:
-	var chunk := chunk_for(cell)
-	var local := local_of(cell)
-	var index := chunk.material_index(local.x, local.y)
+	var chunk := chunk_for(cell, false)
+	var index := _material_index
+	if chunk != null:
+		var local := local_of(cell)
+		index = chunk.material_index(local.x, local.y)
 	return palette[index] if index < palette.size() else &""
 
 
 func is_disturbed(cell: Vector2i) -> bool:
-	var chunk := chunk_for(cell)
+	var chunk := chunk_for(cell, false)
+	if chunk == null:
+		return false
 	var local := local_of(cell)
 	return chunk.is_disturbed(local.x, local.y)
 
