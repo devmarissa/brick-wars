@@ -35,6 +35,7 @@ func run(t: TestContext) -> void:
 	_soil_decides_how_steep(t, materials)
 	_dug_ground_holds_less(t, materials)
 	_the_budget_is_a_budget(t, materials)
+	_a_slump_takes_time(t, materials)
 	_the_same_collapse_every_time(t, materials)
 
 
@@ -198,3 +199,35 @@ func _materials() -> MaterialSet:
 		return null
 	var materials := MaterialSet.new()
 	return materials if materials.load_core(palette) else null
+
+
+## A collapse has to take long enough to watch. §3: over a second or two, *"which is what makes it
+## look like real earth settling rather than a scripted animation"*.
+##
+## This exists because it did not. Asked whether there was a crumbling effect when terrain
+## collapses, the honest answer turned out to be that the geometry was correct and finished in five
+## frames — 0.08 seconds, which on screen is a snap. `BUDGET` did not pace it and could not: it caps
+## cells per frame, and the whole cascade is only a few thousand cell-visits however deep the cut
+## is. `MAX_SHED_CM` paces it by the thing a viewer actually sees, which is how much earth moved.
+func _a_slump_takes_time(t: TestContext, materials: MaterialSet) -> void:
+	var field := EarthField.flat(materials, 0, &"loam")
+	var settle := EarthSettle.of(materials)
+	for z in 10:
+		for x in range(8, 18):
+			field.sculpt(Vector2i(x, z), 200)
+	for z in 10:
+		settle.disturb(Vector2i(8, z))
+
+	var ticks := 0
+	while settle.pending() > 0 and ticks < 2000:
+		settle.run(field, EarthSettle.BUDGET)
+		ticks += 1
+
+	t.ok(ticks > 12, "a two-metre face takes frames to come down, not one: %d" % ticks)
+	t.ok(ticks < 600, "and it does finish, rather than trickling forever: %d" % ticks)
+	# The pacing must not cost the thing it paces: earth still lands where it was going.
+	var worst := 0
+	for z in 10:
+		worst = maxi(worst, field.surface_cm(Vector2i(8, z)) - field.surface_cm(Vector2i(7, z)))
+	t.ok(worst <= EarthRepose.step_cm(38),
+		"and the face still ends up inside what loam holds: %d cm" % worst)

@@ -34,6 +34,27 @@ extends RefCounted
 ## the same per frame as a spade that dirties nine — it just takes longer to finish.
 const BUDGET := 512
 
+## The most earth one column may shed in one tick, in centimetres.
+##
+## This is what makes a slump take *time*, and it is a separate lever from `BUDGET` — which is a
+## performance cap and turns out not to pace anything. Without it the demo trench finished
+## collapsing in five frames, 0.08 seconds: geometrically correct, and on screen a snap. §3 asks for
+## "over a second or two, spreading to its neighbours, which is what makes it look like real earth
+## settling rather than a scripted animation", and a cell count per frame cannot deliver that
+## because the cascade is only a few thousand cell-visits however big the collapse is.
+##
+## Capping the *amount* rather than the *count* paces it by the thing a viewer actually sees. A face
+## sheds a centimetre, wakes its neighbours, and comes back round next tick — so a deep collapse
+## takes many passes and a shallow one takes few, which is also how earth behaves.
+##
+## One centimetre is the finest quantum the field has, so this is as slow as integer heights can be
+## made to go. It puts the demo trench at 21 frames — a third of a second, against 5 frames before,
+## and clearly a settle rather than a snap. §3 asks for "a second or two"; a small trench is quicker
+## than that because there is less earth in it, and a shell crater is slower because there is more
+## and because 512 cells a frame starts binding. Duration scaling with the size of the event is the
+## property worth having, and it is the one this gets.
+const MAX_SHED_CM := 1
+
 ## The eight neighbours, in a fixed order, because the order events are applied in is part of what
 ## two machines have to agree on. Orthogonal first, then diagonal.
 const AROUND := [
@@ -116,7 +137,7 @@ func _settle_one(field: EarthField, cell: Vector2i) -> void:
 		# Half, and integer — see the class docstring. A move of zero would spin the queue forever
 		# on a one-centimetre excess, so anything that rounds to nothing is left alone: the face is
 		# within a centimetre of its angle and a centimetre is invisible.
-		var move := excess / 2
+		var move := mini(excess / 2, MAX_SHED_CM)
 		if move <= 0:
 			continue
 		field.carve(cell, move)

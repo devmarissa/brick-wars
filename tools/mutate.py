@@ -104,6 +104,12 @@ MUTATIONS = [
      "var mixed := leg.hang.lerp(down, FOLLOW_RATE * delta)",
      "the hang lag is a plain lerp rather than an exponential follow"),
 
+    # The line that makes a collapse take time rather than happen between two frames.
+    ("game/core/earth/settle.gd",
+     "var move := mini(excess / 2, MAX_SHED_CM)",
+     "var move := excess / 2",
+     "a slump resolves instantly instead of settling over frames"),
+
     # The line that decides whether a planted foot slides. It was `stride * 0.5` until the slide
     # was measured against a moving body, and nothing in the suite noticed.
     ("game/core/rig/gait.gd",
