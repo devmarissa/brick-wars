@@ -87,7 +87,7 @@ static func _shell_it(field: EarthField, settle: EarthSettle) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 20260731
 	for shell in 14:
-		var at := Vector2i(rng.randi_range(-27, -13), rng.randi_range(-17, 6))
+		var at := Vector2i(rng.randi_range(-30, -16), rng.randi_range(-17, 6))
 		EarthCrater.form(field, settle, at, rng.randi_range(3, 6), rng.randi_range(70, 190))
 
 
