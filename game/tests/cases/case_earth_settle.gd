@@ -60,7 +60,7 @@ func _the_threshold(t: TestContext, materials: MaterialSet) -> void:
 ## The case §3 is written for: a cut steeper than the soil holds comes down.
 func _a_steep_face_comes_down(t: TestContext, materials: MaterialSet) -> void:
 	var field := EarthField.flat(materials, 0, &"loam")
-	var before := field.surface_sum_cm()
+	var before := EarthAudit.surface_sum_cm(field)
 	# A 3 m cliff in loam, which holds 39 cm to a cell. It has no business standing.
 	for z in 12:
 		for x in range(8, 20):
@@ -84,7 +84,7 @@ func _a_steep_face_comes_down(t: TestContext, materials: MaterialSet) -> void:
 			worst, EarthRepose.step_cm(38)])
 
 	# The claim that makes it earth rather than a brush.
-	t.eq(field.surface_sum_cm(), before + 12 * 12 * 300,
+	t.eq(EarthAudit.surface_sum_cm(field), before + 12 * 12 * 300,
 		"with every centimetre still in the field — slumping moves earth, it does not spend it")
 
 
@@ -97,13 +97,13 @@ func _a_shallow_one_does_not(t: TestContext, materials: MaterialSet) -> void:
 			field.sculpt(Vector2i(x, z), 30)      # a 30 cm step; loam holds 39
 
 	var settle := EarthSettle.of(materials)
-	var was := field.rolling_hash()
+	var was := EarthAudit.rolling_hash(field)
 	for z in 8:
 		settle.disturb(Vector2i(6, z))
 	settle.run_to_rest(field)
 
 	t.eq(settle.moved_cm, 0, "a step inside the angle of repose does not move at all")
-	t.eq(field.rolling_hash(), was, "and the ground is bit-for-bit what it was")
+	t.eq(EarthAudit.rolling_hash(field), was, "and the ground is bit-for-bit what it was")
 
 
 ## Which soil it is decides how much comes down. Sand is nearly useless to build with; chalk is
@@ -186,7 +186,7 @@ func _the_same_collapse_every_time(t: TestContext, materials: MaterialSet) -> vo
 			field.carve(cell, 40 + i * 6)
 			settle.disturb(cell)
 		settle.run_to_rest(field)
-		hashes.append(field.rolling_hash())
+		hashes.append(EarthAudit.rolling_hash(field))
 		totals.append(settle.moved_cm)
 
 	t.eq(hashes[0], hashes[1], "two runs of the same dig settle to bit-identical ground")

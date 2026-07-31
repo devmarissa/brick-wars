@@ -140,8 +140,11 @@ func _settle_one(field: EarthField, cell: Vector2i) -> void:
 		var move := mini(excess / 2, MAX_SHED_CM)
 		if move <= 0:
 			continue
-		field.carve(cell, move)
-		field.deposit(other, move)
+		# Not recorded. §5: slumping is never replicated, because every client derives it from the
+		# same events — so logging it would send the one thing that never needs sending, and would
+		# apply it twice on replay: once from the event, once from the settling the event causes.
+		field.carve(cell, move, false)
+		field.deposit(other, move, false)
 		moved_cm += move
 		here -= move
 

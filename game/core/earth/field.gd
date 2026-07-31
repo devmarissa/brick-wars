@@ -52,6 +52,17 @@ var chunks: Dictionary = {}          ## Vector2i -> EarthChunk
 ## nobody has set means.
 var water_cm := NO_WATER
 
+## Where modifications are written down, or null for a field nobody is recording. EARTH-SPEC §5.
+##
+## **Only actions are logged, never slumping.** That distinction is the whole saving §5 is built
+## on: the server sends the dig and every client derives the collapse itself, so a log that
+## recorded the settle queue's moves would send the one thing that never needs sending — and would
+## then apply it twice on replay, once from the events and once from the settling they cause.
+var log: EarthLog = null
+
+## The tick modifications are stamped with. Bumped by whatever owns the simulation.
+var tick := 0
+
 ## Cells whose face is held by revetment, and the angle it holds them at. EARTH-SPEC §3.
 ##
 ## Sparse, because shoring is rare and deliberate: a few hundred cells along the walls of a trench
@@ -210,7 +221,8 @@ func flood_depth_cm(cell: Vector2i) -> int:
 ## value is the volume actually removed in column-centimetres — one centimetre of height over one
 ## cell — and it is not always what was asked for, because a cut can reach bedrock. A caller that
 ## ignores it has quietly deleted earth, which is the bug this signature exists to make awkward.
-func carve(cell: Vector2i, depth_cm: int) -> int:
+## `record` is false when the caller is the settle queue rather than somebody digging — see `log`.
+func carve(cell: Vector2i, depth_cm: int, record := true) -> int:
 	if depth_cm <= 0:
 		return 0
 	var chunk := chunk_for(cell)
@@ -221,6 +233,8 @@ func carve(cell: Vector2i, depth_cm: int) -> int:
 	var moved := chunk.set_surface_cm(local.x, local.y, now)
 	if moved != 0:
 		chunk.set_disturbed(local.x, local.y, true)
+		if record and log != null:
+			log.record(tick, 0, EarthLog.CARVE, cell, moved)
 	return -moved
 
 
@@ -229,7 +243,7 @@ func carve(cell: Vector2i, depth_cm: int) -> int:
 ##
 ## Deposited ground is `disturbed` by definition — it is loose, it stands 15° shallower, and §4
 ## says that rather than adding a parallel set of loose materials.
-func deposit(cell: Vector2i, volume_cm: int) -> int:
+func deposit(cell: Vector2i, volume_cm: int, record := true) -> int:
 	if volume_cm <= 0:
 		return 0
 	var chunk := chunk_for(cell)
@@ -238,53 +252,6 @@ func deposit(cell: Vector2i, volume_cm: int) -> int:
 		chunk.surface_cm(local.x, local.y) + volume_cm)
 	if moved != 0:
 		chunk.set_disturbed(local.x, local.y, true)
+		if record and log != null:
+			log.record(tick, 0, EarthLog.DEPOSIT, cell, moved)
 	return moved
-
-
-# ---------------------------------------------------------------- accounting
-
-## The sum of every column's surface height, in centimetres. Not a physical volume — the columns
-## all reach the same bedrock, so it differs from one by a constant — which makes it exactly the
-## right thing to assert conservation against: carve a hundred and deposit a hundred and this
-## number comes back to where it started.
-func surface_sum_cm() -> int:
-	var total := 0
-	for key in chunks:
-		var chunk: EarthChunk = chunks[key]
-		for z in EarthChunk.SIZE:
-			for x in EarthChunk.SIZE:
-				total += chunk.base_cm + chunk.surface_cm(x, z)
-	return total
-
-
-func dirty_chunks() -> int:
-	var count := 0
-	for key in chunks:
-		if (chunks[key] as EarthChunk).dirty:
-			count += 1
-	return count
-
-
-## One number for the whole field's state, for §5's drift reconciliation and for asserting that
-## two runs of the same events agree. Chunks are folded in sorted order, because a dictionary's
-## iteration order is not a promise and a hash that depended on it would report drift that was
-## only ever a different insertion sequence.
-func rolling_hash() -> int:
-	var hash := 2166136261
-	var keys: Array = chunks.keys()
-	keys.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		return a.y < b.y if a.y != b.y else a.x < b.x)
-	for key in keys:
-		var chunk: EarthChunk = chunks[key]
-		for value in [key.x & 0xFFFF, key.y & 0xFFFF, chunk.rolling_hash()]:
-			hash = ((hash ^ int(value)) * 16777619) & 0xFFFFFFFF
-	# Shoring is state like any other: two clients that disagree about which walls are held would
-	# disagree about which ones fall, and that is exactly the drift §5 wants caught rather than
-	# assumed away. Sorted, because a dictionary's iteration order is not a promise.
-	var held: Array = shoring.keys()
-	held.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		return a.y < b.y if a.y != b.y else a.x < b.x)
-	for key in held:
-		for value in [key.x & 0xFFFF, key.y & 0xFFFF, int(shoring[key])]:
-			hash = ((hash ^ int(value)) * 16777619) & 0xFFFFFFFF
-	return hash

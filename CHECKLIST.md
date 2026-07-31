@@ -291,6 +291,31 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
 ## 5 · The Earth (the keystone)
 
+### C3 progress — the earth
+
+- [~] **C3's done-condition walked, and it holds.** All five clauses in `case_c3_done.gd`, in the
+      order `BUILD-ORDER` puts them: dig anywhere (chunks on demand, a kilometre out and back
+      with no drift) · a trench with vertical walls that slump where a shell lands and nowhere
+      else · craters with rims made of ~70% of their own spoil, the rest gone to the air ·
+      chalk holding a steeper face than sand with no `if` anywhere, only a number in the
+      material file · every modification a serialised event that replays to bit-identical
+      ground — **and slumping deliberately not among them**, because clients derive it.
+- [~] 0.5 m column-span field, `i16` centimetre heights, chunk-relative — 3 bytes a column,
+      asserted against the budget rather than intended.
+- [~] Chunked slope-dependent meshing: smooth below 60°, vertical skirts above.
+- [~] Chunked collision, rebuilt with the mesh — trimesh rather than heightfield for now
+      (`DEVIATIONS-C3.md` B4: a heightfield cannot express a skirt or a tunnel).
+- [~] Angle-of-repose settle queue, with shoring as a local override and water as a wetness
+      ceiling. Paced so a collapse takes frames rather than happening between two of them.
+- [~] Spoil with conservation of volume, and the `disturbed` flag that makes it weaker.
+- [~] The event log, day one, and the replay that proves it.
+- [ ] **Multi-span columns — tunnels, sapping, mining. C3b**, as the spec allows. The span
+      table has been the primitive since the first line for exactly this reason.
+- [ ] The flat-colour vs per-material-grain decision (`ART-BIBLE` §8) — better judged on churned
+      ground than on a clean cut, which now exists.
+- [ ] Render LOD at distance. Deformation stays full resolution everywhere (§9).
+
+
 > **Rebuilt, not ported** (`EARTH-SPEC.md`, `BUILD-ORDER` §1d). The 2.5 m × 0.8 m block
 > grid is gone — a single cell was wider and taller than a soldier, which is why it read
 > as chunky rectangles. Replaced by a 0.5 m column-span field with continuous

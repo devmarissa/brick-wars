@@ -270,6 +270,6 @@ func _add_camera() -> void:
 	# Aimed along the trench at C3. The creatures are still in frame, but the subject is the ground
 	# now: a cut with vertical walls, its own spoil heaped beside it as a smooth parapet, and the
 	# ramp behind — one picture with both halves of the meshing rule in it.
-	cam.global_position = Vector3(-6.9, 1.1, 0.4)
-	cam.look_at(Vector3(-9.1, -1.0, -4.2))
+	cam.global_position = Vector3(2.2, 5.0, 7.0)
+	cam.look_at(Vector3(-9.4, -0.9, -4.0))
 	cam.current = true

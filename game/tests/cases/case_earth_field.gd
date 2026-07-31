@@ -115,7 +115,7 @@ func _spans_from_the_first_line(t: TestContext, materials: MaterialSet) -> void:
 ## §4, and the reason a trench comes with a parapet.
 func _digging_conserves_volume(t: TestContext, materials: MaterialSet) -> void:
 	var field := EarthField.flat(materials, 0)
-	var before := field.surface_sum_cm()
+	var before := EarthAudit.surface_sum_cm(field)
 
 	# Cut a trench and pile every centimetre of it on the cell beside the cut. Nothing decides
 	# that a parapet should appear; it appears because the earth had nowhere else to be.
@@ -126,7 +126,7 @@ func _digging_conserves_volume(t: TestContext, materials: MaterialSet) -> void:
 	for z in 6:
 		field.deposit(Vector2i(5, z), spoil / 6)
 
-	t.eq(field.surface_sum_cm(), before, "and the ground has exactly as much earth in it as before")
+	t.eq(EarthAudit.surface_sum_cm(field), before, "and the ground has exactly as much earth in it as before")
 	t.eq(field.surface_cm(Vector2i(4, 0)), -60, "the trench is 60 cm deep")
 	t.eq(field.surface_cm(Vector2i(5, 0)), 60, "and the parapet beside it is 60 cm high")
 	t.ok(field.is_disturbed(Vector2i(4, 0)), "the cut face is disturbed ground")
@@ -151,14 +151,14 @@ func _the_same_events_give_the_same_ground(t: TestContext, materials: MaterialSe
 
 	var first := EarthField.flat(materials, 0)
 	var second := EarthField.flat(materials, 0)
-	t.eq(first.rolling_hash(), second.rolling_hash(), "two fresh fields start out identical")
+	t.eq(EarthAudit.rolling_hash(first), EarthAudit.rolling_hash(second), "two fresh fields start out identical")
 
 	t.eq(log.replay(first), 80, "the log applies every carve and deposit in it")
-	t.ok(first.rolling_hash() != second.rolling_hash(), "which changes the ground it was applied to")
+	t.ok(EarthAudit.rolling_hash(first) != EarthAudit.rolling_hash(second), "which changes the ground it was applied to")
 	log.replay(second)
-	t.eq(first.rolling_hash(), second.rolling_hash(),
+	t.eq(EarthAudit.rolling_hash(first), EarthAudit.rolling_hash(second),
 		"and the same events on a second field give byte-identical ground (§5)")
-	t.eq(first.surface_sum_cm(), second.surface_sum_cm(), "down to the last centimetre of earth")
+	t.eq(EarthAudit.surface_sum_cm(first), EarthAudit.surface_sum_cm(second), "down to the last centimetre of earth")
 
 	# Round-tripped through the wire, because the events a client derives its ground from arrive as
 	# bytes rather than as dictionaries.
@@ -168,7 +168,7 @@ func _the_same_events_give_the_same_ground(t: TestContext, materials: MaterialSe
 	t.ok(back != null and back.size() == log.size(), "and decodes to the same number of events")
 	var third := EarthField.flat(materials, 0)
 	back.replay(third)
-	t.eq(third.rolling_hash(), first.rolling_hash(),
+	t.eq(EarthAudit.rolling_hash(third), EarthAudit.rolling_hash(first),
 		"and a field built from the decoded log agrees with one built from the original")
 
 	t.ok(EarthLog.decode(PackedByteArray([1, 2, 3])) == null,

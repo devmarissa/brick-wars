@@ -66,7 +66,29 @@ static func make(field: EarthField, settle: EarthSettle) -> int:
 		for cx in range(-reach, reach + 1):
 			var centre := EarthGrid.centre_of(Vector2i(cx, cz))
 			field.sculpt(Vector2i(cx, cz), roundi(TestGround.height_at(centre.x, centre.y) * 100.0))
-	return _cut_trench(field, settle)
+	var moved := _cut_trench(field, settle)
+	_shell_it(field, settle)
+	return moved
+
+
+## Shell the ground around the trench, through the same `EarthCrater` C5's blast will call. Not a
+## blast model — radius and depth are picked here rather than derived from anything — but the
+## earth's response to one is C3's business and §4 specifies it: about 70% of what comes out lands
+## on the rim, and the rest goes to the air.
+##
+## Kept west of the props: the first pass shelled the ground under the watchtower and undermined
+## it, which is exactly right — §7 says removing the ground under a foundation costs it its support
+## — and made a picture of a collapsed tower rather than of a cratered field. Undermining gets its
+## own demonstration when structures are the subject.
+##
+## Seeded, so the world is the same world every time it boots. A battlefield that reshuffled itself
+## between screenshots would make every before-and-after comparison worthless.
+static func _shell_it(field: EarthField, settle: EarthSettle) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20260731
+	for shell in 14:
+		var at := Vector2i(rng.randi_range(-27, -13), rng.randi_range(-17, 6))
+		EarthCrater.form(field, settle, at, rng.randi_range(3, 6), rng.randi_range(70, 190))
 
 
 ## A trench, dug rather than sculpted: it carves real volume out and piles every centimetre of it
