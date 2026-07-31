@@ -40,7 +40,7 @@ const CLIFF_CM := 87
 
 ## A quarter of a cell, in metres — half the distance between column centres, which is where one
 ## column's top stops and its neighbour's begins.
-const HALF_CELL := EarthField.CELL_M * 0.5
+const HALF_CELL := EarthGrid.CELL_M * 0.5
 
 ## The four corners of a column's top, as diagonal offsets in cells. Order matters: it is the
 ## winding of the quad, and Godot 4 winds front faces clockwise (`case_geometry.gd` measures this
@@ -112,7 +112,7 @@ static func corner_cm(field: EarthField, cell: Vector2i, corner: Vector2i) -> in
 static func _column(field: EarthField, cell: Vector2i, palette: Palette, materials: MaterialSet,
 		vertices: PackedVector3Array, normals: PackedVector3Array,
 		colours: PackedColorArray) -> void:
-	var centre := EarthField.centre_of(cell)
+	var centre := EarthGrid.centre_of(cell)
 	var top: Array[Vector3] = []
 	for corner in CORNERS:
 		var corner_v: Vector2i = corner

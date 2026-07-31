@@ -36,6 +36,7 @@ func run(t: TestContext) -> void:
 	_dug_ground_holds_less(t, materials)
 	_the_budget_is_a_budget(t, materials)
 	_a_slump_takes_time(t, materials)
+	_water_makes_it_mud(t, materials)
 	_the_same_collapse_every_time(t, materials)
 
 
@@ -137,7 +138,7 @@ func _dug_ground_holds_less(t: TestContext, materials: MaterialSet) -> void:
 	for z in 8:
 		for x in range(6, 16):
 			spoil.chunk_for(Vector2i(x, z)).set_disturbed(
-				EarthField.local_of(Vector2i(x, z)).x, EarthField.local_of(Vector2i(x, z)).y, true)
+				EarthGrid.local_of(Vector2i(x, z)).x, EarthGrid.local_of(Vector2i(x, z)).y, true)
 
 	var a := EarthSettle.of(materials)
 	var b := EarthSettle.of(materials)
@@ -231,3 +232,57 @@ func _a_slump_takes_time(t: TestContext, materials: MaterialSet) -> void:
 		worst = maxi(worst, field.surface_cm(Vector2i(8, z)) - field.surface_cm(Vector2i(7, z)))
 	t.ok(worst <= EarthRepose.step_cm(38),
 		"and the face still ends up inside what loam holds: %d cm" % worst)
+
+
+## EARTH-SPEC §8: dig below the water table and the hole fills, and what fills becomes mud — "with
+## everything that implies for repose and movement". Mud holds 15°, which §3 calls the Great War in
+## one number: below it, trench walls simply will not stand.
+##
+## Applied as a ceiling on the angle rather than by rewriting the column's material, so it is
+## reversible — pump the water out and the ground recovers, which is what §8 means by naming
+## pumping and drainage as pack-level answers. Rewriting the material would leave a flooded trench
+## permanently mud after it dried, which is a one-way door.
+func _water_makes_it_mud(t: TestContext, materials: MaterialSet) -> void:
+	var dry := EarthField.flat(materials, 0, &"clay")
+	var wet := EarthField.flat(materials, 0, &"clay")
+	for field in [dry, wet]:
+		for z in 8:
+			for x in range(6, 16):
+				field.sculpt(Vector2i(x, z), 60)       # the face under test
+			for x in range(20, 26):
+				field.sculpt(Vector2i(x, z), 150)      # a plateau that stays above the water
+	# Above the 60 cm block, so the *face* is waterlogged. A water table below the face would
+	# leave the higher column dry — and it is the higher column whose face is standing, which is
+	# the mistake this fixture was written wrong to begin with.
+	wet.water_cm = 80
+
+	t.ok(not dry.is_flooded(Vector2i(2, 2)), "with no water table nothing is flooded")
+	t.ok(wet.is_flooded(Vector2i(2, 2)), "and with one, ground below it is")
+	t.ok(wet.is_flooded(Vector2i(8, 2)), "including the block, whose top is under the surface")
+	t.ok(not wet.is_flooded(Vector2i(22, 2)), "while the plateau above it stays dry")
+	t.eq(wet.flood_depth_cm(Vector2i(2, 2)), 80, "with the water as deep as the hole it is in")
+	t.eq(wet.flood_depth_cm(Vector2i(22, 2)), 0, "and none at all on dry land")
+
+	t.eq(EarthRepose.for_column(dry, Vector2i(8, 2), materials), 55,
+		"dry clay stands at its own 55 degrees")
+	t.eq(EarthRepose.for_column(wet, Vector2i(8, 2), materials), EarthRepose.WET_DEGREES,
+		"and the same clay under water stands at mud's 15")
+	t.eq(EarthRepose.for_column(wet, Vector2i(22, 2), materials), 55,
+		"while clay that is merely near water is still clay")
+
+	# Which is a face that will not hold, where the dry one did.
+	var a := EarthSettle.of(materials)
+	var b := EarthSettle.of(materials)
+	for z in 8:
+		a.disturb(Vector2i(6, z))
+		b.disturb(Vector2i(6, z))
+	a.run_to_rest(dry)
+	b.run_to_rest(wet)
+	t.eq(a.moved_cm, 0, "so a 60 cm step in dry clay stands")
+	t.ok(b.moved_cm > 0, "and the same step underwater does not: %d column-cm" % b.moved_cm)
+
+	# Revetment is checked before the wetness ceiling, because holding a wet trench up is most of
+	# what revetment is for.
+	wet.shore(Vector2i(8, 2), 80)
+	t.eq(EarthRepose.for_column(wet, Vector2i(8, 2), materials), 80,
+		"a revetted face holds against water too, which is why trenches are revetted")

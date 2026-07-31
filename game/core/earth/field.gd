@@ -1,6 +1,9 @@
 class_name EarthField
 extends RefCounted
-## The ground, as a grid of 0.5 m columns you can dig. EARTH-SPEC §1, §4.
+## The ground, as a grid of 0.5 m columns you can dig. EARTH-SPEC §1, §4, §8.
+##
+## Where a cell *is* — world space, chunk indices, the 0.5 m plan grid — is `EarthGrid`. This is
+## what is in it.
 ##
 ## Twenty-five times the plan resolution of the prototype's 2.5 m grid, and — more importantly —
 ## continuous height instead of 0.8 m steps. §10 is blunt that the steps were more of the problem
@@ -24,13 +27,6 @@ extends RefCounted
 ## deciding that it should. Ground that has been moved is marked `disturbed` and stands less
 ## steeply than the same shape cut from virgin clay.
 
-## Half a metre, in centimetres. EARTH-SPEC §1.
-const CELL_CM := 50
-const CELL_M := 0.5
-
-## Chunks are 32 × 32 cells, so 16 m. §9.
-const CHUNK_CELLS := EarthChunk.SIZE
-
 ## What the field is made of when nobody has said otherwise. `loam` holds 38° — about 39 cm of
 ## step per cell — which is the middle of the soil range and the sane default for open ground.
 const DEFAULT_MATERIAL := &"loam"
@@ -39,8 +35,22 @@ const DEFAULT_MATERIAL := &"loam"
 ## Not a physical claim — bedrock is where the spans stop — but the number a chunk is born with.
 const FLOOR_CM := -2000
 
+## Lower than any map's bedrock: a water table nobody has set is one nothing can reach.
+const NO_WATER := -100000
+
 var palette: Array[StringName] = []
 var chunks: Dictionary = {}          ## Vector2i -> EarthChunk
+
+## The map's water table, in absolute centimetres. EARTH-SPEC §8.
+##
+## A level and a fill rule, and deliberately not a simulation: §8 is explicit that *"a level, a fill
+## rule and a wetness multiplier get 90% of the feel for 5% of the work"*, and that full water
+## simulation is out of scope. Dig below it and the hole fills; what fills is not tracked as
+## volume, because there is nothing interesting to say about where it came from.
+##
+## `NO_WATER` is a level far below any map's bedrock, which is what a map with a water table
+## nobody has set means.
+var water_cm := NO_WATER
 
 ## Cells whose face is held by revetment, and the angle it holds them at. EARTH-SPEC §3.
 ##
@@ -75,34 +85,12 @@ static func _palette_of(materials: MaterialSet) -> Array[StringName]:
 	return materials.names_in_class("earth")
 
 
-# ---------------------------------------------------------------- world and cells
-
-## The cell a world position is over. Columns are addressed by their centres, so the cell at
-## (0, 0) is centred on the origin rather than starting there — which is what makes meshing
-## between column centres (§2) a statement about the grid rather than a half-cell correction.
-static func cell_at(world_x: float, world_z: float) -> Vector2i:
-	return Vector2i(roundi(world_x / CELL_M), roundi(world_z / CELL_M))
-
-
-## Where a cell's centre is in the world, on the XZ plane.
-static func centre_of(cell: Vector2i) -> Vector2:
-	return Vector2(cell.x * CELL_M, cell.y * CELL_M)
-
-
-static func chunk_of(cell: Vector2i) -> Vector2i:
-	return Vector2i(floori(float(cell.x) / CHUNK_CELLS), floori(float(cell.y) / CHUNK_CELLS))
-
-
-static func local_of(cell: Vector2i) -> Vector2i:
-	return Vector2i(posmod(cell.x, CHUNK_CELLS), posmod(cell.y, CHUNK_CELLS))
-
-
 # ---------------------------------------------------------------- reading
 
 ## The chunk holding a cell, made on demand. The field is unbounded and empty chunks cost nothing
 ## until something asks about them, which is what lets a map be 800 m without allocating 800 m.
 func chunk_for(cell: Vector2i, make := true) -> EarthChunk:
-	var key := chunk_of(cell)
+	var key := EarthGrid.chunk_of(cell)
 	if chunks.has(key):
 		return chunks[key]
 	if not make:
@@ -123,7 +111,7 @@ func surface_cm(cell: Vector2i) -> int:
 	var chunk := chunk_for(cell, false)
 	if chunk == null:
 		return _surface_cm
-	var local := local_of(cell)
+	var local := EarthGrid.local_of(cell)
 	return chunk.base_cm + chunk.surface_cm(local.x, local.y)
 
 
@@ -135,7 +123,7 @@ func spans_at(cell: Vector2i) -> Array[EarthSpan]:
 	if chunk == null:
 		return [EarthSpan.make(EarthChunk.HEIGHT_MIN, _surface_cm,
 			palette[_material_index] if _material_index < palette.size() else &"")]
-	var local := local_of(cell)
+	var local := EarthGrid.local_of(cell)
 	var out := chunk.spans_at(local.x, local.y, palette)
 	if chunk.base_cm != 0:
 		for span in out:
@@ -147,14 +135,14 @@ func spans_at(cell: Vector2i) -> Array[EarthSpan]:
 ## The surface in metres, for anything that thinks in metres — which is everything outside the
 ## earth system, including the foot planting that raycasts against it (§7).
 func height_at(world_x: float, world_z: float) -> float:
-	return surface_cm(cell_at(world_x, world_z)) * 0.01
+	return surface_cm(EarthGrid.cell_at(world_x, world_z)) * 0.01
 
 
 func material_at(cell: Vector2i) -> StringName:
 	var chunk := chunk_for(cell, false)
 	var index := _material_index
 	if chunk != null:
-		var local := local_of(cell)
+		var local := EarthGrid.local_of(cell)
 		index = chunk.material_index(local.x, local.y)
 	return palette[index] if index < palette.size() else &""
 
@@ -163,7 +151,7 @@ func is_disturbed(cell: Vector2i) -> bool:
 	var chunk := chunk_for(cell, false)
 	if chunk == null:
 		return false
-	var local := local_of(cell)
+	var local := EarthGrid.local_of(cell)
 	return chunk.is_disturbed(local.x, local.y)
 
 
@@ -176,7 +164,7 @@ func is_disturbed(cell: Vector2i) -> bool:
 ## up.
 func sculpt(cell: Vector2i, height_cm: int) -> void:
 	var chunk := chunk_for(cell)
-	var local := local_of(cell)
+	var local := EarthGrid.local_of(cell)
 	chunk.set_surface_cm(local.x, local.y, height_cm - chunk.base_cm)
 
 
@@ -204,6 +192,16 @@ func shoring_at(cell: Vector2i) -> int:
 	return int(shoring.get(cell, 0))
 
 
+## Whether this column's surface is under water.
+func is_flooded(cell: Vector2i) -> bool:
+	return surface_cm(cell) < water_cm
+
+
+## How deep the water is over a column, in centimetres, or 0 for dry ground.
+func flood_depth_cm(cell: Vector2i) -> int:
+	return maxi(0, water_cm - surface_cm(cell))
+
+
 # ---------------------------------------------------------------- digging
 
 ## Take earth out of a column, and hand it back rather than destroying it.
@@ -216,7 +214,7 @@ func carve(cell: Vector2i, depth_cm: int) -> int:
 	if depth_cm <= 0:
 		return 0
 	var chunk := chunk_for(cell)
-	var local := local_of(cell)
+	var local := EarthGrid.local_of(cell)
 	var was := chunk.surface_cm(local.x, local.y)
 	var floor_cm := FLOOR_CM - chunk.base_cm
 	var now := maxi(was - depth_cm, floor_cm)
@@ -235,7 +233,7 @@ func deposit(cell: Vector2i, volume_cm: int) -> int:
 	if volume_cm <= 0:
 		return 0
 	var chunk := chunk_for(cell)
-	var local := local_of(cell)
+	var local := EarthGrid.local_of(cell)
 	var moved := chunk.set_surface_cm(local.x, local.y,
 		chunk.surface_cm(local.x, local.y) + volume_cm)
 	if moved != 0:

@@ -122,8 +122,8 @@ func _columns_agree_across_a_chunk_border(t: TestContext, world: Dictionary) -> 
 
 	var last := Vector2i(EarthChunk.SIZE - 1, 3)      # last column of chunk 0
 	var first := Vector2i(EarthChunk.SIZE, 3)          # first column of chunk 1
-	t.eq(EarthField.chunk_of(last), Vector2i(0, 0), "the two columns really are in different chunks")
-	t.eq(EarthField.chunk_of(first), Vector2i(1, 0), "one either side of the border")
+	t.eq(EarthGrid.chunk_of(last), Vector2i(0, 0), "the two columns really are in different chunks")
+	t.eq(EarthGrid.chunk_of(first), Vector2i(1, 0), "one either side of the border")
 	t.ok(EarthMesher.connected(field, last, first), "and on this ramp they are connected ground")
 	# The corner they share: each computes it from its own neighbourhood, and on connected ground
 	# they have to arrive at the same number or the two chunks' meshes do not meet.
@@ -198,7 +198,7 @@ func _walls_face_outward(t: TestContext, world: Dictionary) -> void:
 	var arrays := mesh.surface_get_arrays(0)
 	var points: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-	var hole := EarthField.centre_of(Vector2i(5, 5))
+	var hole := EarthGrid.centre_of(Vector2i(5, 5))
 	var walls := 0
 	var facing := 0
 	for i in range(0, normals.size(), 3):

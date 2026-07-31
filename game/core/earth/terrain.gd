@@ -27,6 +27,11 @@ extends StaticBody3D
 ## §9's budget. Deliberately a constant rather than a guess at call sites.
 const REMESH_PER_FRAME := 8
 
+## Standing water, as ART-BIBLE would have it: a palette colour, not a shader. `water` is one of
+## the three materials §8 defers the numbers for, so this is a look rather than a substance — which
+## is all §8 asks for. Translucent enough to read the trench floor through.
+const WATER_COLOUR := Color(0.36, 0.42, 0.40, 0.72)
+
 var field: EarthField = null
 
 ## The earth settling into its own angle of repose, a bounded number of cells a frame. Live rather
@@ -40,6 +45,7 @@ var _materials: MaterialSet = null
 var _meshes: Dictionary = {}        ## Vector2i -> MeshInstance3D
 var _shapes: Dictionary = {}        ## Vector2i -> CollisionShape3D
 var _queue: Array[Vector2i] = []
+var _water: MeshInstance3D = null
 
 
 static func of(field_: EarthField, palette: Palette, materials: MaterialSet) -> EarthTerrain:
@@ -62,7 +68,46 @@ func build_all() -> int:
 	while not _queue.is_empty():
 		_remesh(_queue.pop_front())
 		built += 1
+	_build_water()
 	return built
+
+
+## One flat sheet at the water table, across everything the field covers. EARTH-SPEC §8 is a level
+## and a fill rule and explicitly not a simulation, so this is a plane — and a plane is the honest
+## shape for it. Ground above the level is above the sheet and hides it; ground below is under it
+## and reads as flooded, which is the whole effect and costs two triangles.
+func _build_water() -> void:
+	if field.water_cm <= EarthField.NO_WATER:
+		return
+	if _water == null:
+		_water = MeshInstance3D.new()
+		_water.name = "Water"
+		var surface := StandardMaterial3D.new()
+		surface.albedo_color = WATER_COLOUR
+		surface.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		surface.roughness = 0.15
+		# Lit from both sides: standing in a flooded dugout, the sheet is above you.
+		surface.cull_mode = BaseMaterial3D.CULL_DISABLED
+		_water.material_override = surface
+		add_child(_water)
+
+	var span := AABB()
+	var first := true
+	for key in field.chunks:
+		var corner := Vector3(key.x * EarthChunk.SIZE * EarthGrid.CELL_M, 0.0,
+			key.y * EarthChunk.SIZE * EarthGrid.CELL_M)
+		var box := AABB(corner, Vector3(EarthChunk.SIZE * EarthGrid.CELL_M, 0.0,
+			EarthChunk.SIZE * EarthGrid.CELL_M))
+		span = box if first else span.merge(box)
+		first = false
+	if first:
+		return
+
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(span.size.x, span.size.z)
+	_water.mesh = plane
+	_water.position = Vector3(span.position.x + span.size.x * 0.5, field.water_cm * 0.01,
+		span.position.z + span.size.z * 0.5)
 
 
 ## Mark a chunk for rebuild, and its neighbours with it: a column on a border helps decide the
@@ -70,7 +115,7 @@ func build_all() -> int:
 func touch(cell: Vector2i) -> void:
 	if settle != null:
 		settle.disturb(cell)
-	var home := EarthField.chunk_of(cell)
+	var home := EarthGrid.chunk_of(cell)
 	for dz in [-1, 0, 1]:
 		for dx in [-1, 0, 1]:
 			var key := home + Vector2i(dx, dz)
@@ -138,4 +183,16 @@ func report() -> String:
 	return "earth: %d chunk(s), %d columns, %d triangles, %d kB of field, %d cell(s) shored\n  %s" % [
 		field.chunks.size(), field.chunks.size() * EarthChunk.CELLS, triangles,
 		field.chunks.size() * EarthChunk.CELLS * EarthChunk.BYTES_PER_COLUMN / 1024,
-		field.shoring.size(), settle.report()]
+		field.shoring.size(), settle.report()] + _water_report()
+
+
+func _water_report() -> String:
+	if field.water_cm <= EarthField.NO_WATER:
+		return ""
+	var flooded := 0
+	for key in field.chunks:
+		for z in EarthChunk.SIZE:
+			for x in EarthChunk.SIZE:
+				if field.is_flooded(key * EarthChunk.SIZE + Vector2i(x, z)):
+					flooded += 1
+	return "\n  water table at %d cm, %d column(s) under it" % [field.water_cm, flooded]

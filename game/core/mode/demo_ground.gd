@@ -52,13 +52,19 @@ const PARAPET_CELLS := 6
 ## the whole reason trenches are revetted at all — loam holds 38° and a 38° trench is a ditch.
 const SHORING_DEGREES := 80
 
+## Where the water table sits, in centimetres. Below the surrounding ground and above the trench
+## floor, so the cut fills and everything around it stays dry — which is the case §8 is about and
+## the reason a Great War trench had duckboards in it.
+const WATER_CM := -90
+
 
 ## Sculpt the starting ground, cut the trench, and hand back how much earth moved.
 static func make(field: EarthField, settle: EarthSettle) -> int:
-	var reach := int(EXTENT_M / EarthField.CELL_M)
+	field.water_cm = WATER_CM
+	var reach := int(EXTENT_M / EarthGrid.CELL_M)
 	for cz in range(-reach, reach + 1):
 		for cx in range(-reach, reach + 1):
-			var centre := EarthField.centre_of(Vector2i(cx, cz))
+			var centre := EarthGrid.centre_of(Vector2i(cx, cz))
 			field.sculpt(Vector2i(cx, cz), roundi(TestGround.height_at(centre.x, centre.y) * 100.0))
 	return _cut_trench(field, settle)
 
@@ -68,10 +74,10 @@ static func make(field: EarthField, settle: EarthSettle) -> int:
 ## afterwards as before.
 static func _cut_trench(field: EarthField, settle: EarthSettle) -> int:
 	var moved := 0
-	var from_z := int(TRENCH_FROM_Z / EarthField.CELL_M)
-	var to_z := int(TRENCH_TO_Z / EarthField.CELL_M)
-	var centre_x := int(TRENCH_X / EarthField.CELL_M)
-	var half := int(TRENCH_HALF_WIDTH / EarthField.CELL_M)
+	var from_z := int(TRENCH_FROM_Z / EarthGrid.CELL_M)
+	var to_z := int(TRENCH_TO_Z / EarthGrid.CELL_M)
+	var centre_x := int(TRENCH_X / EarthGrid.CELL_M)
+	var half := int(TRENCH_HALF_WIDTH / EarthGrid.CELL_M)
 
 	for cz in range(from_z, to_z + 1):
 		var spoil := 0

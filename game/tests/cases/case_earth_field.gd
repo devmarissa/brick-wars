@@ -45,21 +45,21 @@ func run(t: TestContext) -> void:
 ## column centres, so a cell that started at its corner would make every triangle a half-cell
 ## correction somebody has to remember.
 func _cells_and_chunks(t: TestContext) -> void:
-	t.eq(EarthField.cell_at(0.0, 0.0), Vector2i(0, 0), "the origin is the centre of cell zero")
-	t.eq(EarthField.cell_at(0.24, 0.0), Vector2i(0, 0), "and a point inside that cell is in it")
-	t.eq(EarthField.cell_at(0.26, 0.0), Vector2i(1, 0), "past the halfway line it is the next one")
-	t.eq(EarthField.cell_at(-0.26, 0.0), Vector2i(-1, 0), "which works the same way going negative")
-	t.eq(EarthField.centre_of(Vector2i(3, -2)), Vector2(1.5, -1.0), "and a cell knows its own centre")
+	t.eq(EarthGrid.cell_at(0.0, 0.0), Vector2i(0, 0), "the origin is the centre of cell zero")
+	t.eq(EarthGrid.cell_at(0.24, 0.0), Vector2i(0, 0), "and a point inside that cell is in it")
+	t.eq(EarthGrid.cell_at(0.26, 0.0), Vector2i(1, 0), "past the halfway line it is the next one")
+	t.eq(EarthGrid.cell_at(-0.26, 0.0), Vector2i(-1, 0), "which works the same way going negative")
+	t.eq(EarthGrid.centre_of(Vector2i(3, -2)), Vector2(1.5, -1.0), "and a cell knows its own centre")
 
 	# 32 cells to a chunk, and the negative side is where an off-by-one hides: `floor` and `posmod`
 	# rather than integer division, which truncates toward zero and would put cells -1 and 0 in the
 	# same chunk.
-	t.eq(EarthField.chunk_of(Vector2i(0, 0)), Vector2i(0, 0), "cell zero is in chunk zero")
-	t.eq(EarthField.chunk_of(Vector2i(31, 31)), Vector2i(0, 0), "and so is the far corner of it")
-	t.eq(EarthField.chunk_of(Vector2i(32, 0)), Vector2i(1, 0), "the next cell along starts a chunk")
-	t.eq(EarthField.chunk_of(Vector2i(-1, -1)), Vector2i(-1, -1),
+	t.eq(EarthGrid.chunk_of(Vector2i(0, 0)), Vector2i(0, 0), "cell zero is in chunk zero")
+	t.eq(EarthGrid.chunk_of(Vector2i(31, 31)), Vector2i(0, 0), "and so is the far corner of it")
+	t.eq(EarthGrid.chunk_of(Vector2i(32, 0)), Vector2i(1, 0), "the next cell along starts a chunk")
+	t.eq(EarthGrid.chunk_of(Vector2i(-1, -1)), Vector2i(-1, -1),
 		"and the cell before the origin is in the chunk before it, not in chunk zero")
-	t.eq(EarthField.local_of(Vector2i(-1, -1)), Vector2i(31, 31),
+	t.eq(EarthGrid.local_of(Vector2i(-1, -1)), Vector2i(31, 31),
 		"landing at the far corner of that chunk rather than at a negative index")
 
 

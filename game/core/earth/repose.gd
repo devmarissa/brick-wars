@@ -19,7 +19,7 @@ extends RefCounted
 ## whole centimetres once, at load, and everything downstream is integer comparison.
 
 ## The distance between column centres, which is what an angle is a slope *over*.
-const RUN_CM := EarthField.CELL_CM
+const RUN_CM := EarthGrid.CELL_CM
 
 ## Diagonal neighbours are √2 further apart, so they may hold a proportionally bigger step before
 ## the face is as steep. As a rational rather than a float, for the reason above: 1414/1000 is
@@ -51,6 +51,16 @@ static func diagonal_step_cm(degrees: int) -> int:
 	return step_cm(degrees) * DIAGONAL_NUM / DIAGONAL_DEN
 
 
+## Waterlogged ground stands at mud's angle whatever it is made of. EARTH-SPEC §8: dig below the
+## water table and what fills becomes `mud`, "with everything that implies for repose and movement".
+##
+## Applied as a ceiling rather than by rewriting the column's material, which makes it reversible:
+## pump the water out or cut a drain and the ground recovers, and §8 names pumping, duckboards and
+## drainage as the pack-level answers to exactly this. Rewriting the material would make a flooded
+## trench permanently mud even after it dried, which is a worse model and a one-way door.
+const WET_DEGREES := 15
+
+
 ## What a column's surface will stand at: the material's angle, less the penalty for having been
 ## dug. §4 gives spoil repose −15°, which is why a parapet thrown up from a trench slumps in weather
 ## that the trench wall opposite shrugs off.
@@ -61,10 +71,14 @@ static func for_column(field: EarthField, cell: Vector2i, materials: MaterialSet
 	# shoring burns.
 	var held := field.shoring_at(cell)
 	if held > 0:
+		# Revetment holds against water too — that is most of what revetment is for in a wet
+		# trench — so it is checked before the wetness ceiling rather than after.
 		return clampi(held, MIN_DEGREES, MAX_DEGREES)
 	var degrees := degrees_of(materials, field.material_at(cell))
 	if field.is_disturbed(cell):
 		degrees -= EarthSpan.DISTURBED_REPOSE_PENALTY
+	if field.is_flooded(cell):
+		degrees = mini(degrees, WET_DEGREES)
 	return clampi(degrees, MIN_DEGREES, MAX_DEGREES)
 
 
