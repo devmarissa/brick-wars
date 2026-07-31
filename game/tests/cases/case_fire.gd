@@ -137,6 +137,20 @@ func _the_difference_is_entirely_the_numbers(t: TestContext, world: Dictionary,
 	t.ok(widest <= 0.16 + EPSILON, "no shot goes further off true than its spread allows: %.4f" % widest)
 	t.ok(widest > 0.10, "and the spread is actually used rather than being a decoration")
 
+	# Shots are spread evenly across the disc rather than bunched at the centre — `scatter` takes the
+	# square root of its roll for the same reason you sample a circle by area and not by radius.
+	# Without it a weapon's shots crowd the middle and its stated spread quietly stops meaning what
+	# it says. The tell is the median: area-uniform puts it at spread/sqrt(2), linear at spread/2,
+	# and those are far enough apart to assert.
+	var angles: Array[float] = []
+	for i in 400:
+		rng.seed = SEED + i
+		angles.append(Ballistics.scatter(Vector3.FORWARD, 0.16, rng).angle_to(Vector3.FORWARD))
+	angles.sort()
+	var median := angles[angles.size() / 2]
+	t.near(median, 0.16 / sqrt(2.0), 0.012,
+		"and they land evenly across the disc: median %.4f against %.4f" % [median, 0.16 / sqrt(2.0)])
+
 
 ## "at a cost in ammunition and time" — the two things that make a bolt rifle feel like one, both
 ## read off the asset.

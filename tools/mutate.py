@@ -155,6 +155,39 @@ MUTATIONS = [
      "	if false:",
      "spoil may be thrown any distance, so a shovel has infinite reach"),
 
+
+    # --- C4: firing, and the ballistics under it ---
+
+    ("game/core/verbs/fire.gd",
+     "	if rounds <= 0:",
+     "	if false:",
+     "a weapon never runs out, so `capacity` is a decoration"),
+
+    ("game/core/verbs/fire.gd",
+     "	if now < ready_at:",
+     "	if false:",
+     "there is no time between shots, so a bolt rifle fires like a machine gun"),
+
+    ("game/core/verbs/fire.gd",
+     '"state": { "rounds": rounds - 1, "ready_at": now + float(stats["cycle"]) },',
+     '"state": { "rounds": rounds, "ready_at": now + float(stats["cycle"]) },',
+     "firing does not consume the round it fired"),
+
+    ("game/core/combat/ballistics.gd",
+     "	return 0.5 * gravity * t * t",
+     "	return gravity * t * t",
+     "a projectile falls at twice the rate it should"),
+
+    ("game/core/combat/ballistics.gd",
+     "	return scatter(aim, spread, rng) * speed",
+     "	return aim.normalized() * speed",
+     "spread is computed and then ignored, so every weapon is perfectly accurate"),
+
+    ("game/core/combat/ballistics.gd",
+     "	var angle := spread * sqrt(rng.randf())",
+     "	var angle := spread * rng.randf()",
+     "shots bunch at the centre of the spread disc instead of spreading evenly across it"),
+
 ]
 
 
