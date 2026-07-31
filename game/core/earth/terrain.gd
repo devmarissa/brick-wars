@@ -29,6 +29,12 @@ const REMESH_PER_FRAME := 8
 
 var field: EarthField = null
 
+## The earth settling into its own angle of repose, a bounded number of cells a frame. Live rather
+## than run-to-rest: a wall that has just lost its revetment should come down over a second or two
+## while somebody watches, which is what §3 means by "real earth settling rather than a scripted
+## animation".
+var settle: EarthSettle = null
+
 var _palette: Palette = null
 var _materials: MaterialSet = null
 var _meshes: Dictionary = {}        ## Vector2i -> MeshInstance3D
@@ -42,6 +48,7 @@ static func of(field_: EarthField, palette: Palette, materials: MaterialSet) -> 
 	terrain.field = field_
 	terrain._palette = palette
 	terrain._materials = materials
+	terrain.settle = EarthSettle.of(materials)
 	return terrain
 
 
@@ -61,6 +68,8 @@ func build_all() -> int:
 ## Mark a chunk for rebuild, and its neighbours with it: a column on a border helps decide the
 ## corner heights of the chunk next door, so a dig at the edge changes two meshes.
 func touch(cell: Vector2i) -> void:
+	if settle != null:
+		settle.disturb(cell)
 	var home := EarthField.chunk_of(cell)
 	for dz in [-1, 0, 1]:
 		for dx in [-1, 0, 1]:
@@ -74,6 +83,15 @@ func pending() -> int:
 
 
 func _physics_process(_delta: float) -> void:
+	# Settle first, then remesh, so a chunk the settle queue just moved earth in is rebuilt this
+	# frame rather than next. The other way round shows the collapse a frame late, which on a
+	# slump that takes a second is invisible — and on one that takes three frames is most of it.
+	var was := settle.moved_cm
+	settle.run(field)
+	if settle.moved_cm != was:
+		for key in field.chunks:
+			if (field.chunks[key] as EarthChunk).dirty and not _queue.has(key):
+				_queue.append(key)
 	for i in mini(REMESH_PER_FRAME, _queue.size()):
 		_remesh(_queue.pop_front())
 
@@ -117,6 +135,7 @@ func report() -> String:
 		var mesh: ArrayMesh = (_meshes[key] as MeshInstance3D).mesh
 		if mesh != null and mesh.get_surface_count() > 0:
 			triangles += mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size() / 3
-	return "earth: %d chunk(s), %d columns, %d triangles, %d kB of field" % [
+	return "earth: %d chunk(s), %d columns, %d triangles, %d kB of field, %d cell(s) shored\n  %s" % [
 		field.chunks.size(), field.chunks.size() * EarthChunk.CELLS, triangles,
-		field.chunks.size() * EarthChunk.CELLS * EarthChunk.BYTES_PER_COLUMN / 1024]
+		field.chunks.size() * EarthChunk.CELLS * EarthChunk.BYTES_PER_COLUMN / 1024,
+		field.shoring.size(), settle.report()]

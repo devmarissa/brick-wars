@@ -203,11 +203,10 @@ func report() -> String:
 ## case asserts exact numbers against it. What changed is what the sandbox stands on.
 func _add_ground(content: Module) -> void:
 	var field := EarthField.flat(content.materials, 0)
-	var moved := DemoGround.make(field)
 	earth = EarthTerrain.of(field, content.palette, content.materials)
+	_earth_moved = DemoGround.make(field, earth.settle)
 	add_child(earth)
 	earth.build_all()
-	_earth_moved = moved
 
 
 ## The plate, with its top face at y = 0. Static and separate for the same reason
@@ -271,6 +270,6 @@ func _add_camera() -> void:
 	# Aimed along the trench at C3. The creatures are still in frame, but the subject is the ground
 	# now: a cut with vertical walls, its own spoil heaped beside it as a smooth parapet, and the
 	# ramp behind — one picture with both halves of the meshing rule in it.
-	cam.global_position = Vector3(1.4, 3.6, 4.8)
-	cam.look_at(Vector3(-7.2, -0.3, -2.8))
+	cam.global_position = Vector3(-6.6, 2.2, 5.6)
+	cam.look_at(Vector3(-9.0, -0.6, -4.0))
 	cam.current = true

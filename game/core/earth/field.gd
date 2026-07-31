@@ -42,6 +42,15 @@ const FLOOR_CM := -2000
 var palette: Array[StringName] = []
 var chunks: Dictionary = {}          ## Vector2i -> EarthChunk
 
+## Cells whose face is held by revetment, and the angle it holds them at. EARTH-SPEC §3.
+##
+## Sparse, because shoring is rare and deliberate: a few hundred cells along the walls of a trench
+## somebody built, against a map of millions. Timber, wattle, sandbag facing and corrugated sheet
+## all do the same thing here — they let a wall stand steeper than the soil ever would — and taking
+## the revetment away lifts the override, wakes the settle queue, and brings the wall down. §3 calls
+## that "a genuine loop: trenches need maintenance, and destroying revetment is worth doing."
+var shoring: Dictionary = {}         ## Vector2i -> whole degrees
+
 var _surface_cm := 0
 var _material_index := 0
 
@@ -171,6 +180,30 @@ func sculpt(cell: Vector2i, height_cm: int) -> void:
 	chunk.set_surface_cm(local.x, local.y, height_cm - chunk.base_cm)
 
 
+## Hold a cell's face at a steeper angle than its soil would. Returns whether anything changed, so
+## a caller can decide whether to wake the settle queue rather than waking it unconditionally.
+func shore(cell: Vector2i, degrees: int) -> bool:
+	var was := int(shoring.get(cell, 0))
+	if was == degrees:
+		return false
+	if degrees <= 0:
+		shoring.erase(cell)
+	else:
+		shoring[cell] = degrees
+	return true
+
+
+## Take the revetment away. The wall does not fall here — it falls when the settle queue next looks
+## at it, which is the difference between a collapse and a deletion.
+func unshore(cell: Vector2i) -> bool:
+	return shore(cell, 0)
+
+
+## The angle revetment holds this cell at, or 0 for bare earth.
+func shoring_at(cell: Vector2i) -> int:
+	return int(shoring.get(cell, 0))
+
+
 # ---------------------------------------------------------------- digging
 
 ## Take earth out of a column, and hand it back rather than destroying it.
@@ -246,5 +279,14 @@ func rolling_hash() -> int:
 	for key in keys:
 		var chunk: EarthChunk = chunks[key]
 		for value in [key.x & 0xFFFF, key.y & 0xFFFF, chunk.rolling_hash()]:
+			hash = ((hash ^ int(value)) * 16777619) & 0xFFFFFFFF
+	# Shoring is state like any other: two clients that disagree about which walls are held would
+	# disagree about which ones fall, and that is exactly the drift §5 wants caught rather than
+	# assumed away. Sorted, because a dictionary's iteration order is not a promise.
+	var held: Array = shoring.keys()
+	held.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return a.y < b.y if a.y != b.y else a.x < b.x)
+	for key in held:
+		for value in [key.x & 0xFFFF, key.y & 0xFFFF, int(shoring[key])]:
 			hash = ((hash ^ int(value)) * 16777619) & 0xFFFFFFFF
 	return hash

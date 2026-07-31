@@ -55,6 +55,13 @@ static func diagonal_step_cm(degrees: int) -> int:
 ## dug. §4 gives spoil repose −15°, which is why a parapet thrown up from a trench slumps in weather
 ## that the trench wall opposite shrugs off.
 static func for_column(field: EarthField, cell: Vector2i, materials: MaterialSet) -> int:
+	# Revetment wins outright rather than adding to the soil: a sandbag facing holds a wall at the
+	# angle the facing holds, and what is behind it stops being the question. Taking it away drops
+	# straight back to what the earth can do on its own, which is how a wall comes down when its
+	# shoring burns.
+	var held := field.shoring_at(cell)
+	if held > 0:
+		return clampi(held, MIN_DEGREES, MAX_DEGREES)
 	var degrees := degrees_of(materials, field.material_at(cell))
 	if field.is_disturbed(cell):
 		degrees -= EarthSpan.DISTURBED_REPOSE_PENALTY

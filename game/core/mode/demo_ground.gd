@@ -48,20 +48,25 @@ const PARAPET_OFFSET_CELLS := -2
 const PARAPET_CELLS := 6
 
 
+## How steep the revetment holds a wall. Timber and sandbag facing stand near-vertical, which is
+## the whole reason trenches are revetted at all — loam holds 38° and a 38° trench is a ditch.
+const SHORING_DEGREES := 80
+
+
 ## Sculpt the starting ground, cut the trench, and hand back how much earth moved.
-static func make(field: EarthField) -> int:
+static func make(field: EarthField, settle: EarthSettle) -> int:
 	var reach := int(EXTENT_M / EarthField.CELL_M)
 	for cz in range(-reach, reach + 1):
 		for cx in range(-reach, reach + 1):
 			var centre := EarthField.centre_of(Vector2i(cx, cz))
 			field.sculpt(Vector2i(cx, cz), roundi(TestGround.height_at(centre.x, centre.y) * 100.0))
-	return _cut_trench(field)
+	return _cut_trench(field, settle)
 
 
 ## A trench, dug rather than sculpted: it carves real volume out and piles every centimetre of it
 ## on the parapet, so the ground either side is `disturbed` and the field has as much earth in it
 ## afterwards as before.
-static func _cut_trench(field: EarthField) -> int:
+static func _cut_trench(field: EarthField, settle: EarthSettle) -> int:
 	var moved := 0
 	var from_z := int(TRENCH_FROM_Z / EarthField.CELL_M)
 	var to_z := int(TRENCH_TO_Z / EarthField.CELL_M)
@@ -72,6 +77,16 @@ static func _cut_trench(field: EarthField) -> int:
 		var spoil := 0
 		for cx in range(centre_x - half, centre_x + half + 1):
 			spoil += field.carve(Vector2i(cx, cz), TRENCH_DEPTH_CM)
+			# Digging wakes the earth. That is the contract — nothing sweeps the map looking for
+			# faces that have stopped standing — so a cut that forgot to say so is a cut whose
+			# walls never fall, which is a much harder thing to notice than a crash.
+			settle.disturb(Vector2i(cx, cz))
+		# The northern half is revetted and the southern half is bare, which is the whole of §3 in
+		# one trench: the shored walls stand where they were cut, and the moment the settle queue
+		# reaches the unshored end it slumps to what loam actually holds — 38°, which is a ditch.
+		if cz < (from_z + to_z) / 2:
+			for cx in range(centre_x - half - 1, centre_x + half + 2):
+				field.shore(Vector2i(cx, cz), SHORING_DEGREES)
 		moved += spoil
 		# All of it onto one side, which is what gives a trench a parapet and a firing step rather
 		# than a symmetrical ditch. Spread rather than piled — see `PARAPET_CELLS`.
@@ -82,4 +97,5 @@ static func _cut_trench(field: EarthField) -> int:
 			# division. §4 means it, and a rounding leak is still a leak.
 			var share := each if i < PARAPET_CELLS - 1 else spoil - each * (PARAPET_CELLS - 1)
 			field.deposit(Vector2i(lip - i, cz), share)
+			settle.disturb(Vector2i(lip - i, cz))
 	return moved
