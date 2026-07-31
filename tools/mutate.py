@@ -12,6 +12,12 @@ It takes a couple of minutes — the suite runs once per mutation. Nothing is le
 original is restored in a `finally`, so a Ctrl-C between runs is the one way to leave a file
 edited, and `git diff` will say so.
 
+**Commit before you run it.** The original is restored in a `finally`, so an ordinary Ctrl-C is
+safe, but a `kill` at the wrong moment leaves a file edited — and if that file is new and
+untracked, `git checkout` cannot put it back and the mutation IS the only version. That happened
+once, at C4, to a file that had existed for twenty minutes. Two tracked files went with it and
+were restored in one command; the untracked one had to be repaired by hand.
+
 Run it after adding a policy line, not before a release. It found three lines in the C2 driver
 that no test covered at all, two of them invisible because every fixture happened to make the
 buggy and the correct formula agree. `DEVIATIONS-C2.md` §D lists what it still does not cover.
@@ -116,6 +122,39 @@ MUTATIONS = [
      "var half := stride * hold * 0.5",
      "var half := stride * 0.5",
      "a planted foot travels a full stride relative to the body, so it drags"),
+
+    # --- C4: the verb vocabulary and the first live verb ---
+
+    ("game/core/verbs/verb_set.gd",
+     "\t\tif not VOCABULARY.has(name):",
+     "        if false:",
+     "the vocabulary stops being closed and a pack could invent a verb"),
+
+    ("game/core/verbs/verbs.gd",
+     "	if not set.is_live(verb):",
+     "	if false:",
+     "a declared-but-unbuilt verb dispatches silently instead of refusing"),
+
+    ("game/core/verbs/dig.gd",
+     "	field.deposit(spoil, moved)",
+     "	field.deposit(spoil, depth_cm)",
+     "spoil is what was ASKED for rather than what came out — creates earth against bedrock"),
+
+    ("game/core/verbs/dig.gd",
+     "	if spoil == cell:",
+     "	if false:",
+     "spoil may be thrown into the hole it was cut from, so digging digs nothing"),
+
+    ("game/core/verbs/dig.gd",
+     "	if depth_cm > MAX_BITE_CM:",
+     "	if false:",
+     "a dig may take any depth in one bite, so the ground never slumps between them"),
+
+    ("game/core/verbs/dig.gd",
+     "	if absi(away.x) > MAX_THROW_CELLS or absi(away.y) > MAX_THROW_CELLS:",
+     "	if false:",
+     "spoil may be thrown any distance, so a shovel has infinite reach"),
+
 ]
 
 

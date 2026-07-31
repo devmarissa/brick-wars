@@ -1,0 +1,19 @@
+{
+  "id": "fixture:invented",
+  "format": 1,
+  "note": "Wrong on purpose: an eleventh verb. CORE-SPEC fixes the vocabulary at ten and says a pack wanting a new one is a core change request \u2014 so the file that could smuggle one in has to be refused by name rather than merged quietly.",
+  "verbs": {
+    "fire": {
+      "status": "live",
+      "milestone": "C4",
+      "what": "fine",
+      "slots": []
+    },
+    "sprint": {
+      "status": "live",
+      "milestone": "C4",
+      "what": "not a verb \u2014 this is movement, and movement is not a verb",
+      "slots": []
+    }
+  }
+}

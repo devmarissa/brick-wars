@@ -1,0 +1,16 @@
+{
+  "id": "fixture:unknown_slot",
+  "format": 1,
+  "note": "Wrong on purpose: a verb dispatched by a slot the registry has never heard of. Caught by `check_against` rather than by loading, because it is a disagreement between two core files and neither one is wrong on its own.",
+  "verbs": {
+    "fire": {
+      "status": "live",
+      "milestone": "C4",
+      "what": "fine",
+      "slots": [
+        "ranged_slow",
+        "trebuchet"
+      ]
+    }
+  }
+}

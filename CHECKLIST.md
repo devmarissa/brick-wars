@@ -279,14 +279,33 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
 *The fixed vocabulary. Packs fill slots; packs never add verbs (`CORE-SPEC` §5).*
 
-- [~] FIRE · THROW · DIG · BUILD (working, need core-ification)
-- [ ] MELEE
-- [ ] ENTER / EXIT / MAN
-- [ ] CARRY (pick up, haul, drop — logistics and spoil both need it)
-- [ ] INTERACT (doors, ladders, switches, resupply)
-- [ ] SIGNAL (whistle/horn/flare — the assault cue, era-neutral)
-- [ ] Weapon archetype slots defined: ranged-slow · ranged-fast · emplaced/support ·
-      sidearm · melee · thrown · signalling · optics · utility · entrenching
+### C4 progress — verbs, combat and tools
+
+- [~] **The vocabulary is declared and closed.** All ten verbs in `core/data/verbs.json`, each with
+      what it is, the milestone that owns it, and the archetype slots that dispatch it. The names
+      are a `const` in code and the file may not add to them or omit from them — same split as
+      `SlotSet.KINDS`, because a data file that *could* add a verb would imply a pack may.
+- [~] **A slot chooses its verbs, so an asset never names one.** There is no `verb` field in the
+      asset format. A pack picks `ranged_slow` and thereby picks `fire`. "Packs cannot define new
+      verbs" stops needing enforcement, because there is nowhere to write one down.
+- [~] **Dispatch refuses a reserved verb by naming the milestone that owns it** rather than quietly
+      doing nothing — content authored against a silent no-op looks like working content until
+      somebody plays it.
+- [~] **DIG — live**, and first on purpose. `VISION`'s era table puts it in the first column of
+      every era from the siege ramp to the IED hole, and building the vocabulary around `fire`
+      first is how you get a verb system shaped like a weapon system. Cuts, throws its spoil one
+      cell, conserves every centimetre, wakes the settle queue, and refuses bedrock, over-large
+      bites and spoil thrown into its own hole.
+- [ ] FIRE · THROW · MELEE — declared, C4's, not yet dispatched. **A verb's status flips in the
+      diff that builds it, never ahead of it**, and `case_verbs.gd` asserts the live list as a
+      literal so the two cannot drift apart.
+- [ ] BUILD — declared, **reserved to C5** (`DEVIATIONS-C4.md` B3): a sandbag wall that does not
+      yet topple sideways where a clay one slumps is a prop with a placement cost.
+- [ ] ENTER / MAN — declared, reserved to C6. CARRY / INTERACT / SIGNAL — declared, reserved to C7.
+- [ ] **Registry review (carried from C1) — a real gap found, needs a decision.** This list asks
+      for `signalling · optics · utility · entrenching` slots and `slots.json` has none of them.
+      That is why `dig` currently rides on `melee_light`/`melee_heavy` and why its bite depth is a
+      hardcoded constant rather than a number off the tool. `DEVIATIONS-C4.md` B5.
 - [ ] Tool/weapon slot loadout system (classes pick slots, packs fill them)
 
 ## 5 · The Earth (the keystone)

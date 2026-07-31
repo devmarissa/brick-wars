@@ -1,0 +1,13 @@
+{
+  "id": "fixture:bad_status",
+  "format": 1,
+  "note": "Wrong on purpose: a status outside live/partial/reserved. `someday` reads like a plan and commits to nothing, which is the exact state this field exists to prevent.",
+  "verbs": {
+    "fire": {
+      "status": "someday",
+      "milestone": "C4",
+      "what": "fine",
+      "slots": []
+    }
+  }
+}

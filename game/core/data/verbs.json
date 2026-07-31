@@ -1,0 +1,115 @@
+{
+  "id": "core:verbs",
+  "format": 1,
+  "note": "The interaction vocabulary (CORE-SPEC \u00a72). Ten verbs, closed. Packs cannot define new ones \u2014 a pack that wants one is a core change request \u2014 because a finite verb list is what keeps the animation state machine and the netcode's action encoding finite. The names live in code (`VerbSet.VOCABULARY`) and this file supplies each one's detail, for the same reason `SlotSet.KINDS` is in code: a data file that could add a verb would imply packs may, and they may not.",
+  "status": "First cut, written at C4 when the verb system became real. `dig` is live; the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
+  "slot_note": "`slots` lists the archetype slots that can dispatch this verb. A slot may appear under more than one verb, and that is not a modelling failure: an entrenching tool is `melee_light` and it both digs a hole and hits people, which is exactly why it was issued. What a slot may NOT do is name a verb that is not in the vocabulary.",
+  "verbs": {
+    "fire": {
+      "status": "reserved",
+      "milestone": "C4",
+      "what": "Loose a projectile from a readied weapon, at a cost in ammunition and time.",
+      "slots": [
+        "ranged_slow",
+        "ranged_fast",
+        "ranged_support",
+        "ranged_precision",
+        "sidearm",
+        "explosive_launched",
+        "gun_fixed",
+        "gun_crewed"
+      ],
+      "note": "C4's done-condition is this verb: a weapon defined in data fires, and a bow and a rifle are the same code path. Both of those live in `ranged_slow`, whose own note has said `bolt rifle, musket, crossbow, bow` since C1. Reserved rather than live until dispatch carries it out: C4's own increment, and the status flips in the diff that builds it rather than ahead of it."
+    },
+    "throw": {
+      "status": "reserved",
+      "milestone": "C4",
+      "what": "Send an object on a ballistic arc from the hand rather than from a barrel.",
+      "slots": [
+        "explosive_thrown"
+      ],
+      "note": "The flight is C4 and is the same ballistics as `fire` with a different launch. What it does when it lands is C5's blast model \u2014 the same split already drawn at C3, where `EarthCrater` is the earth's half of an explosion and not the explosion. A grenade in C4 flies, bounces and goes quiet. Reserved until `fire`'s ballistics exist, since the flight is the same maths with a different launch."
+    },
+    "dig": {
+      "status": "live",
+      "milestone": "C4",
+      "what": "Cut earth out of the ground and pile it where it can be stood behind.",
+      "slots": [
+        "melee_light",
+        "melee_heavy"
+      ],
+      "note": "Calls straight into C3's field \u2014 carve, deposit, the settle queue and the event log \u2014 and is here mainly because it proves the verb table is not weapon-shaped. A vocabulary whose only live members shot things would not have been tested for the thing it is for."
+    },
+    "melee": {
+      "status": "reserved",
+      "milestone": "C4",
+      "what": "Strike at reach, resolved without a projectile.",
+      "slots": [
+        "melee_light",
+        "melee_heavy"
+      ],
+      "note": "C4's, alongside ballistics, because CORE-SPEC puts melee resolution in the combat module \u2014 and because it is the cheapest proof that damage is not a property of projectiles. Blocking, stamina and directional defence are not in scope: the slots list them optional and nothing supplies them yet. Reserved until damage resolution exists for it to call."
+    },
+    "build": {
+      "status": "reserved",
+      "milestone": "C5",
+      "what": "Place a buildable, paying its cost, where the ground and the neighbours allow it.",
+      "slots": [
+        "barrier",
+        "obstacle",
+        "shelter",
+        "span"
+      ],
+      "note": "Reserved rather than built, and the reason is a judgement call recorded in `DEVIATIONS-C4.md`: placing a sandbag wall is easy, and a sandbag wall that does not yet topple sideways where a clay one slumps is a prop rather than a buildable. C5 switches material behaviour on, and that is when placing one means something."
+    },
+    "carry": {
+      "status": "reserved",
+      "milestone": "C7",
+      "what": "Bear an object or a burden, at a cost in movement.",
+      "slots": [],
+      "note": "The loadout system in C4 decides what a soldier is holding. Carrying is the other thing \u2014 an ammunition crate walked forward from a dump \u2014 and it has no purpose until C7 builds the supply chain that makes the walk worth making. No slot dispatches it; the thing carried is cargo, not kit."
+    },
+    "enter": {
+      "status": "reserved",
+      "milestone": "C6",
+      "what": "Take a seat in a vehicle or a mount, and leave it again.",
+      "slots": [
+        "fast_transport",
+        "heavy_transport",
+        "armoured_fighting",
+        "artillery_mobile",
+        "mount",
+        "watercraft",
+        "aircraft"
+      ],
+      "note": "C6 owns multi-crew seats and enter/exit animation by name. Declared now so the vocabulary is closed at C4 rather than growing later, which is the whole claim."
+    },
+    "man": {
+      "status": "reserved",
+      "milestone": "C6",
+      "what": "Take a crew station on something that is not going anywhere.",
+      "slots": [
+        "gun_fixed",
+        "gun_crewed",
+        "observation"
+      ],
+      "note": "Distinct from `enter` because a crew station is a role rather than a ride: two soldiers on one gun are loader and layer, and C6's hands-on-controls IK is what makes the distinction visible. The gun slots appear under `fire` too \u2014 manning it and firing it are different verbs on the same object."
+    },
+    "interact": {
+      "status": "reserved",
+      "milestone": "C7",
+      "what": "Use a thing whose whole purpose is being used \u2014 a lever, a flag, a field telephone.",
+      "slots": [
+        "observation"
+      ],
+      "note": "The catch-all, and the one to watch: a verb that means anything means nothing, and the first time a pack wants `interact` to do something specific is the moment to ask whether it wanted a real verb instead. C7's capture and phase logic is its first real customer."
+    },
+    "signal": {
+      "status": "reserved",
+      "milestone": "C7",
+      "what": "Tell other people something without a menu \u2014 point, whistle, wave, fire a flare.",
+      "slots": [],
+      "note": "Reserved to C7 with the AI behaviour set, because a signal nobody can receive is an animation. Listed here rather than treated as UI: it is a thing a soldier's body does in the world, it costs time, and it can be seen by the other side."
+    }
+  }
+}

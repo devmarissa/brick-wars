@@ -1,0 +1,13 @@
+{
+  "id": "fixture:no_milestone",
+  "format": 1,
+  "note": "Wrong on purpose: a reserved verb with no owner. A verb reserved to nobody is indistinguishable from a verb nobody has thought about, which is the gap this file is meant to make visible.",
+  "verbs": {
+    "fire": {
+      "status": "reserved",
+      "milestone": "",
+      "what": "fine",
+      "slots": []
+    }
+  }
+}
