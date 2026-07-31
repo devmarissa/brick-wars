@@ -148,7 +148,28 @@ narrower than it looks: it is about the **look**, and the look is a mesher chang
 - **C — true 0.1 m voxels.** Looks exactly right and needs greedy meshing, LOD, a different
   collision model, and a smaller map than aerial combat wants.
 
-**My recommendation is B, prototyped as a side-by-side before committing** — same as the texture
+**Update, same day — three more prototypes, and the answer changed.** All reverted.
+
+- **0.25 m cells with heights snapped to 10 cm:** still reads smooth.
+- **0.5 m cells with heights snapped to 25 cm** — deliberately blocky, past what §10 rejected:
+  *still* reads smooth.
+- **The current representation, unchanged, over churned ground:** reads like shelled earth.
+  Craters, raised lips, faceted slopes, props toppled into the holes.
+
+So the flatness is **the demo terrain, not the representation.** `DemoGround` samples `TestGround`,
+which is a gentle ramp with a step and a shallow bowl a long way off to one side — and a heightfield
+over nearly-flat ground reads flat at every resolution and every quantisation, because there is
+nothing for the steps to step over. The three renders differ in cost by 25× and are visually
+almost indistinguishable; the fourth, which changed nothing about the code, does not look like the
+same game.
+
+**Revised recommendation: change nothing about the representation.** The thing that makes ground
+read as ground is what has happened to it, and that arrives on its own at C5 when shells start
+landing. If the sandbox should look churned before then, that is a change to `DemoGround` —
+world content — and costs nothing.
+
+The earlier recommendation, superseded:
+**~~B, prototyped as a side-by-side before committing~~** — same as the texture
 decision, and for the same reason: this is a look, and a look is settled by looking. If B reads
 right, C buys very little for a great deal of cost.
 
