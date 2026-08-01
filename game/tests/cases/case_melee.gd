@@ -54,6 +54,12 @@ func _one_object_two_verbs(t: TestContext, set: VerbSet, shovel: ResolvedAsset) 
 	t.ok(not stats.has("spread"),
 		"and no `spread` — a miss the player did not cause is not a thing a swing has")
 
+	# C4's registry review put `dig_cm` on the melee slots rather than inventing an `entrenching`
+	# slot, and this is the assertion that makes the choice pay: the same asset that swings also
+	# carries the number that says how much earth it moves. A separate slot would have forced a
+	# choice between the shovel being a weapon and the shovel being a tool.
+	t.eq(int(stats.get("dig_cm", 0)), 25, "and it carries `dig_cm`, which is what makes it a tool too")
+
 
 ## The design line that matters more than it looks: a swing that connects with nothing still costs
 ## the recovery. "The cycle only starts on a hit" is the rule that turns melee into a button nobody

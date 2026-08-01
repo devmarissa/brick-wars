@@ -324,11 +324,19 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 - [ ] BUILD — declared, **reserved to C5** (`DEVIATIONS-C4.md` B3): a sandbag wall that does not
       yet topple sideways where a clay one slumps is a prop with a placement cost.
 - [ ] ENTER / MAN — declared, reserved to C6. CARRY / INTERACT / SIGNAL — declared, reserved to C7.
-- [ ] **Registry review (carried from C1) — a real gap found, needs a decision.** This list asks
-      for `signalling · optics · utility · entrenching` slots and `slots.json` has none of them.
-      That is why `dig` currently rides on `melee_light`/`melee_heavy` and why its bite depth is a
-      hardcoded constant rather than a number off the tool. `DEVIATIONS-C4.md` B5.
-- [ ] Tool/weapon slot loadout system (classes pick slots, packs fill them)
+- [~] **Registry review (carried from C1) — done. Three slots added, one refused.** `signalling`,
+      `optics` and `utility` were real gaps and are in (29 slots now). **`entrenching` was asked
+      for and deliberately not added:** an asset fills one slot, so an `entrenching` slot would
+      force `core:shovel` to be *either* a melee weapon *or* a digging tool, and an entrenching
+      tool is famously both. The registry already had the machinery nobody had used — a slot may
+      be dispatched by more than one verb — so the fix was a stat, not a slot: `dig_cm` is optional
+      on the melee slots and `dig` reads its bite off the tool. `MAX_BITE_CM` survives as a ceiling
+      a pack may not exceed. Full reasoning in `DEVIATIONS-C4.md` B6.
+- [~] Weapon archetype slots defined: the nine came through the review intact, and `ads_fov` being
+      optional on `ranged_slow` was validated the hard way — had it been required, every bow ever
+      authored would have been refused by the validator and nobody would have known until now.
+- [ ] Tool/weapon slot loadout system (classes pick slots, packs fill them) — C4's remaining work,
+      with `throw`'s flight.
 
 ## 5 · The Earth (the keystone)
 

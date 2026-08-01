@@ -33,6 +33,7 @@ func run(t: TestContext) -> void:
 	_a_spadeful(t, set, materials)
 	_where_the_spoil_may_go(t, set, materials)
 	_bedrock(t, set, materials)
+	_the_tool_decides_the_bite(t, set, materials)
 	_a_trench_is_repetition(t, set, materials)
 
 
@@ -138,6 +139,33 @@ func _bedrock(t: TestContext, set: VerbSet, materials: MaterialSet) -> void:
 		"field": field, "cell": Vector2i(2, 2), "spoil": Vector2i(3, 2), "depth_cm": 25 })
 	t.ok(not again["ok"], "digging bedrock again is refused")
 	t.ok(String(again["why"]).contains("bedrock"), "and says so plainly: %s" % again["why"])
+
+
+## The bite comes off the tool when there is one. Before C4's registry review it was a constant in
+## code, because no slot supplied a number — which was the concrete cost of the missing slot and the
+## thing that made the review worth doing rather than a tidy-up.
+func _the_tool_decides_the_bite(t: TestContext, set: VerbSet, materials: MaterialSet) -> void:
+	var world := FixtureWorld.load_root("res://packs")
+	var shovel := FixtureWorld.asset(world, "core:shovel") if not world.is_empty() else null
+	if shovel == null:
+		t.fail("`core:shovel` would not load")
+		return
+
+	var field := EarthField.flat(materials, 0)
+	var got := Verbs.dispatch(set, "dig", {
+		"field": field, "cell": Vector2i(3, 3), "spoil": Vector2i(4, 3),
+		"stats": shovel.data.get("stats", {}) })
+	t.ok(got["ok"], "a dig with a shovel in hand works: %s" % got["why"])
+	t.eq(got["moved_cm"], 25, "and takes the shovel's own `dig_cm`, not a number from the engine")
+
+	# A pack cannot make a shovel that swallows the map. The cap is a ceiling on what a tool may
+	# claim rather than the bite itself.
+	var greedy := Verbs.dispatch(set, "dig", {
+		"field": field, "cell": Vector2i(3, 5), "spoil": Vector2i(4, 5),
+		"stats": { "dig_cm": VerbDig.MAX_BITE_CM + 40 } })
+	t.ok(not greedy["ok"], "and a tool claiming more than the ceiling is refused")
+	t.ok(String(greedy["why"]).contains("any tool may take"),
+		"saying it is a ceiling rather than a preference: %s" % greedy["why"])
 
 
 ## What a soldier actually does: the same bite, over and over, until there is a hole to lie in and a

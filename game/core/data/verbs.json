@@ -36,7 +36,8 @@
       "what": "Cut earth out of the ground and pile it where it can be stood behind.",
       "slots": [
         "melee_light",
-        "melee_heavy"
+        "melee_heavy",
+        "utility"
       ],
       "note": "Calls straight into C3's field \u2014 carve, deposit, the settle queue and the event log \u2014 and is here mainly because it proves the verb table is not weapon-shaped. A vocabulary whose only live members shot things would not have been tested for the thing it is for."
     },
@@ -100,7 +101,9 @@
       "milestone": "C7",
       "what": "Use a thing whose whole purpose is being used \u2014 a lever, a flag, a field telephone.",
       "slots": [
-        "observation"
+        "observation",
+        "optics",
+        "utility"
       ],
       "note": "The catch-all, and the one to watch: a verb that means anything means nothing, and the first time a pack wants `interact` to do something specific is the moment to ask whether it wanted a real verb instead. C7's capture and phase logic is its first real customer."
     },
@@ -108,8 +111,10 @@
       "status": "reserved",
       "milestone": "C7",
       "what": "Tell other people something without a menu \u2014 point, whistle, wave, fire a flare.",
-      "slots": [],
-      "note": "Reserved to C7 with the AI behaviour set, because a signal nobody can receive is an animation. Listed here rather than treated as UI: it is a thing a soldier's body does in the world, it costs time, and it can be seen by the other side."
+      "slots": [
+        "signalling"
+      ],
+      "note": "Reserved to C7 with the AI behaviour set, because a signal nobody can receive is an animation. Listed here rather than treated as UI: it is a thing a soldier's body does in the world, it costs time, and it can be seen by the other side. `signalling` exists as of C4's registry review \u2014 a whistle had nowhere to live before it, which is how a reserved verb quietly becomes unbuildable."
     }
   }
 }

@@ -1,165 +1,434 @@
 {
-	"id": "core_slots",
-	"format": 1,
-	"note": "The archetype slot registry (FORMAT-SPEC §7). Every gameplay asset fills a core slot and supplies the numbers that slot defines; core owns the field list, and a pack that invents a field gets a warning and has it ignored. The point is that a slot is a promise about behaviour: anything in `ranged_slow` is aimed, cycled and reloaded by the same core code whether it is a musket, a bolt rifle or a crossbow.",
-	"status": "First cut, written to give the validator something true to check against. The names are era-neutral on purpose — a slot that only makes sense in one era is a slot that has to be reinvented for the next one. Expect this list to be argued with once weapons are in the game and something obvious is missing.",
-	"slotless_kinds": ["prop", "structure"],
-	"slots": {
-		"ranged_slow": {
-			"kind": "weapon",
-			"requires": ["damage", "velocity", "cycle", "capacity", "reload", "spread"],
-			"optional": ["recoil", "ads_fov", "zoom", "range"],
-			"note": "bolt rifle, musket, crossbow, bow — one deliberate shot at a time"
-		},
-		"ranged_fast": {
-			"kind": "weapon",
-			"requires": ["damage", "velocity", "cycle", "capacity", "reload", "spread"],
-			"optional": ["recoil", "ads_fov", "zoom", "range", "burst"],
-			"note": "submachine gun, automatic rifle — volume over placement"
-		},
-		"ranged_support": {
-			"kind": "weapon",
-			"requires": ["damage", "velocity", "cycle", "capacity", "reload", "spread", "deploy_time"],
-			"optional": ["recoil", "ads_fov", "overheat", "crew"],
-			"note": "machine gun, crew-served — sited rather than carried into a fight"
-		},
-		"ranged_precision": {
-			"kind": "weapon",
-			"requires": ["damage", "velocity", "cycle", "capacity", "reload", "spread", "zoom"],
-			"optional": ["recoil", "ads_fov", "sway", "range"],
-			"note": "scoped rifle — the slot exists so optics are core behaviour, not a stat"
-		},
-		"sidearm": {
-			"kind": "weapon",
-			"requires": ["damage", "velocity", "cycle", "capacity", "reload", "spread"],
-			"optional": ["recoil", "ads_fov"],
-			"note": "pistol, revolver — a fallback, not a primary"
-		},
-		"melee_light": {
-			"kind": "weapon",
-			"requires": ["damage", "cycle", "reach"],
-			"optional": ["stamina", "block"],
-			"note": "knife, shortsword, entrenching tool"
-		},
-		"melee_heavy": {
-			"kind": "weapon",
-			"requires": ["damage", "cycle", "reach"],
-			"optional": ["stamina", "block", "sweep"],
-			"note": "polearm, two-hander, sledge — slow, and it moves the target"
-		},
-		"explosive_thrown": {
-			"kind": "weapon",
-			"requires": ["damage", "radius", "fuse", "capacity"],
-			"optional": ["cycle", "throw_velocity"],
-			"note": "grenade, satchel, firepot"
-		},
-		"explosive_launched": {
-			"kind": "weapon",
-			"requires": ["damage", "radius", "velocity", "cycle", "capacity", "reload"],
-			"optional": ["spread", "arc", "crew"],
-			"note": "mortar, rocket, hand cannon — indirect or shoulder-fired"
-		},
-		"fast_transport": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "grip", "health"],
-			"optional": ["seats", "cargo", "fuel"],
-			"note": "jeep, staff car, launch"
-		},
-		"heavy_transport": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "grip", "health"],
-			"optional": ["seats", "cargo", "tow"],
-			"note": "truck, limber, barge — logistics rather than a fight"
-		},
-		"armoured_fighting": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "grip", "health"],
-			"optional": ["seats", "traverse", "elevation", "crew"],
-			"note": "tank, armoured car. `health` is the crew-and-systems pool, not the plating — the plating is a material"
-		},
-		"artillery_mobile": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "grip", "health"],
-			"optional": ["traverse", "elevation", "crew", "deploy_time"],
-			"note": "self-propelled or towed-and-emplaced"
-		},
-		"mount": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "health"],
-			"optional": ["grip", "stamina", "jump", "seats"],
-			"note": "the horse. A mount is a vehicle with a gait — RIG-SPEC §1 is the whole reason this slot is in the first cut"
-		},
-		"watercraft": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "health"],
-			"optional": ["draft", "seats", "cargo"],
-			"note": "boat, raft, pontoon"
-		},
-		"aircraft": {
-			"kind": "vehicle",
-			"requires": ["max_speed", "accel", "turn_rate", "health"],
-			"optional": ["climb", "stall_speed", "seats"],
-			"note": "aeroplane, balloon"
-		},
-		"gun_fixed": {
-			"kind": "emplacement",
-			"requires": ["damage", "cycle", "reload", "traverse", "elevation"],
-			"optional": ["radius", "velocity", "crew", "spread"],
-			"note": "a gun that is part of the terrain — bunker gun, turret"
-		},
-		"gun_crewed": {
-			"kind": "emplacement",
-			"requires": ["damage", "cycle", "reload", "traverse", "elevation", "crew"],
-			"optional": ["radius", "velocity", "spread", "deploy_time"],
-			"note": "field gun, siege engine — it takes people to work it"
-		},
-		"observation": {
-			"kind": "emplacement",
-			"requires": ["zoom", "traverse"],
-			"optional": ["elevation", "crew", "range"],
-			"note": "periscope, spotting scope, forward observer post"
-		},
-		"barrier": {
-			"kind": "buildable",
-			"requires": ["build_time"],
-			"optional": ["cover_height", "stack"],
-			"note": "sandbag wall, gabion, hesco. No health — durability comes from the material it is built of"
-		},
-		"obstacle": {
-			"kind": "buildable",
-			"requires": ["build_time"],
-			"optional": ["slows", "damages"],
-			"note": "wire, caltrops, dragon's teeth, abatis"
-		},
-		"shelter": {
-			"kind": "buildable",
-			"requires": ["build_time"],
-			"optional": ["capacity", "spawn"],
-			"note": "dugout, tent, bunker roof"
-		},
-		"span": {
-			"kind": "buildable",
-			"requires": ["build_time", "length"],
-			"optional": ["load"],
-			"note": "duckboard, bridge, ladder — the things that make ground crossable"
-		},
-		"infantry": {
-			"kind": "character",
-			"requires": [],
-			"optional": ["carry", "stamina"],
-			"note": "core owns a soldier's movement and health, so a class asset is a loadout and a silhouette rather than a stat block"
-		},
-		"specialist": {
-			"kind": "character",
-			"requires": [],
-			"optional": ["carry", "stamina", "tool_power"],
-			"note": "sapper, medic, engineer — the tool is what makes the class"
-		},
-		"crew": {
-			"kind": "character",
-			"requires": [],
-			"optional": ["carry", "stamina"],
-			"note": "gun crew, driver, pilot"
-		}
-	}
+  "id": "core_slots",
+  "format": 1,
+  "note": "The archetype slot registry (FORMAT-SPEC \u00a77). Every gameplay asset fills a core slot and supplies the numbers that slot defines; core owns the field list, and a pack that invents a field gets a warning and has it ignored. The point is that a slot is a promise about behaviour: anything in `ranged_slow` is aimed, cycled and reloaded by the same core code whether it is a musket, a bolt rifle or a crossbow.",
+  "status": "Reviewed at C4 (2026-07-31), which BUILD-ORDER carried over from C1 for the reason it gave: only the prop slots had been exercised, so until weapons existed a review was about words rather than numbers. Three slots added \u2014 `signalling`, `optics`, `utility` \u2014 all of which CHECKLIST \u00a74 had asked for and none of which existed. **`entrenching` was asked for and deliberately not added**; see `DEVIATIONS-C4.md` B6. Now 29 slots. Expect this list to be argued with again once vehicles and emplacements carry real numbers, which is C6.",
+  "slotless_kinds": [
+    "prop",
+    "structure"
+  ],
+  "slots": {
+    "ranged_slow": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "velocity",
+        "cycle",
+        "capacity",
+        "reload",
+        "spread"
+      ],
+      "optional": [
+        "recoil",
+        "ads_fov",
+        "zoom",
+        "range"
+      ],
+      "note": "bolt rifle, musket, crossbow, bow \u2014 one deliberate shot at a time"
+    },
+    "ranged_fast": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "velocity",
+        "cycle",
+        "capacity",
+        "reload",
+        "spread"
+      ],
+      "optional": [
+        "recoil",
+        "ads_fov",
+        "zoom",
+        "range",
+        "burst"
+      ],
+      "note": "submachine gun, automatic rifle \u2014 volume over placement"
+    },
+    "ranged_support": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "velocity",
+        "cycle",
+        "capacity",
+        "reload",
+        "spread",
+        "deploy_time"
+      ],
+      "optional": [
+        "recoil",
+        "ads_fov",
+        "overheat",
+        "crew"
+      ],
+      "note": "machine gun, crew-served \u2014 sited rather than carried into a fight"
+    },
+    "ranged_precision": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "velocity",
+        "cycle",
+        "capacity",
+        "reload",
+        "spread",
+        "zoom"
+      ],
+      "optional": [
+        "recoil",
+        "ads_fov",
+        "sway",
+        "range"
+      ],
+      "note": "scoped rifle \u2014 the slot exists so optics are core behaviour, not a stat"
+    },
+    "sidearm": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "velocity",
+        "cycle",
+        "capacity",
+        "reload",
+        "spread"
+      ],
+      "optional": [
+        "recoil",
+        "ads_fov"
+      ],
+      "note": "pistol, revolver \u2014 a fallback, not a primary"
+    },
+    "melee_light": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "cycle",
+        "reach"
+      ],
+      "optional": [
+        "stamina",
+        "block",
+        "dig_cm"
+      ],
+      "note": "knife, shortsword, entrenching tool \u2014 fast, and `dig_cm` is what makes the last of those a tool as well as a weapon"
+    },
+    "melee_heavy": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "cycle",
+        "reach"
+      ],
+      "optional": [
+        "stamina",
+        "block",
+        "sweep",
+        "dig_cm"
+      ],
+      "note": "polearm, two-hander, sledge, pick \u2014 slow, and it moves the target; `dig_cm` covers the pick, which digs harder and swings slower than a spade"
+    },
+    "explosive_thrown": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "radius",
+        "fuse",
+        "capacity"
+      ],
+      "optional": [
+        "cycle",
+        "throw_velocity"
+      ],
+      "note": "grenade, satchel, firepot"
+    },
+    "explosive_launched": {
+      "kind": "weapon",
+      "requires": [
+        "damage",
+        "radius",
+        "velocity",
+        "cycle",
+        "capacity",
+        "reload"
+      ],
+      "optional": [
+        "spread",
+        "arc",
+        "crew"
+      ],
+      "note": "mortar, rocket, hand cannon \u2014 indirect or shoulder-fired"
+    },
+    "fast_transport": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "grip",
+        "health"
+      ],
+      "optional": [
+        "seats",
+        "cargo",
+        "fuel"
+      ],
+      "note": "jeep, staff car, launch"
+    },
+    "heavy_transport": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "grip",
+        "health"
+      ],
+      "optional": [
+        "seats",
+        "cargo",
+        "tow"
+      ],
+      "note": "truck, limber, barge \u2014 logistics rather than a fight"
+    },
+    "armoured_fighting": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "grip",
+        "health"
+      ],
+      "optional": [
+        "seats",
+        "traverse",
+        "elevation",
+        "crew"
+      ],
+      "note": "tank, armoured car. `health` is the crew-and-systems pool, not the plating \u2014 the plating is a material"
+    },
+    "artillery_mobile": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "grip",
+        "health"
+      ],
+      "optional": [
+        "traverse",
+        "elevation",
+        "crew",
+        "deploy_time"
+      ],
+      "note": "self-propelled or towed-and-emplaced"
+    },
+    "mount": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "health"
+      ],
+      "optional": [
+        "grip",
+        "stamina",
+        "jump",
+        "seats"
+      ],
+      "note": "the horse. A mount is a vehicle with a gait \u2014 RIG-SPEC \u00a71 is the whole reason this slot is in the first cut"
+    },
+    "watercraft": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "health"
+      ],
+      "optional": [
+        "draft",
+        "seats",
+        "cargo"
+      ],
+      "note": "boat, raft, pontoon"
+    },
+    "aircraft": {
+      "kind": "vehicle",
+      "requires": [
+        "max_speed",
+        "accel",
+        "turn_rate",
+        "health"
+      ],
+      "optional": [
+        "climb",
+        "stall_speed",
+        "seats"
+      ],
+      "note": "aeroplane, balloon"
+    },
+    "gun_fixed": {
+      "kind": "emplacement",
+      "requires": [
+        "damage",
+        "cycle",
+        "reload",
+        "traverse",
+        "elevation"
+      ],
+      "optional": [
+        "radius",
+        "velocity",
+        "crew",
+        "spread"
+      ],
+      "note": "a gun that is part of the terrain \u2014 bunker gun, turret"
+    },
+    "gun_crewed": {
+      "kind": "emplacement",
+      "requires": [
+        "damage",
+        "cycle",
+        "reload",
+        "traverse",
+        "elevation",
+        "crew"
+      ],
+      "optional": [
+        "radius",
+        "velocity",
+        "spread",
+        "deploy_time"
+      ],
+      "note": "field gun, siege engine \u2014 it takes people to work it"
+    },
+    "observation": {
+      "kind": "emplacement",
+      "requires": [
+        "zoom",
+        "traverse"
+      ],
+      "optional": [
+        "elevation",
+        "crew",
+        "range"
+      ],
+      "note": "periscope, spotting scope, forward observer post"
+    },
+    "barrier": {
+      "kind": "buildable",
+      "requires": [
+        "build_time"
+      ],
+      "optional": [
+        "cover_height",
+        "stack"
+      ],
+      "note": "sandbag wall, gabion, hesco. No health \u2014 durability comes from the material it is built of"
+    },
+    "obstacle": {
+      "kind": "buildable",
+      "requires": [
+        "build_time"
+      ],
+      "optional": [
+        "slows",
+        "damages"
+      ],
+      "note": "wire, caltrops, dragon's teeth, abatis"
+    },
+    "shelter": {
+      "kind": "buildable",
+      "requires": [
+        "build_time"
+      ],
+      "optional": [
+        "capacity",
+        "spawn"
+      ],
+      "note": "dugout, tent, bunker roof"
+    },
+    "span": {
+      "kind": "buildable",
+      "requires": [
+        "build_time",
+        "length"
+      ],
+      "optional": [
+        "load"
+      ],
+      "note": "duckboard, bridge, ladder \u2014 the things that make ground crossable"
+    },
+    "infantry": {
+      "kind": "character",
+      "requires": [],
+      "optional": [
+        "carry",
+        "stamina"
+      ],
+      "note": "core owns a soldier's movement and health, so a class asset is a loadout and a silhouette rather than a stat block"
+    },
+    "specialist": {
+      "kind": "character",
+      "requires": [],
+      "optional": [
+        "carry",
+        "stamina",
+        "tool_power"
+      ],
+      "note": "sapper, medic, engineer \u2014 the tool is what makes the class"
+    },
+    "crew": {
+      "kind": "character",
+      "requires": [],
+      "optional": [
+        "carry",
+        "stamina"
+      ],
+      "note": "gun crew, driver, pilot"
+    },
+    "signalling": {
+      "kind": "weapon",
+      "requires": [
+        "carry_range",
+        "cycle"
+      ],
+      "optional": [
+        "capacity",
+        "reload",
+        "duration",
+        "colour"
+      ],
+      "note": "whistle, horn, flare pistol, signal lamp \u2014 a thing whose whole output is being noticed. `carry_range` is how far the signal itself travels, which is the only stat that matters and is not the same question as a weapon's range"
+    },
+    "optics": {
+      "kind": "weapon",
+      "requires": [
+        "zoom"
+      ],
+      "optional": [
+        "range",
+        "ads_fov",
+        "steady"
+      ],
+      "note": "binoculars, trench periscope, rangefinder \u2014 held rather than emplaced, which is what makes it a different slot from `observation`. Requires only `zoom`: an optic that does not magnify is a prop"
+    },
+    "utility": {
+      "kind": "weapon",
+      "requires": [
+        "cycle"
+      ],
+      "optional": [
+        "reach",
+        "capacity",
+        "charges",
+        "work_power"
+      ],
+      "note": "wire cutters, wrench, dressing, demolition charge \u2014 the kit that is carried in a weapon slot and is not for hitting anyone. `work_power` is the tool-gating number MATERIAL-SPEC uses, so a pair of cutters can be refused by armour plate with a reason"
+    }
+  }
 }

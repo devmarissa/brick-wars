@@ -112,6 +112,51 @@ it is what makes a parapet appear on the side you dug from without anything deci
 Diagonals are allowed. Restricting spoil to the four orthogonal neighbours would have been a grid
 artefact rather than a constraint.
 
+### B6. The registry review: three slots added, and `entrenching` deliberately refused
+
+`BUILD-ORDER` carried this from C1 with a reason — *"only the prop slots have been exercised... this
+is the first point at which reviewing them is about numbers rather than about words."* `CHECKLIST`
+§4 named four slots the registry did not have: **signalling · optics · utility · entrenching**.
+
+Three of them were real gaps and are in. `signalling` (whistle, horn, flare pistol — `carry_range`
+is how far the *signal* travels, which is not a weapon's range), `optics` (binoculars, handheld
+periscope — different from the existing `observation`, which is emplaced), and `utility` (wire
+cutters, dressing, demolition charge — including `work_power`, the tool-gating number
+`MATERIAL-SPEC` uses, so a pair of cutters can be refused by armour plate *with a reason*). Each
+needed a verb pointing at it or `check_against` would rightly have called it stranded, so `signal`
+now names `signalling` and `interact` names `optics` and `utility`. Twenty-nine slots.
+
+**`entrenching` was asked for and is not in, and this is the one worth arguing with.**
+
+An asset fills exactly one slot. So an `entrenching` slot would force a choice: `core:shovel` is
+*either* a light melee weapon *or* a digging tool, and it would have to stop being the other one. An
+entrenching tool is famously both — it is why it was issued, and it was the trench-raiding weapon of
+choice precisely because the man carrying it already had it.
+
+The registry already had the machinery for this and nobody had used it: **a slot may be dispatched
+by more than one verb.** `melee_light` sits under both `melee` and `dig`. So the fix was not a new
+slot but a new *stat*: `dig_cm` is now optional on `melee_light` and `melee_heavy`, and `VerbDig`
+reads its bite off the tool instead of off a constant in code.
+
+That also closes **B5**, which flagged the invented constant. `MAX_BITE_CM` survives as a *ceiling*
+— what a pack may not exceed however keen its shovel — rather than as the bite itself. The
+distinction is now in the refusal message, which says "the most any tool may take" instead of
+implying a preference.
+
+What is still true from B5: a caller with no tool at all may still name a depth directly, which is
+how the demo ground and several tests dig with nobody holding anything. Whether digging should
+*require* a tool is a design question rather than a structural one, and it wants a soldier with
+hands before it is worth answering.
+
+**What the review did not change.** The nine weapon slots' `requires`/`optional` lists came through
+intact, and one of them was validated the hard way rather than by inspection: `ads_fov` is optional
+on `ranged_slow`, `testpack:bow` does not supply it, and the firing path does not want it. Had that
+been listed `required`, every bow ever authored would have been refused by the validator and the
+era boundary would have failed at C1 without anybody noticing until now.
+
+Expect the list to be argued with again at C6, when vehicles and emplacements first carry real
+numbers — the same reason this review waited for C4.
+
 ---
 
 ## C · Structural notes

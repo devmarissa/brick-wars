@@ -11,7 +11,8 @@
     "damage": 55,
     "cycle": 0.9,
     "reach": 1.6,
-    "stamina": 12
+    "stamina": 12,
+    "dig_cm": 25
   },
   "anim": {
     "fire": 0.25,

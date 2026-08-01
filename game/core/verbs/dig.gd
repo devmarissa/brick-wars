@@ -24,9 +24,14 @@ extends RefCounted
 ## on the side you dug from, why that parapet is disturbed ground that stands at a shallower angle
 ## than what it was cut out of, and why digging in makes cover as a side effect of making a hole.
 
-## The most one dig takes, in centimetres. A spade-full rather than a mining operation — a caller
-## wanting a metre asks four times, which is what puts digging on a clock and lets the settle queue
-## slump between bites instead of after everything.
+## The most any tool may take in one bite, in centimetres. A **ceiling**, not the bite itself: the
+## bite is `dig_cm` off the tool's own stat block, added to `melee_light` and `melee_heavy` by C4's
+## registry review, and this is the number a pack may not exceed however keen its shovel is.
+##
+## The cap is not arbitrary tidiness. A spade-full rather than a mining operation is what puts
+## digging on a clock — a caller wanting a metre asks four times — and it is what lets the settle
+## queue slump *between* bites instead of all at once after them, which is the difference between
+## earth moving and earth teleporting.
 const MAX_BITE_CM := 25
 
 ## How far the spoil may be thrown, in cells. One, because a soldier with a shovel throws earth to
@@ -48,13 +53,20 @@ static func perform(request: Dictionary) -> Dictionary:
 
 	var cell: Vector2i = request.get("cell", Vector2i.ZERO)
 	var spoil: Vector2i = request.get("spoil", Vector2i.ZERO)
-	var depth_cm := int(request.get("depth_cm", 0))
+
+	# The tool decides how much comes out, when there is one. `dig_cm` is what makes an entrenching
+	# tool a tool as well as a weapon, and it is why `dig` did not need a slot of its own — see
+	# `DEVIATIONS-C4.md` B6. A caller with no tool names the depth itself, which is how the demo
+	# ground and the tests dig with nobody holding anything.
+	var stats: Dictionary = request.get("stats", {})
+	var depth_cm := int(stats["dig_cm"]) if stats.has("dig_cm") \
+		else int(request.get("depth_cm", 0))
 
 	if depth_cm <= 0:
 		return _no("dig asked for %d cm — a dig that removes nothing is a deposit %s" % [
 			depth_cm, "wearing the wrong name, and `build` is the verb for that"])
 	if depth_cm > MAX_BITE_CM:
-		return _no("dig asked for %d cm in one bite and the most is %d. %s" % [
+		return _no("dig asked for %d cm in one bite and the most any tool may take is %d. %s" % [
 			depth_cm, MAX_BITE_CM,
 			"Ask repeatedly — that is what puts digging on a clock and lets the ground slump between bites."])
 	if spoil == cell:
