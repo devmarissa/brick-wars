@@ -288,6 +288,11 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
 ### C4 progress — verbs, combat and tools
 
+**Done-condition walked** (`case_fire.gd`): *a weapon defined in data fires · a bow and a rifle are
+the same code path · TESTPACK's bow works with zero core changes.* All three, against real content
+through the real pipeline. `verbs` and `combat` are no longer stubs. Marked `[~]`; `[x]` is
+Marissa's, and **C4b is the first milestone where she can judge any of it by hand.**
+
 - [~] **The vocabulary is declared and closed.** All ten verbs in `core/data/verbs.json`, each with
       what it is, the milestone that owns it, and the archetype slots that dispatch it. The names
       are a `const` in code and the file may not add to them or omit from them — same split as

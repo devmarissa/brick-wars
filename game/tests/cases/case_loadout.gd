@@ -77,6 +77,18 @@ func _what_he_can_do_is_derived(t: TestContext, world: Dictionary, set: VerbSet,
 		"there is no `verbs` field on the class, and there is nowhere in the format to put one")
 
 	t.ok(kit.can(set, "fire"), "he can fire, because something in his hands is `ranged_slow`")
+
+	# End to end, which is C4's done-condition arriving through the front door: a class out of a pack
+	# file, holding a weapon out of a pack file, firing it through the dispatcher — with the core
+	# never having been told what either of them is.
+	var rifle := (world["resolver"] as AssetResolver).get_asset(kit.item("ranged_slow"))
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4
+	var shot := Verbs.dispatch(set, "fire", {
+		"stats": rifle.data.get("stats", {}), "origin": Vector3(0.0, 1.5, 0.0),
+		"aim": Vector3.FORWARD, "now": 0.0, "state": kit.state["ranged_slow"], "rng": rng })
+	t.ok(shot["ok"], "and firing the weapon out of his own kit works: %s" % shot["why"])
+	t.eq(int((shot["state"] as Dictionary)["rounds"]), 4, "spending one of the five he came out with")
 	t.ok(kit.can(set, "dig"),
 		"and he can dig — not because anybody said so, but because his tool is `melee_light`")
 	t.ok(not kit.can(set, "enter"), "he cannot get into a vehicle, having no vehicle")

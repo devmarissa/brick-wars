@@ -213,7 +213,16 @@ than a crash still passes quietly. The stronger fix is a sentinel every case has
 
 ## D · Policy lines with no test that fails when you break them
 
-### D1. `partial` is a declared status that nothing uses
+### D1. ~~`partial` is a declared status that nothing uses~~ — closed
+
+`throw` is `partial` as of the diff that made it fly, which is what this entry predicted would
+happen and said should otherwise mean deleting the value. It has a test. Kept here rather than
+removed because the reasoning is the useful part: a status nothing uses is a status nothing checks,
+and the fix is either a user or a deletion — never leaving it as an option nobody took.
+
+The original entry follows.
+
+### D1 (original). `partial` is a declared status that nothing uses
 
 `VerbSet.STATUSES` allows `live`, `partial` and `reserved`. Nothing is `partial` at HEAD, so the
 value is unexercised — a `partial` that was silently treated as `reserved` would pass the suite.

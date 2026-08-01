@@ -45,12 +45,14 @@ func _full_boot(t: TestContext) -> void:
 	# work out which. It was a count until C2 un-stubbed `rig`, and the failure it gave —
 	# `got 8, wanted 9` — is a sentence with no subject in it.
 	t.eq(",".join(ContentLoader.sorted_names(k.stub_names())),
-		"ai,audio,combat,net,vehicle,verbs,vfx",
+		"ai,audio,net,vehicle,vfx",
 		"exactly these modules still honestly declare themselves stubs")
 	t.ok(not k.stub_names().has(&"content"), "and `content` is not one of them as of C1")
 	t.ok(not k.stub_names().has(&"earth"), "nor `earth` as of C3, whose done-condition is walked")
-	t.ok(k.stub_names().has(&"verbs") and k.stub_names().has(&"combat"),
-		"while `verbs` and `combat` still are — C4 is what un-stubs them")
+	t.ok(not k.stub_names().has(&"verbs") and not k.stub_names().has(&"combat"),
+		"nor `verbs` and `combat` as of C4, whose done-condition `case_fire.gd` walks")
+	t.ok(k.stub_names().has(&"vfx") and k.stub_names().has(&"vehicle"),
+		"while `vfx` and `vehicle` still are — C5 and C6 are what un-stub those")
 
 
 ## Two kernels, same manifest, same order — every time, on every machine.
