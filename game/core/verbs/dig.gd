@@ -42,6 +42,15 @@ const MAX_THROW_CELLS := 1
 ## Cut, and pile what came out. Returns the standard dispatch shape; `moved_cm` is the volume
 ## actually shifted, which is less than asked for when the cut reaches bedrock.
 ##
+## Tool gating lives here, and it is MATERIAL-SPEC §4's own worked example: *"your shovel won't cut
+## chalk, you need a pick."* A tool declares `work_power`, a material declares `hardness`, and the
+## tool works it where the first is at least the second. The refusal names both numbers and what
+## would do the job — §4 is explicit that the message *is* the entire cost of tool gating, and that
+## a silent no-op or an animation that achieves nothing is the thing being avoided.
+##
+## A caller with no tool at all is not gated. That is the world-generation path — `DemoGround` cuts
+## its trench with nobody holding anything — and terrain shaping is not a soldier doing work.
+##
 ## `request` wants: `field` (EarthField), `cell` (Vector2i), `spoil` (Vector2i), `depth_cm` (int),
 ## and optionally `terrain` (EarthTerrain) to wake the settle queue and remesh. Without `terrain`
 ## the ground still changes and simply does not slump yet, which is the right behaviour for a
@@ -71,6 +80,14 @@ static func perform(request: Dictionary) -> Dictionary:
 			"Ask repeatedly — that is what puts digging on a clock and lets the ground slump between bites."])
 	if spoil == cell:
 		return _no("dig would throw its spoil into the hole it just cut, which digs nothing")
+
+	# What the ground is made of decides whether this tool can touch it at all.
+	var materials: MaterialSet = request.get("materials")
+	if materials != null and stats.has("work_power"):
+		var ground := field.material_at(cell)
+		var power := int(stats["work_power"])
+		if not materials.can_work(ground, power):
+			return _no(materials.refusal(ground, power))
 
 	var away := spoil - cell
 	if absi(away.x) > MAX_THROW_CELLS or absi(away.y) > MAX_THROW_CELLS:

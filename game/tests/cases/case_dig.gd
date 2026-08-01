@@ -34,6 +34,7 @@ func run(t: TestContext) -> void:
 	_where_the_spoil_may_go(t, set, materials)
 	_bedrock(t, set, materials)
 	_the_tool_decides_the_bite(t, set, materials)
+	_a_shovel_will_not_cut_chalk(t, set, materials)
 	_a_trench_is_repetition(t, set, materials)
 
 
@@ -166,6 +167,65 @@ func _the_tool_decides_the_bite(t: TestContext, set: VerbSet, materials: Materia
 	t.ok(not greedy["ok"], "and a tool claiming more than the ceiling is refused")
 	t.ok(String(greedy["why"]).contains("any tool may take"),
 		"saying it is a ceiling rather than a preference: %s" % greedy["why"])
+
+
+## MATERIAL-SPEC §4's own worked example, and one clause of C5's done-condition: *a shovel refuses
+## stone with a message that says why.*
+##
+## §4 is unusually insistent about the message rather than the refusal — *"never a silent no-op,
+## never an animation that plays and achieves nothing. That refusal message is the entire cost of
+## tool gating and it is cheap to pay."* So what is asserted here is mostly the sentence.
+func _a_shovel_will_not_cut_chalk(t: TestContext, set: VerbSet, materials: MaterialSet) -> void:
+	var world := FixtureWorld.load_root("res://packs")
+	var shovel := FixtureWorld.asset(world, "core:shovel") if not world.is_empty() else null
+	var pick := FixtureWorld.asset(world, "core:pick") if not world.is_empty() else null
+	if shovel == null or pick == null:
+		t.fail("`core:shovel` or `core:pick` would not load")
+		return
+	var spade: Dictionary = shovel.data.get("stats", {})
+	var mattock: Dictionary = pick.data.get("stats", {})
+	t.eq(int(spade["work_power"]), 1, "a spade is tool power 1")
+	t.eq(int(mattock["work_power"]), 3, "and a pick is 3")
+
+	# Loam is hardness 1, chalk is 2. The spade digs the first and is refused by the second, which
+	# is the sentence §4 uses to explain the whole system.
+	var soft := EarthField.flat(materials, 0, &"loam")
+	var got := Verbs.dispatch(set, "dig", { "field": soft, "cell": Vector2i(2, 2),
+		"spoil": Vector2i(3, 2), "stats": spade, "materials": materials })
+	t.ok(got["ok"], "a spade digs loam: %s" % got["why"])
+
+	var hard := EarthField.flat(materials, 0, &"chalk")
+	var refused := Verbs.dispatch(set, "dig", { "field": hard, "cell": Vector2i(2, 2),
+		"spoil": Vector2i(3, 2), "stats": spade, "materials": materials })
+	t.ok(not refused["ok"], "and is refused by chalk")
+	var why := String(refused["why"])
+	t.ok(why.contains("chalk"), "the message names what it is: %s" % why)
+	t.ok(why.contains("hardness 2") and why.contains("tool is 1"),
+		"and both numbers, so the refusal is arguable rather than mysterious")
+	t.ok(why.contains("pick"), "and what would do the job instead")
+	t.eq(hard.surface_cm(Vector2i(2, 2)), 0, "with no earth moved on the way out")
+
+	var mined := Verbs.dispatch(set, "dig", { "field": hard, "cell": Vector2i(2, 2),
+		"spoil": Vector2i(3, 2), "stats": mattock, "materials": materials })
+	t.ok(mined["ok"], "and the pick gets into it: %s" % mined["why"])
+	t.eq(mined["moved_cm"], 18, "taking a pick-sized bite rather than a spade-sized one")
+
+	# Stone refuses the pick as well — but *not as ground*, and the distinction is worth pinning
+	# because it is easy to test the wrong thing here. The earth field can only be made of
+	# `earth`-class materials (§2: a column of steel would have nothing to slump by), so the hardest
+	# thing anybody ever digs is chalk at 2. Stone is a *structure* material, and a tool being
+	# refused by it is the same rule applied to a brick rather than to a column of ground.
+	t.ok(not materials.can_work(&"hard_stone", int(mattock["work_power"])),
+		"hard stone is past the pick as well")
+	t.ok(materials.refusal(&"hard_stone", 3).contains("hardness 4"),
+		"and says so with the same sentence: %s" % materials.refusal(&"hard_stone", 3))
+	t.ok(not EarthField.flat(materials, 0).palette.has(&"hard_stone"),
+		"though no ground is ever made of it — the earth palette is earth-class only")
+
+	# The world-generation path is deliberately ungated: terrain shaping is not a soldier doing work.
+	t.ok(Verbs.dispatch(set, "dig", { "field": hard, "cell": Vector2i(5, 5),
+		"spoil": Vector2i(6, 5), "depth_cm": 20, "materials": materials })["ok"],
+		"and a caller with no tool at all is not gated, which is how the world gets built")
 
 
 ## What a soldier actually does: the same bite, over and over, until there is a hole to lie in and a

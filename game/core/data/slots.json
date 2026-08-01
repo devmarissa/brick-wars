@@ -109,9 +109,10 @@
       "optional": [
         "stamina",
         "block",
-        "dig_cm"
+        "dig_cm",
+        "work_power"
       ],
-      "note": "knife, shortsword, entrenching tool \u2014 fast, and `dig_cm` is what makes the last of those a tool as well as a weapon"
+      "note": "knife, shortsword, entrenching tool \u2014 fast, and `dig_cm` plus `work_power` are what make the last of those a tool as well as a weapon"
     },
     "melee_heavy": {
       "kind": "weapon",
@@ -124,9 +125,10 @@
         "stamina",
         "block",
         "sweep",
-        "dig_cm"
+        "dig_cm",
+        "work_power"
       ],
-      "note": "polearm, two-hander, sledge, pick \u2014 slow, and it moves the target; `dig_cm` covers the pick, which digs harder and swings slower than a spade"
+      "note": "polearm, two-hander, sledge, pick \u2014 slow, and it moves the target. `work_power` is what lets a pick into ground a spade is refused by, which is MATERIAL-SPEC \u00a74's own example of tool gating"
     },
     "explosive_thrown": {
       "kind": "weapon",

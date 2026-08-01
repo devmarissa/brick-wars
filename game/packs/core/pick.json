@@ -1,0 +1,109 @@
+{
+  "format": 1,
+  "id": "core:pick",
+  "kind": "weapon",
+  "name": "Pick",
+  "class": "weapon_world",
+  "slot": "melee_heavy",
+  "mass": 3,
+  "_note": "The other half of MATERIAL-SPEC \u00a74's example. Slower than a spade, takes a smaller bite, and gets into ground the spade is refused by \u2014 which is the whole of tool gating in two assets and no code that knows what either of them is.",
+  "stats": {
+    "damage": 70,
+    "cycle": 1.4,
+    "reach": 1.8,
+    "dig_cm": 18,
+    "work_power": 3,
+    "stamina": 20
+  },
+  "anim": {
+    "fire": 0.35,
+    "cycle": 1.4,
+    "raise": 0.4
+  },
+  "parts": [
+    {
+      "name": "grip",
+      "offset": [
+        0,
+        0,
+        4
+      ],
+      "size": [
+        2,
+        2,
+        2
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "haft",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        8
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "collar",
+      "offset": [
+        0,
+        0,
+        -4
+      ],
+      "size": [
+        2,
+        2,
+        1
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "head",
+      "offset": [
+        0,
+        1,
+        -5
+      ],
+      "size": [
+        2,
+        2,
+        2
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "point_l",
+      "offset": [
+        -3,
+        1,
+        -5
+      ],
+      "size": [
+        5,
+        1,
+        1
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "point_r",
+      "offset": [
+        3,
+        1,
+        -5
+      ],
+      "size": [
+        5,
+        1,
+        1
+      ],
+      "material": "steel"
+    }
+  ]
+}

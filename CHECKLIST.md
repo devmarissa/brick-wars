@@ -481,7 +481,20 @@ Every item below is hers now rather than the gate's.
       constant to compensate for a wall that was built wrong. `case_fixture_wall.gd` asserts the
       120-brick wall, its material density, that it **stands still and sleeps** when nothing hits
       it, and that it builds identically twice.
-- [ ] **Blast port** — verbatim from `archive/great_war_prototype/main.gd`, constants included.
+- [x] **Blast ported verbatim, and `check.sh` step 4 is LIVE — 8 of 8 scenarios.** Dormant since
+      C0, announcing itself every run; now guarding the one thing in the old project that could not
+      have been rebuilt from notes. Verified by breaking it: `BRICK_IMPULSE` 0.55 → 0.60 turns five
+      scenarios red. The fixture found two real omissions in the port (brick damping/friction, and
+      that `felt.*` measures the old *player's* decay rather than the blast) and one deliberate
+      divergence it cannot bridge — bricks now have real mass, so the aftermath differs.
+      `DEVIATIONS-C5.md` A1–A3.
+- [~] **Tool gating — a shovel refuses stone with a message that says why.** MATERIAL-SPEC §4's own
+      worked example, and `can_work`/`refusal` had been sitting in `MaterialSet` unused since C1.
+      `core:shovel` is `work_power: 1` and `core:pick` is 3; loam is hardness 1, chalk 2. The
+      refusal names the material, both numbers and what would do the job — §4 is explicit that the
+      *message* is the entire cost of tool gating. Ground tops out at chalk because the earth
+      palette is earth-class only, so stone gating is a structure question rather than a digging
+      one.
 - [ ] Structural integrity as a load calculation · failure modes (sandbag topples where clay
       slumps) · tool gating · debris lifecycle. Fire propagation and `on_burnt` are in the spec
       paragraph and **not** in the done-condition — they come last, with the medieval mining loop.

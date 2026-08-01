@@ -60,6 +60,11 @@ var water_cm := NO_WATER
 ## then apply it twice on replay, once from the events and once from the settling they cause.
 var log: EarthLog = null
 
+## What the ground is made of, kept rather than only borrowed at construction. C5's tool gating asks
+## a material for its hardness, and a caller that has a field in its hand should not also have to
+## have been handed the material set separately to find out what the field is made of.
+var materials: MaterialSet = null
+
 # The most recently touched chunk, so a run of reads inside one chunk costs a comparison rather
 # than a hash. Invalidated by nothing on purpose: chunks are never removed, so a remembered one
 # cannot go stale — and if removal ever arrives, this is the line that has to hear about it.
@@ -89,6 +94,7 @@ var _material_index := 0
 static func flat(materials: MaterialSet, surface_cm := 0,
 		material := DEFAULT_MATERIAL) -> EarthField:
 	var field := EarthField.new()
+	field.materials = materials
 	field.palette = _palette_of(materials)
 	field._surface_cm = surface_cm
 	field._material_index = maxi(0, field.palette.find(material))
