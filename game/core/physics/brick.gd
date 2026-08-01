@@ -36,6 +36,23 @@ const MIN_MASS := 0.5
 ## not a lattice, and the fixture's wall was stacked with 0.04 of this.
 const JITTER_RADIANS := 1.0
 
+## How a brick behaves once it is moving, ported from the old build's `spawn_brick`, and every bit
+## as load-bearing as the blast constants themselves.
+##
+## These were missing from the first version of this file, and the fixture found it: with no damping
+## and no friction the same blast threw bricks 20–30% further and settled them at a different rate.
+## The impulse was right and the aftermath was wrong, which is exactly the sort of thing "port
+## verbatim" is meant to prevent and exactly the sort of thing you cannot spot by reading.
+##
+## `angular_damp` is the big one. At 0.8 a tumbling brick stops spinning quickly and comes to rest;
+## near zero it rolls, and a wall of rolling bricks scatters much wider than a wall of tumbling ones.
+const LINEAR_DAMP := 0.08
+const ANGULAR_DAMP := 0.8
+const FRICTION := 0.8
+
+## Made once and shared. A `PhysicsMaterial` per brick would be thousands of identical resources.
+static var _shared_physics: PhysicsMaterial = null
+
 ## Set from the part table at C1, or from the caller here. What this brick is made of is the only
 ## thing that decides what happens to it — there is no hit-point number and there never will be.
 var material_id: StringName = &""
@@ -71,6 +88,9 @@ static func spawn(into: Node, at: Vector3, rotation: Basis, size: Vector3, mater
 	body.add_child(shape)
 
 	body.mass = maxf(MIN_MASS, materials.mass_for(material, size.x * size.y * size.z))
+	body.linear_damp = LINEAR_DAMP
+	body.angular_damp = ANGULAR_DAMP
+	body.physics_material_override = _physics()
 	into.add_child(body)
 	body.global_transform = Transform3D(
 		_jittered(rotation, at, jitter) if jitter > 0.0 else rotation, at)
@@ -105,3 +125,10 @@ static func _surface(materials: MaterialSet, palette: Palette, material: StringN
 		StringName(String(materials.get_def(material).get("colour", ""))))
 	surface.roughness = 0.9
 	return surface
+
+
+static func _physics() -> PhysicsMaterial:
+	if _shared_physics == null:
+		_shared_physics = PhysicsMaterial.new()
+		_shared_physics.friction = FRICTION
+	return _shared_physics

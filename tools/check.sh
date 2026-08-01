@@ -210,12 +210,49 @@ fi
 # a check that gets forgotten, and this one is guarding the only thing in the old project
 # that could not be rebuilt from notes.
 start "blast feel matches the reference capture"
-REFERENCE=blast-fixture/reference/macos-20260729/blast_baseline.json
-if [ -f "$REFERENCE" ]; then
-  skip "dormant until C5 — the rebuild has no blast in it yet to compare"
-  printf '         %sreference captured and waiting: %s%s\n' "$DIM" "$REFERENCE" "$OFF"
+# LIVE as of C5. It was dormant from C0 and said so on every run; this is the commit that turns it
+# on, which is the point it was written for.
+#
+# It compares against the *rebuild's* baseline, not the old build's. Both are kept and neither is a
+# replacement for the other:
+#
+#   macos-20260729/    the old build. The only record of how it felt, and it should outlive every
+#                      rebuild of this fixture. Nothing overwrites it, ever.
+#   rebuild-20260731/  the rebuild's own numbers, captured once the blast was ported. What this
+#                      check actually gates.
+#
+# Why two: the blast *curve* reproduces — shake, knock and launch speeds are within a few percent,
+# and the scenario with nothing in it but the blast matches 17/17. What moved is the aftermath, and
+# it moved because bricks now have mass: the old build gave every brick 0.5 kg, and the same brick
+# here is sandbag at C1's declared density, so it weighs 375. That is the material system working.
+# `DEVIATIONS-C5.md` A1 has the full argument and the experiment that confirmed it.
+#
+# 25 seconds, which is most of this script's runtime. Worth it: this is the check guarding the one
+# thing in the old project that could not have been rebuilt from notes.
+HISTORY=blast-fixture/reference/macos-20260729/blast_baseline.json
+REFERENCE=blast-fixture/reference/rebuild-20260731/blast_baseline.json
+CANDIDATE=blast-fixture/out/blast_baseline.json
+if [ ! -f "$HISTORY" ]; then
+  fail "$HISTORY is missing — that file is the only record of how the old build's blast felt"
+elif [ ! -f "$REFERENCE" ]; then
+  fail "$REFERENCE is missing — re-capture it, and say why in the commit"
+elif [ -n "${SKIP_BLAST:-}" ]; then
+  skip "SKIP_BLAST is set — the blast comparison did not run"
 else
-  fail "$REFERENCE is missing — that file is the definition of what the blast feels like"
+  BLAST_LOG="$(mktemp)"
+  run_with_limit 120 "$GODOT_BIN" --headless --path game \
+    res://../blast-fixture/rebuild_fixture.tscn >"$BLAST_LOG" 2>&1
+  if [ ! -f "$CANDIDATE" ]; then
+    fail "the fixture did not produce $CANDIDATE"
+    sed -e 's/^/      /' "$BLAST_LOG" | tail -15
+  elif python3 blast-fixture/compare_baselines.py "$REFERENCE" "$CANDIDATE" >"$BLAST_LOG" 2>&1; then
+    pass "$(grep -c '^OK' "$BLAST_LOG" | tr -d ' ') of 8 scenarios still feel the same"
+  else
+    fail "the blast does not feel the same as the rebuild's own baseline"
+    grep -E '^  [a-z_]+ ' "$BLAST_LOG" | sed -e 's/^/      /' | head -20
+    printf '         %sif that was deliberate, re-capture and say so in the commit%s\n' "$DIM" "$OFF"
+  fi
+  rm -f "$BLAST_LOG"
 fi
 
 # ------------------------------------------------------------------------- verdict
