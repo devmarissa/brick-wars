@@ -55,11 +55,13 @@ func _cells_and_chunks(t: TestContext) -> void:
 	# rather than integer division, which truncates toward zero and would put cells -1 and 0 in the
 	# same chunk.
 	t.eq(EarthGrid.chunk_of(Vector2i(0, 0)), Vector2i(0, 0), "cell zero is in chunk zero")
-	t.eq(EarthGrid.chunk_of(Vector2i(31, 31)), Vector2i(0, 0), "and so is the far corner of it")
-	t.eq(EarthGrid.chunk_of(Vector2i(32, 0)), Vector2i(1, 0), "the next cell along starts a chunk")
+	var last := EarthChunk.SIZE - 1
+	t.eq(EarthGrid.chunk_of(Vector2i(last, last)), Vector2i(0, 0), "and so is the far corner of it")
+	t.eq(EarthGrid.chunk_of(Vector2i(EarthChunk.SIZE, 0)), Vector2i(1, 0),
+		"the next cell along starts a chunk")
 	t.eq(EarthGrid.chunk_of(Vector2i(-1, -1)), Vector2i(-1, -1),
 		"and the cell before the origin is in the chunk before it, not in chunk zero")
-	t.eq(EarthGrid.local_of(Vector2i(-1, -1)), Vector2i(31, 31),
+	t.eq(EarthGrid.local_of(Vector2i(-1, -1)), Vector2i(last, last),
 		"landing at the far corner of that chunk rather than at a negative index")
 
 
@@ -73,7 +75,13 @@ func _storage(t: TestContext, materials: MaterialSet) -> void:
 	var chunk := EarthChunk.flat(Vector2i.ZERO, 0, 120, 0)
 	t.eq(chunk.bytes_used(), EarthChunk.CELLS * EarthChunk.BYTES_PER_COLUMN,
 		"a chunk is three bytes a column: two of height and one of material")
-	t.eq(chunk.bytes_used(), 3072, "which for 32 x 32 is 3 kB — 8 MB for an 800 m map (§9)")
+	# Derived rather than written down twice. The chunk side came down from 32 to 16 at C4b for
+	# measured reasons (`DEVIATIONS-C4.md` C4), and a test that hardcoded the old product would have
+	# failed for the arithmetic rather than for the budget — which is the claim worth keeping.
+	t.eq(chunk.bytes_used(), EarthChunk.SIZE * EarthChunk.SIZE * 3,
+		"which is three bytes a column however big a chunk is")
+	t.ok(chunk.bytes_used() * (800.0 / (EarthChunk.SIZE * EarthGrid.CELL_M)) ** 2 < 12e6,
+		"and an 800 m map of them fits inside §9's memory budget")
 
 	# `i16`, packed by hand because GDScript has no such array. The negative side is the half that
 	# a hand-rolled encoding gets wrong, and the ends are where it wraps.

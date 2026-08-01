@@ -64,10 +64,18 @@ static func build(field: EarthField, chunk: Vector2i, palette: Palette,
 	var normals := PackedVector3Array()
 	var colours := PackedColorArray()
 
+	# Every height this chunk needs, read once. Measured at C4b: doing it per corner instead cost
+	# 45 ms a rebuild, which with eight rebuilds a frame is a third of a second of stall.
+	var patch := HeightPatch.around(field, chunk)
+	# Material name to colour, worked out once per material rather than once per column. The lookup
+	# behind it goes through a dictionary, a `String`, a `StringName` and a second dictionary — and a
+	# chunk has 1,024 columns and about three materials in it, so the same six-step conversion was
+	# being done a thousand times for three answers.
+	var shades: Dictionary = {}
 	for z in EarthChunk.SIZE:
 		for x in EarthChunk.SIZE:
 			var cell := origin + Vector2i(x, z)
-			_column(field, cell, palette, materials, vertices, normals, colours)
+			_column(field, patch, cell, palette, materials, shades, vertices, normals, colours)
 
 	if vertices.is_empty():
 		return null
@@ -95,67 +103,97 @@ static func connected(field: EarthField, a: Vector2i, b: Vector2i) -> bool:
 ## columns on open ground compute the same answer, so their quads meet exactly and the surface has
 ## no seam in it.
 static func corner_cm(field: EarthField, cell: Vector2i, corner: Vector2i) -> int:
-	var total := field.surface_cm(cell)
+	var mine := field.surface_cm(cell)
+	var total := mine
 	var count := 1
 	# The three other columns meeting at this corner: the two orthogonal neighbours and the
 	# diagonal. A neighbour cut off by a cliff contributes nothing, which is what keeps a trench
 	# lip flat instead of sagging toward the floor of its own trench.
 	var around: Array[Vector2i] = [Vector2i(corner.x, 0), Vector2i(0, corner.y), corner]
 	for offset in around:
-		var other := cell + offset
-		if connected(field, cell, other):
-			total += field.surface_cm(other)
+		# Read once and compare, rather than calling `connected` — which reads both columns again,
+		# and then reading the neighbour a third time. Ten reads a corner became four.
+		var other := field.surface_cm(cell + offset)
+		if absi(mine - other) <= CLIFF_CM:
+			total += other
 			count += 1
 	return total / count
 
 
-static func _column(field: EarthField, cell: Vector2i, palette: Palette, materials: MaterialSet,
+## All four corners at once, from a single read of the 3x3 around a column.
+##
+## The same arithmetic as `corner_cm` four times over, and worth having as its own function for one
+## reason: done separately it reads the column's own height four times and each neighbour twice,
+## which is forty-odd trips into the field per column and was most of what a chunk rebuild cost.
+## Nine reads do the whole job.
+static func corners_cm(field: EarthField, cell: Vector2i) -> PackedInt32Array:
+	return HeightPatch.around_cell(field, cell).corners_at(cell, CLIFF_CM)
+
+
+## Which of `CORNERS` a corner offset is. Small, and its own function because a skirt asks for one
+## by direction while the patch answers by index, and doing that inline in two places is how the two
+## ends of a wall end up disagreeing about which corner they share.
+static func _corner_index(corner: Vector2i) -> int:
+	return CORNERS.find(corner)
+
+
+static func _column(field: EarthField, patch: HeightPatch, cell: Vector2i,
+		palette: Palette, materials: MaterialSet, shades: Dictionary,
 		vertices: PackedVector3Array, normals: PackedVector3Array,
 		colours: PackedColorArray) -> void:
 	var centre := EarthGrid.centre_of(cell)
-	var top: Array[Vector3] = []
-	for corner in CORNERS:
-		var corner_v: Vector2i = corner
-		top.append(Vector3(
-			centre.x + corner_v.x * HALF_CELL,
-			corner_cm(field, cell, corner_v) * 0.01,
-			centre.y + corner_v.y * HALF_CELL))
+	var heights := patch.corners_at(cell, CLIFF_CM)
+	# Four locals rather than two four-element arrays. Measured at C4b: allocating a small `Array`
+	# twice per column is 2,048 allocations per chunk rebuild, and it was a third of what remained
+	# after the read costs were fixed. Unrolled because `CORNERS` has four entries and always will —
+	# a quad has four corners.
+	var top_a := Vector3(centre.x - HALF_CELL, heights[0] * 0.01, centre.y - HALF_CELL)
+	var top_b := Vector3(centre.x + HALF_CELL, heights[1] * 0.01, centre.y - HALF_CELL)
+	var top_c := Vector3(centre.x + HALF_CELL, heights[2] * 0.01, centre.y + HALF_CELL)
+	var top_d := Vector3(centre.x - HALF_CELL, heights[3] * 0.01, centre.y + HALF_CELL)
 
-	var base := _colour_of(field, cell, palette, materials)
+	var base := _colour_of(field, cell, palette, materials, shades)
 	# One shade per *vertex*, not per column (ART-BIBLE §6b). Keyed on the corner's own position in
 	# half-cells, so the four columns meeting at a corner all compute the same shade for it and the
 	# variation reads as mixed ground rather than as a chequerboard of 0.5 m tiles — which is
 	# exactly what per-column shading looked like.
-	var tint: Array[Color] = []
-	for corner in CORNERS:
-		tint.append(_shaded(base, cell * 2 + (corner as Vector2i)))
-	_quad(top[0], top[1], top[2], top[3], tint, Vector3.ZERO, vertices, normals, colours)
+	var twice := cell * 2
+	_quad(top_a, top_b, top_c, top_d,
+		_shaded(base, twice + Vector2i(-1, -1)), _shaded(base, twice + Vector2i(1, -1)),
+		_shaded(base, twice + Vector2i(1, 1)), _shaded(base, twice + Vector2i(-1, 1)),
+		Vector3.ZERO, vertices, normals, colours)
 
 	# A skirt to each of the two neighbours this column looks *down* on. Only two of the four, and
 	# only downhill: the uphill neighbour emits the other side of the same wall, so a wall built
 	# from both sides would be doubled and z-fight along its whole length.
-	_skirt(field, cell, Vector2i(1, 0), top[1], top[2], base, vertices, normals, colours)
-	_skirt(field, cell, Vector2i(0, 1), top[3], top[2], base, vertices, normals, colours)
-	_skirt(field, cell, Vector2i(-1, 0), top[3], top[0], base, vertices, normals, colours)
-	_skirt(field, cell, Vector2i(0, -1), top[0], top[1], base, vertices, normals, colours)
+	_skirt(patch, cell, Vector2i(1, 0), top_b, top_c, base, vertices, normals, colours)
+	_skirt(patch, cell, Vector2i(0, 1), top_d, top_c, base, vertices, normals, colours)
+	_skirt(patch, cell, Vector2i(-1, 0), top_d, top_a, base, vertices, normals, colours)
+	_skirt(patch, cell, Vector2i(0, -1), top_a, top_b, base, vertices, normals, colours)
 
 
 ## The vertical face between a column and a lower neighbour. Flat normals, because a trench wall
 ## that shaded like a curved surface would read as a slope however vertical its geometry was.
-static func _skirt(field: EarthField, cell: Vector2i, toward: Vector2i, a: Vector3, b: Vector3,
+static func _skirt(patch: HeightPatch, cell: Vector2i, toward: Vector2i, a: Vector3, b: Vector3,
 		colour: Color, vertices: PackedVector3Array, normals: PackedVector3Array,
 		colours: PackedColorArray) -> void:
 	var other := cell + toward
-	if connected(field, cell, other):
+	var below := patch.at(other)
+	var here := patch.at(cell)
+	# Off the patch, read from it rather than from the field — the same comparison `connected` makes,
+	# with the heights already in hand instead of fetched again.
+	if absi(here - below) <= CLIFF_CM:
 		return
-	var below := field.surface_cm(other)
-	if below >= field.surface_cm(cell):
+	if below >= here:
 		return                                  # the uphill side emits this wall, not this one
 
 	# Down to the neighbour's own corner heights, so the foot of the wall meets the floor of the
 	# trench exactly rather than at the neighbour's centre height.
-	var foot_a := Vector3(a.x, corner_cm(field, other, -toward + Vector2i(toward.y, toward.x)) * 0.01, a.z)
-	var foot_b := Vector3(b.x, corner_cm(field, other, -toward - Vector2i(toward.y, toward.x)) * 0.01, b.z)
+	# The neighbour's own corners, which is why the patch carries a two-cell border: this column is
+	# already allowed to be on the chunk edge, and `other` is one further out again.
+	var feet := patch.corners_at(other, CLIFF_CM)
+	var foot_a := Vector3(a.x, feet[_corner_index(-toward + Vector2i(toward.y, toward.x))] * 0.01, a.z)
+	var foot_b := Vector3(b.x, feet[_corner_index(-toward - Vector2i(toward.y, toward.x))] * 0.01, b.z)
 	foot_a.y = mini(int(foot_a.y * 100.0), below) * 0.01
 	foot_b.y = mini(int(foot_b.y * 100.0), below) * 0.01
 	# Wound to face the neighbour it looks down on. The four call sites hand their corners in in
@@ -164,13 +202,13 @@ static func _skirt(field: EarthField, cell: Vector2i, toward: Vector2i, a: Vecto
 	# wall is told which way it must face and `_quad` flips itself if it disagrees.
 	var facing := Vector3(toward.x, 0.0, toward.y)
 	var wall := colour.darkened(0.08)
-	_quad(a, b, foot_b, foot_a, [wall, wall, wall, wall] as Array[Color], facing,
-		vertices, normals, colours)
+	_quad(a, b, foot_b, foot_a, wall, wall, wall, wall, facing, vertices, normals, colours)
 
 
 ## Two triangles, wound so the front face points out, with one flat normal for the pair. Godot 4
 ## winds front faces clockwise: for triangle `a, b, c` the outward normal is `(c - a) × (b - a)`.
-static func _quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3, tint: Array[Color],
+static func _quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3,
+		ta: Color, tb: Color, tc: Color, td: Color,
 		facing: Vector3, vertices: PackedVector3Array, normals: PackedVector3Array,
 		colours: PackedColorArray) -> void:
 	var normal := (c - a).cross(b - a).normalized()
@@ -182,23 +220,34 @@ static func _quad(a: Vector3, b: Vector3, c: Vector3, d: Vector3, tint: Array[Co
 		var swap := b
 		b = d
 		d = swap
-		var swap_tint := tint[1]
-		tint = [tint[0], tint[3], tint[2], swap_tint] as Array[Color]
+		var swap_tint := tb
+		tb = td
+		td = swap_tint
 		normal = (c - a).cross(b - a).normalized()
-	var order := [0, 1, 2, 0, 2, 3]
-	var points := [a, b, c, a, c, d]
-	for i in 6:
-		vertices.append(points[i])
-		normals.append(normal)
-		colours.append(tint[order[i]])
+
+	# Written out rather than looped over two temporary arrays. This runs up to five times per
+	# column and 1,024 columns per chunk, so a pair of small allocations here is ten thousand of
+	# them per rebuild — which is the sort of thing that does not look like a problem in the source
+	# and is most of the frame in the profile.
+	vertices.append(a); normals.append(normal); colours.append(ta)
+	vertices.append(b); normals.append(normal); colours.append(tb)
+	vertices.append(c); normals.append(normal); colours.append(tc)
+	vertices.append(a); normals.append(normal); colours.append(ta)
+	vertices.append(c); normals.append(normal); colours.append(tc)
+	vertices.append(d); normals.append(normal); colours.append(td)
 
 
 ## The span's material colour, with ART-BIBLE §6b's per-vertex variation folded in. Seeded off the
 ## cell so a chunk remeshed after a dig comes back the same shade it was.
 static func _colour_of(field: EarthField, cell: Vector2i, palette: Palette,
-		materials: MaterialSet) -> Color:
+		materials: MaterialSet, shades: Dictionary = {}) -> Color:
 	var material := field.material_at(cell)
-	var base := palette.colour(StringName(String(materials.get_def(material).get("colour", ""))))
+	var base: Color
+	if shades.has(material):
+		base = shades[material]
+	else:
+		base = palette.colour(StringName(String(materials.get_def(material).get("colour", ""))))
+		shades[material] = base
 	if field.is_disturbed(cell):
 		# Dug ground reads darker and flatter — it is loose, it holds water, and §4 already says it
 		# behaves differently. Costing it a shade makes spoil visible before anybody stands on it.

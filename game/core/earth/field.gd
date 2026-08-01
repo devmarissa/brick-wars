@@ -60,6 +60,12 @@ var water_cm := NO_WATER
 ## then apply it twice on replay, once from the events and once from the settling they cause.
 var log: EarthLog = null
 
+# The most recently touched chunk, so a run of reads inside one chunk costs a comparison rather
+# than a hash. Invalidated by nothing on purpose: chunks are never removed, so a remembered one
+# cannot go stale — and if removal ever arrives, this is the line that has to hear about it.
+var _recent: EarthChunk = null
+var _recent_key := Vector2i(2147483647, 2147483647)
+
 ## The tick modifications are stamped with. Bumped by whatever owns the simulation.
 var tick := 0
 
@@ -102,12 +108,22 @@ static func _palette_of(materials: MaterialSet) -> Array[StringName]:
 ## until something asks about them, which is what lets a map be 800 m without allocating 800 m.
 func chunk_for(cell: Vector2i, make := true) -> EarthChunk:
 	var key := EarthGrid.chunk_of(cell)
+	# The chunk we looked at last, remembered. Every caller that matters reads in a run — the mesher
+	# walks a chunk column by column, the settle queue works a neighbourhood — so the same chunk
+	# comes back thousands of times before a different one does, and each of those was a dictionary
+	# hash. Measured at C4b: this is on the path that was costing 45 ms per chunk rebuild.
+	if key == _recent_key and _recent != null:
+		return _recent
 	if chunks.has(key):
-		return chunks[key]
+		_recent_key = key
+		_recent = chunks[key]
+		return _recent
 	if not make:
 		return null
 	var chunk := EarthChunk.flat(key, 0, _surface_cm, _material_index)
 	chunks[key] = chunk
+	_recent_key = key
+	_recent = chunk
 	return chunk
 
 

@@ -62,9 +62,12 @@ func _flat_ground_is_flat(t: TestContext, world: Dictionary) -> void:
 func _the_threshold_decides(t: TestContext, world: Dictionary) -> void:
 	for step in [CLIFF_CM - 10, CLIFF_CM + 10]:
 		var field := EarthField.flat(world["materials"], 0)
-		# A straight edge across the middle of the chunk: everything past x = 16 raised by `step`.
+		# A straight edge across the middle of the chunk. Derived from the chunk side rather than
+		# written as 16: that literal *was* the middle until C4b halved the chunk, at which point it
+		# became the edge and the raised half fell entirely outside the mesh being measured.
+		var middle := EarthChunk.SIZE / 2
 		for z in EarthChunk.SIZE + 2:
-			for x in range(16, EarthChunk.SIZE + 2):
+			for x in range(middle, EarthChunk.SIZE + 2):
 				field.deposit(Vector2i(x, z - 1), step)
 		var faces := _faces(_mesh(field, world))
 		if step < CLIFF_CM:
@@ -75,7 +78,8 @@ func _the_threshold_decides(t: TestContext, world: Dictionary) -> void:
 			t.ok(faces["vertical"] > 0,
 				"a %d cm step is past it, so a wall appears: %d vertical faces" % [
 					step, faces["vertical"]])
-			t.ok(EarthMesher.connected(field, Vector2i(15, 4), Vector2i(16, 4)) == (step < CLIFF_CM),
+			t.ok(EarthMesher.connected(field, Vector2i(middle - 1, 4), Vector2i(middle, 4))
+					== (step < CLIFF_CM),
 				"and `connected` agrees with the mesh about which side of the threshold it is on")
 
 

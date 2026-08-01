@@ -24,8 +24,23 @@ extends StaticBody3D
 ## a lot at once, so the queue is drained a few at a time rather than all at once — a mine going
 ## off out of view still has to be real, but it does not have to be instant.
 
-## §9's budget. Deliberately a constant rather than a guess at call sites.
+## §9's budget: *"Remesh: ≤ 8 chunks per frame."* Kept as the ceiling, but it is no longer the thing
+## that decides when to stop — see `REMESH_BUDGET_MS`.
 const REMESH_PER_FRAME := 8
+
+## How long rebuilding may take in one frame, in milliseconds.
+##
+## §9 budgets chunks and this budgets time, which is a deviation with a measurement behind it
+## (`DEVIATIONS-C4.md` C4). A chunk count is only a frame budget if you know what a chunk costs, and
+## ours costs far more than eight-per-frame implies — so the count alone let a collapse rebuild
+## every dirty chunk every frame and stall for a third of a second. Marissa's report was *"the
+## terrain updates are super laggy."*
+##
+## Time is also the thing that stays true. When the mesher gets faster, or a chunk gets smaller, or
+## somebody runs this on a slower machine, a millisecond budget still means what it says and a chunk
+## count does not. The queue is never dropped — work deferred is work done next frame, and a
+## collapse taking an extra few frames to finish redrawing is invisible where a 300 ms hitch is not.
+const REMESH_BUDGET_MS := 4.0
 
 ## Standing water, as ART-BIBLE would have it: a palette colour, not a shader. `water` is one of
 ## the three materials §8 defers the numbers for, so this is a look rather than a substance — which
@@ -46,6 +61,17 @@ var _meshes: Dictionary = {}        ## Vector2i -> MeshInstance3D
 var _shapes: Dictionary = {}        ## Vector2i -> CollisionShape3D
 var _queue: Array[Vector2i] = []
 var _water: MeshInstance3D = null
+
+# What remeshing actually costs, accumulated. Reported rather than guessed at, because the two
+# halves of a rebuild — building the mesh and building the collision shape from it — are not the
+# same price and the wrong guess sends you optimising the cheap one.
+var _remeshes := 0
+var _mesh_usec := 0
+var _shape_usec := 0
+var _worst_frame_usec := 0
+var _said_settled := false
+var _settle_usec := 0
+var _worst_settle_usec := 0
 
 
 static func of(field_: EarthField, palette: Palette, materials: MaterialSet) -> EarthTerrain:
@@ -132,17 +158,39 @@ func _physics_process(_delta: float) -> void:
 	# frame rather than next. The other way round shows the collapse a frame late, which on a
 	# slump that takes a second is invisible — and on one that takes three frames is most of it.
 	var was := settle.moved_cm
+	var settle_began := Time.get_ticks_usec()
 	settle.run(field)
+	var settle_took := Time.get_ticks_usec() - settle_began
+	_settle_usec += settle_took
+	_worst_settle_usec = maxi(_worst_settle_usec, settle_took)
 	if settle.moved_cm != was:
 		for key in field.chunks:
 			if (field.chunks[key] as EarthChunk).dirty and not _queue.has(key):
 				_queue.append(key)
-	for i in mini(REMESH_PER_FRAME, _queue.size()):
+	var frame_began := Time.get_ticks_usec()
+	var budget := int(REMESH_BUDGET_MS * 1000.0)
+	var done := 0
+	# At least one a frame however slow it is, or a chunk more expensive than the whole budget would
+	# never be rebuilt at all and that part of the ground would simply stop updating.
+	while not _queue.is_empty() and done < REMESH_PER_FRAME:
 		_remesh(_queue.pop_front())
+		done += 1
+		if Time.get_ticks_usec() - frame_began >= budget:
+			break
+	_worst_frame_usec = maxi(_worst_frame_usec, Time.get_ticks_usec() - frame_began)
+
+	# Say what the collapse cost, once, when the ground finally stops moving. The boot log is printed
+	# before any of this has happened, so without this the only numbers anybody ever saw were the six
+	# rebuilds of the initial build — which is not the case that was ever slow.
+	if not _said_settled and _queue.is_empty() and settle.pending() == 0 and _remeshes > 6:
+		_said_settled = true
+		print("earth settled — " + _cost_report().strip_edges())
 
 
 func _remesh(key: Vector2i) -> void:
+	var began := Time.get_ticks_usec()
 	var mesh := EarthMesher.build(field, key, _palette, _materials)
+	_mesh_usec += Time.get_ticks_usec() - began
 	if mesh == null:
 		return
 
@@ -167,7 +215,10 @@ func _remesh(key: Vector2i) -> void:
 		shape.name = "collide_%d_%d" % [key.x, key.y]
 		add_child(shape)
 		_shapes[key] = shape
+	var shaping := Time.get_ticks_usec()
 	shape.shape = mesh.create_trimesh_shape()
+	_shape_usec += Time.get_ticks_usec() - shaping
+	_remeshes += 1
 
 	if field.chunks.has(key):
 		(field.chunks[key] as EarthChunk).dirty = false
@@ -183,7 +234,18 @@ func report() -> String:
 	return "earth: %d chunk(s), %d columns, %d triangles, %d kB of field, %d cell(s) shored\n  %s" % [
 		field.chunks.size(), field.chunks.size() * EarthChunk.CELLS, triangles,
 		field.chunks.size() * EarthChunk.CELLS * EarthChunk.BYTES_PER_COLUMN / 1024,
-		field.shoring.size(), settle.report()] + _water_report()
+		field.shoring.size(), settle.report()] + _water_report() + _cost_report()
+
+
+## What the rebuilding has cost so far. The number that matters is the worst *frame*, not the total:
+## a rebuild that averages well and occasionally takes 40 ms is a rebuild that stutters.
+func _cost_report() -> String:
+	if _remeshes == 0:
+		return ""
+	return ("\n  remesh: %d rebuild(s), %.1f ms meshing + %.1f ms collision, " +
+		"worst single frame %.1f ms; settle %.1f ms total, worst %.1f ms") % [
+		_remeshes, _mesh_usec / 1000.0, _shape_usec / 1000.0, _worst_frame_usec / 1000.0,
+		_settle_usec / 1000.0, _worst_settle_usec / 1000.0]
 
 
 func _water_report() -> String:

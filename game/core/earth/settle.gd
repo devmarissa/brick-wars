@@ -34,6 +34,22 @@ extends RefCounted
 ## the same per frame as a spade that dirties nine — it just takes longer to finish.
 const BUDGET := 512
 
+## How long settling may take in one frame, in milliseconds.
+##
+## `BUDGET` is a cell count, and a cell count is only a frame budget if you know what a cell costs.
+## Measured at C4b: 512 cells cost **11.8 ms** in the worst frame of a real collapse — one column
+## against eight neighbours, each a repose lookup and a field read — which was more than the
+## remeshing it was blamed for and was most of what Marissa saw as *"the terrain updates are super
+## laggy"*.
+##
+## Time is the thing that stays true. On a faster machine, or after the reads get cheaper, or with
+## a bigger collapse, a millisecond budget still means what it says and a cell count does not. The
+## queue is never dropped — cells deferred are cells done next frame, and a collapse taking a few
+## more frames to finish is invisible where a 12 ms hitch is not.
+##
+## `run_to_rest` deliberately ignores this. Tests and world generation want the whole thing now.
+const BUDGET_MS := 3.0
+
 ## The most earth one column may shed in one tick, in centimetres.
 ##
 ## This is what makes a slump take *time*, and it is a separate lever from `BUDGET` — which is a
@@ -93,13 +109,21 @@ func pending() -> int:
 
 ## One tick of settling. Returns how many cells were looked at, which is what a caller watching the
 ## budget cares about; `moved_cm` is what a caller watching the earth cares about.
-func run(field: EarthField, budget := BUDGET) -> int:
+## Work the queue for one frame, stopping at whichever budget runs out first. `ms` of 0 means no
+## time limit, which is what `run_to_rest` passes.
+func run(field: EarthField, budget := BUDGET, ms := BUDGET_MS) -> int:
 	var looked := 0
+	var began := Time.get_ticks_usec()
+	var limit := int(ms * 1000.0)
 	while looked < budget and not _queue.is_empty():
 		var cell: Vector2i = _queue.pop_front()
 		_waiting.erase(cell)
 		looked += 1
 		_settle_one(field, cell)
+		# Checked in blocks rather than every cell: `get_ticks_usec` is itself a syscall, and asking
+		# the clock five hundred times to save four hundred cell visits is the wrong trade.
+		if limit > 0 and (looked & 63) == 0 and Time.get_ticks_usec() - began >= limit:
+			break
 	return looked
 
 
@@ -108,7 +132,7 @@ func run(field: EarthField, budget := BUDGET) -> int:
 func run_to_rest(field: EarthField, limit := 200000) -> int:
 	var ticks := 0
 	while not _queue.is_empty() and ticks < limit:
-		ticks += run(field, BUDGET)
+		ticks += run(field, BUDGET, 0.0)
 	return ticks
 
 

@@ -209,6 +209,55 @@ and has nothing to do with weapons. Renamed to `refill`. That would have shipped
 than a crash still passes quietly. The stronger fix is a sentinel every case has to reach, which is
 28 files of ceremony and has not been done.
 
+### C4. The earth's frame budgets are in milliseconds, and the chunk is half the size the spec says
+
+Marissa, 31 Jul, playing it: *"the terrain updates are super laggy, we might need to redo terrain in
+a way that stops that from happening."* Measured rather than guessed at, and the first guess would
+have been wrong.
+
+**What it actually was.** Rebuilding one chunk cost **45 ms**, of which collision — the obvious
+suspect, and the thing `DEVIATIONS-C3.md` B4 said would need revisiting when a frame budget said so
+— was 2.7 ms. The other 42 was meshing, and almost all of *that* was reads: every corner of every
+column asked the field for four heights and asked again to decide whether each neighbour was
+connected, about forty trips per column and forty thousand per chunk, each doing chunk arithmetic, a
+dictionary lookup and a byte unpack for a number already fetched several times that millisecond.
+
+Then, separately and larger: **the settle queue was 1,276 ms across a collapse with an 11.8 ms worst
+frame**, and nothing had ever measured it. It was blamed on the remeshing it happened to run beside.
+
+**Four changes, each with a number.**
+
+1. `HeightPatch` — every height a chunk needs, read once into a flat array. 45 ms → 12.7 ms.
+2. No per-column allocation. Two small `Array`s per column and two more per quad is ten thousand
+   allocations a rebuild; unrolled to locals. → 10.6 ms.
+3. **Chunk side 32 → 16.** This is the spec deviation. §9's table says *"Chunk: 32 × 32 cells
+   (16 m)"*. Total meshing across a collapse fell 2.6× and per-rebuild cost fell to **2.96 ms**,
+   because a dig or a slump dirties a quarter of the area it used to. Memory is unchanged in
+   aggregate — same columns, three bytes each — and the per-chunk figure in §9 becomes 768 B rather
+   than 3 kB. `case_earth_field` no longer hardcodes either number; it derives them, which is what
+   it should have done from the start.
+4. **Both budgets are now time, not counts.** §9 says *"Remesh: ≤ 8 chunks per frame"*, and
+   `EarthSettle` had 512 cells. A count is only a frame budget if you know what one unit costs —
+   ours cost far more than either number implied, which is exactly how a collapse could rebuild
+   every dirty chunk every frame. 4 ms for remeshing, 3 ms for settling, and the counts survive as
+   ceilings. Time also stays true when the mesher gets faster or the machine gets slower; a count
+   does not.
+
+**Where it landed.** Worst remesh frame 18.7 ms, worst settle frame 6.3 ms, against an unbounded
+several hundred before. Nothing is dropped — work deferred is work done next frame, and a collapse
+taking a few extra frames to finish redrawing is invisible where a 300 ms hitch is not.
+
+**What is still true and unfixed.** The worst remesh frame is 18.7 ms against a 4 ms budget, which
+means one chunk occasionally costs ~15 ms on its own — the heavily cratered ones, which emit far
+more skirt geometry than open ground. The budget cannot help there: it always runs at least one
+rebuild, or a chunk more expensive than the whole budget would never redraw at all. Fixing the tail
+means either a cheaper skirt path or sub-chunk rebuilding, and neither is worth doing before there
+is a reason to think 18 ms matters.
+
+**Not a redo.** Marissa's instinct was that the representation might need replacing. It did not —
+the same column-span field, the same mesher, the same collision. What needed replacing was reading
+the same number forty times and calling a cell count a frame budget.
+
 ---
 
 ## D · Policy lines with no test that fails when you break them

@@ -25,7 +25,7 @@ extends RefCounted
 ## No floats anywhere. §5 stakes the whole netcode design on every client deriving identical
 ## slumping from the same events, which holds only while the arithmetic is exact.
 
-const SIZE := 32
+const SIZE := 16
 const CELLS := SIZE * SIZE
 
 ## `i16`, as two bytes. The range is the reason heights are chunk-relative rather than absolute:
