@@ -188,6 +188,39 @@ MUTATIONS = [
      "	var angle := spread * rng.randf()",
      "shots bunch at the centre of the spread disc instead of spreading evenly across it"),
 
+
+    # --- C4: throwing, bouncing, and the loadout ---
+
+    ("game/core/verbs/throw.gd",
+     "	if held <= 0:",
+     "	if false:",
+     "a soldier never runs out of grenades"),
+
+    ("game/core/verbs/throw.gd",
+     '	out["spent"] = fuse <= 0.0',
+     '	out["spent"] = false',
+     "a fuse never runs out, so nothing ever reaches the point C5 takes over at"),
+
+    ("game/core/verbs/throw.gd",
+     '		at = Vector3(step["position"]) + Vector3(step["normal"]) * Projectile.SKIN',
+     '		at = Vector3(step["position"])',
+     "a bounce resumes ON the surface, so the next sweep starts inside it and the grenade falls through the floor"),
+
+    ("game/core/combat/projectile.gd",
+     "	if into >= 0.0:",
+     "	if false:",
+     "a grazing contact reverses a throw that was already on its way past"),
+
+    ("game/core/verbs/loadout.gd",
+     "		if its_slot != slot:",
+     "		if false:",
+     "a class may put a horse in a rifle slot, and `fire` finds out two systems later"),
+
+    ("game/core/verbs/loadout.gd",
+     "		if not slots.has(slot):",
+     "		if false:",
+     "a kit may fill a slot the class never declared to carry"),
+
 ]
 
 

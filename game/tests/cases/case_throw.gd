@@ -128,6 +128,22 @@ func _it_bounces_off_what_it_meets(t: TestContext, set: VerbSet, grenade: Resolv
 		if thrown["spent"]:
 			break
 
+	# A contact the object is already moving *away* from must not be flipped, and this is the case
+	# that produces it: a graze, where the sweep reports a wall the grenade is passing rather than
+	# arriving at. Reflecting there sends it back the way it came for no reason anybody watching
+	# could account for — and it is invisible in the bouncing test above, because a grenade falling
+	# onto a floor is always arriving.
+	var leaving := Vector3(1.0, 2.0, 0.0)
+	t.ok(Projectile.bounce(leaving, Vector3.UP, 0.42).is_equal_approx(leaving),
+		"a contact the object is already moving away from does not reverse it")
+	var arriving := Vector3(1.0, -2.0, 0.0)
+	t.ok(Projectile.bounce(arriving, Vector3.UP, 0.42).y > 0.0,
+		"while one it is moving into does come back up")
+	t.ok(Projectile.bounce(arriving, Vector3.UP, 0.42).length() < arriving.length(),
+		"having lost speed on the way, because a bounce is not free")
+	t.ok(Projectile.bounce(arriving, Vector3.ZERO, 0.42).is_equal_approx(arriving),
+		"and a contact with no normal is not a bounce at all")
+
 	t.ok(int(thrown["bounces"]) > 0, "a thrown grenade bounces: %d time(s)" % thrown["bounces"])
 	t.ok(went_up_again, "coming back up off the floor rather than stopping dead where it landed")
 	t.ok(lowest > -1.0, "and it never ends up under the floor, which is the sweep doing its job")
