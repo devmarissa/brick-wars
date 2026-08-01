@@ -179,18 +179,25 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
 ## 2 · Soldier: locomotion & body
 
-- [~] Walk / sprint speeds & acceleration feel — **retuned from scratch**, not ported
+- [x] Walk / sprint speeds & acceleration feel — **retuned from scratch**, not ported
       (BUILD-ORDER §1b; the old WALK 12 / SPRINT 22 were set early and never revisited,
       and locomotion now has to feel right alongside foot planting and mounts).
       **In the game as of C2**: `Walker` does walk 2.2 / sprint 5.4 m/s and `core:soldier`'s
       gait table hands over between them at 2.6. Every number is a first pass and none of it
       has been felt by anybody holding a key down — the tests assert that the speeds and the
-      gait table *agree*, which is a different claim from either being right. **It cannot be
-      felt yet: nothing in the build reads input, and the input layer is C4's.** So this is
-      `[~]` until C4, not until somebody finds ten minutes.
-- [~] Jump (height, gravity, air control) — same, retuned. Jump 6 m/s against 22 m/s² of
+      gait table *agree*, which is a different claim from either being right.
+      **✅ Accepted by Marissa, 31 Jul 2026** — *"the locomotion was okay, we can tune it
+      later."* Judged from watching the sandbox rather than from holding a key down, because
+      nothing in the build reads input yet. That is an honest acceptance of where it is, not a
+      claim that it has been felt — the hands-on pass is **C4b**, and it may well change these
+      numbers. Tuning is deferred rather than owed.
+- [x] Jump (height, gravity, air control) — same, retuned. Jump 6 m/s against 22 m/s² of
       gravity, a little over 0.8 m of clearance: enough for a crater lip, not for a wall.
       No air control at all yet, which is a decision nobody has made rather than one made.
+- [ ] **Locomotion tuning pass, at C4b** — deferred by Marissa rather than owed. The numbers
+      above are a first pass accepted from watching; C4b is the first time anybody drives them,
+      and driving is what the gait handover at 2.6 m/s, the jump arc and the absent air control
+      all actually want judging against.
 - [ ] **Creature-vs-creature collision response** — *added 30 Jul from Marissa watching the
       sandbox*: when the soldier and the horse meet they "kind of fling out then continue
       back on their paths". Not on any list before this; it becomes visible the moment there
@@ -342,22 +349,25 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 
 ### C3 progress — the earth
 
-- [~] **C3's done-condition walked, and it holds.** All five clauses in `case_c3_done.gd`, in the
+**✅ Signed off by Marissa, 31 Jul 2026** — *"the ground looked good when i saw it."*
+Every item below is hers now rather than the gate's.
+
+- [x] **C3's done-condition walked, and it holds.** All five clauses in `case_c3_done.gd`, in the
       order `BUILD-ORDER` puts them: dig anywhere (chunks on demand, a kilometre out and back
       with no drift) · a trench with vertical walls that slump where a shell lands and nowhere
       else · craters with rims made of ~70% of their own spoil, the rest gone to the air ·
       chalk holding a steeper face than sand with no `if` anywhere, only a number in the
       material file · every modification a serialised event that replays to bit-identical
       ground — **and slumping deliberately not among them**, because clients derive it.
-- [~] 0.5 m column-span field, `i16` centimetre heights, chunk-relative — 3 bytes a column,
+- [x] 0.5 m column-span field, `i16` centimetre heights, chunk-relative — 3 bytes a column,
       asserted against the budget rather than intended.
-- [~] Chunked slope-dependent meshing: smooth below 60°, vertical skirts above.
-- [~] Chunked collision, rebuilt with the mesh — trimesh rather than heightfield for now
+- [x] Chunked slope-dependent meshing: smooth below 60°, vertical skirts above.
+- [x] Chunked collision, rebuilt with the mesh — trimesh rather than heightfield for now
       (`DEVIATIONS-C3.md` B4: a heightfield cannot express a skirt or a tunnel).
-- [~] Angle-of-repose settle queue, with shoring as a local override and water as a wetness
+- [x] Angle-of-repose settle queue, with shoring as a local override and water as a wetness
       ceiling. Paced so a collapse takes frames rather than happening between two of them.
-- [~] Spoil with conservation of volume, and the `disturbed` flag that makes it weaker.
-- [~] The event log, day one, and the replay that proves it.
+- [x] Spoil with conservation of volume, and the `disturbed` flag that makes it weaker.
+- [x] The event log, day one, and the replay that proves it.
 - [ ] **Multi-span columns — tunnels, sapping, mining. C3b**, as the spec allows. The span
       table has been the primitive since the first line for exactly this reason.
 - [ ] The flat-colour vs per-material-grain decision (`ART-BIBLE` §8) — better judged on churned
