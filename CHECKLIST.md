@@ -467,6 +467,27 @@ Every item below is hers now rather than the gate's.
 
 ## 8 · Destruction & physics
 
+### C5 progress — destruction
+
+- [~] **`Brick` is a real class with a factory.** Empty since C0 holding one line — *what a thing
+      is made of decides what happens to it, not a counter on the object* — and C5 is what makes
+      that true. `Brick.spawn` makes one from nothing but numbers, which is what debris needs (a
+      blast spawns bricks nobody authored) and what the fixture needs (its wall is not an asset).
+      Stacking jitter is seeded off the brick's own position, so the same wall built twice is the
+      same wall — without that, every fixture metric is noise.
+- [~] **The fixture's scenario stands up in the rebuild, proven before any blast exists.**
+      `blast-fixture/` drives the *old* `main.gd`, so reproducing it is two jobs — stand up the
+      scenario, then port the blast — and doing them in the wrong order means tuning the impulse
+      constant to compensate for a wall that was built wrong. `case_fixture_wall.gd` asserts the
+      120-brick wall, its material density, that it **stands still and sleeps** when nothing hits
+      it, and that it builds identically twice.
+- [ ] **Blast port** — verbatim from `archive/great_war_prototype/main.gd`, constants included.
+- [ ] Structural integrity as a load calculation · failure modes (sandbag topples where clay
+      slumps) · tool gating · debris lifecycle. Fire propagation and `on_burnt` are in the spec
+      paragraph and **not** in the done-condition — they come last, with the medieval mining loop.
+- [ ] **`check.sh` step 4 turns on in this milestone.** It has announced itself dormant on every
+      run since C0; it goes live in the commit that first reproduces the fixture.
+
 > **Materials drive all of this** (`MATERIAL-SPEC.md`). There is no global destruction
 > rule and no hit-point number on anything — what happens to a thing is decided by what
 > it's made of. The blast model is the one exception, and it's protected: the existing
