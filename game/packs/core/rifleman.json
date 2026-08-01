@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "id": "rifleman",
+  "extends": "core:soldier",
+  "kind": "character",
+  "name": "Rifleman",
+  "class": "soldier",
+  "slot": "infantry",
+  "_note": "A class is a soldier plus a kit \u2014 which is what `extends` is for, and what `slots.json`'s `infantry` note means by *'a class asset is a loadout and a silhouette rather than a stat block'*. Everything about how this man moves comes from `core:soldier`; the only thing added is what is in his hands.",
+  "_derived": "He can `fire` because he carries something in `ranged_slow`, and he can `dig` because the entrenching tool is in `melee_light`, which C4's registry review put under both `melee` and `dig`. Neither is written down anywhere \u2014 take the shovel out of the kit below and he stops being able to dig, in the same edit, with no second list to keep in step.",
+  "loadout": [
+    "ranged_slow",
+    "melee_light",
+    "explosive_thrown"
+  ],
+  "kit": {
+    "ranged_slow": "core:rifle",
+    "melee_light": "core:shovel",
+    "explosive_thrown": "core:grenade"
+  }
+}

@@ -326,8 +326,11 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       moving-and-checking misses a brick wall most of the time — and misses it *intermittently*,
       which reads as flaky netcode rather than as missing hit detection. Steps produce segments
       that share endpoints, capped at 4 m so a hitched frame is not one 15 m question.
-- [ ] THROW — declared, C4's, not yet dispatched. **A verb's status flips in the diff that builds
-      it, never ahead of it**, and `case_verbs.gd` asserts the live list as a literal.
+- [~] **THROW — `partial`, and the only verb that uses that word.** It leaves the hand, arcs,
+      bounces off what it meets, runs its fuse down, and goes quiet. **Nothing explodes** — the
+      blast is C5's, and the test asserts the absence as a property so that adding "just a little"
+      of C5 to C4 goes red. There is no lob code: a grenade arcs because it leaves at 18 m/s
+      instead of 150, out of the same `Ballistics` call that never learned which is which.
 - [ ] BUILD — declared, **reserved to C5** (`DEVIATIONS-C4.md` B3): a sandbag wall that does not
       yet topple sideways where a clay one slumps is a prop with a placement cost.
 - [ ] ENTER / MAN — declared, reserved to C6. CARRY / INTERACT / SIGNAL — declared, reserved to C7.
@@ -342,8 +345,15 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
 - [~] Weapon archetype slots defined: the nine came through the review intact, and `ads_fov` being
       optional on `ranged_slow` was validated the hard way — had it been required, every bow ever
       authored would have been refused by the validator and nobody would have known until now.
-- [ ] Tool/weapon slot loadout system (classes pick slots, packs fill them) — C4's remaining work,
-      with `throw`'s flight.
+- [~] **Tool/weapon slot loadout system — classes pick slots, packs fill them.** `core:rifleman`
+      is `core:soldier` plus a kit, via `extends`. **What a soldier can do is derived and never
+      declared:** a class lists slots, each slot says which verbs dispatch it, and the union is
+      what he can do. He can dig not because anybody wrote "riflemen can dig" but because his
+      entrenching tool is `melee_light` — take the shovel out of his kit and digging goes with it
+      in the same edit. `testpack:archer` is the same class shape out of a non-core pack, holding
+      a bow where the rifleman holds a rifle. An asset put in a slot it does not declare is
+      refused, which is what stops a horse ending up in a rifle slot and being discovered two
+      systems later by `fire` reading a stat block with no `velocity` in it.
 
 ## 5 · The Earth (the keystone)
 

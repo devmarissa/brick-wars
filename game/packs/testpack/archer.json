@@ -1,0 +1,18 @@
+{
+  "format": 1,
+  "id": "archer",
+  "extends": "core:soldier",
+  "kind": "character",
+  "name": "Test Archer",
+  "class": "soldier",
+  "slot": "infantry",
+  "_note": "TESTPACK's half of the loadout claim. Same class shape, same core code, and the only difference is which asset is in the `ranged_slow` slot \u2014 a bow out of a non-core pack instead of a bolt rifle out of core. If a class in a mod needs anything the core does not already give `core:rifleman`, eras-are-data has a leak in it.",
+  "loadout": [
+    "ranged_slow",
+    "melee_light"
+  ],
+  "kit": {
+    "ranged_slow": "testpack:bow",
+    "melee_light": "core:shovel"
+  }
+}

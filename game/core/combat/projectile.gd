@@ -28,6 +28,18 @@ extends RefCounted
 ## hands them back, which is what lets a test, a bot and C8's replay of somebody else's shot all
 ## drive the identical code without any of them owning an object.
 
+## How far off a surface a bouncing object resumes, in metres.
+##
+## Not a fudge factor — a necessary one, and the bug it fixes is worth naming because everybody
+## writes it once. A sweep that hits reports the contact point, which is *on* the surface. Resume
+## the next sweep from exactly there and the ray begins inside the thing it just hit, finds nothing,
+## and the object passes through the floor it had just bounced off. The symptom is a grenade that
+## bounces once, convincingly, and then falls through the world.
+##
+## So a bounce resumes a couple of centimetres along the normal. Small enough that nothing can be
+## seen floating; large enough to be outside any tolerance the physics engine has.
+const SKIN := 0.02
+
 ## Longest a single step may be, in metres, before it is split. A step is normally a frame, but a
 ## frame is not guaranteed — a hitch, a debugger pause or a low-end machine can hand over a tenth of
 ## a second, and at 150 m/s that is a 15 m segment through however many walls. Splitting keeps the
@@ -116,3 +128,26 @@ static func fly(space: PhysicsDirectSpaceState3D, origin: Vector3, velocity: Vec
 		moving = step["velocity"]
 	return { "hit": false, "position": at, "normal": Vector3.ZERO, "collider": null,
 		"velocity": moving, "travelled": origin.distance_to(at) }
+
+
+## Come off a surface. A thrown thing that stops dead where it lands is a thrown thing nobody can
+## use around a corner, and bouncing is most of what makes a grenade a tactical object rather than
+## a slow bullet — it is how you get one into a dugout you cannot see into.
+##
+## `restitution` is how much speed survives, and the tangential component is damped harder than the
+## normal one because a grenade rolling forever is worse than one that stops too soon. Both numbers
+## are the *object's* rather than the surface's for now; making them a material property is C5's,
+## alongside everything else about what a surface does when something arrives at it.
+static func bounce(velocity: Vector3, normal: Vector3, restitution: float,
+		friction := 0.6) -> Vector3:
+	if normal.is_zero_approx():
+		return velocity
+	var unit := normal.normalized()
+	var into := velocity.dot(unit)
+	# Already leaving: do not flip a velocity that is not arriving, or a grazing contact reverses a
+	# throw that was on its way past.
+	if into >= 0.0:
+		return velocity
+	var straight := unit * into
+	var along := velocity - straight
+	return along * (1.0 - friction) - straight * restitution

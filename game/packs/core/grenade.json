@@ -1,0 +1,109 @@
+{
+  "format": 1,
+  "id": "core:grenade",
+  "kind": "weapon",
+  "name": "Fragmentation Grenade",
+  "class": "weapon_world",
+  "slot": "explosive_thrown",
+  "mass": 1,
+  "_note": "C4 throws it, arcs it and bounces it off what it meets, and then it goes quiet. The blast is C5's \u2014 the same line already drawn at `EarthCrater`, which is the earth's half of an explosion and not the explosion. `damage` and `radius` are carried through the flight untouched so that C5 does not have to go back to the asset for numbers the throw already had.",
+  "stats": {
+    "damage": 120,
+    "radius": 6,
+    "fuse": 4.0,
+    "capacity": 2,
+    "cycle": 1.0,
+    "throw_velocity": 18
+  },
+  "anim": {
+    "fire": 0.35,
+    "cycle": 1.0,
+    "raise": 0.3
+  },
+  "parts": [
+    {
+      "name": "base",
+      "offset": [
+        0,
+        -2,
+        0
+      ],
+      "size": [
+        3,
+        1,
+        3
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "body",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        3,
+        4,
+        3
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "top",
+      "offset": [
+        0,
+        2,
+        0
+      ],
+      "size": [
+        2,
+        1,
+        2
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "lever",
+      "offset": [
+        0,
+        1,
+        2
+      ],
+      "size": [
+        1,
+        4,
+        1
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "pin",
+      "offset": [
+        1,
+        3,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "ring",
+      "offset": [
+        2,
+        3,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        1
+      ],
+      "material": "steel"
+    }
+  ]
+}

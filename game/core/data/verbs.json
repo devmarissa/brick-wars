@@ -2,7 +2,7 @@
   "id": "core:verbs",
   "format": 1,
   "note": "The interaction vocabulary (CORE-SPEC \u00a72). Ten verbs, closed. Packs cannot define new ones \u2014 a pack that wants one is a core change request \u2014 because a finite verb list is what keeps the animation state machine and the netcode's action encoding finite. The names live in code (`VerbSet.VOCABULARY`) and this file supplies each one's detail, for the same reason `SlotSet.KINDS` is in code: a data file that could add a verb would imply packs may, and they may not.",
-  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire` and `melee` are live; the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
+  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire` and `melee` are live and `throw` is partial (it flies, it does not detonate); the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
   "slot_note": "`slots` lists the archetype slots that can dispatch this verb. A slot may appear under more than one verb, and that is not a modelling failure: an entrenching tool is `melee_light` and it both digs a hole and hits people, which is exactly why it was issued. What a slot may NOT do is name a verb that is not in the vocabulary.",
   "verbs": {
     "fire": {
@@ -22,13 +22,13 @@
       "note": "C4's done-condition is this verb: a weapon defined in data fires, and a bow and a rifle are the same code path. Both of those live in `ranged_slow`, whose own note has said `bolt rifle, musket, crossbow, bow` since C1. Live: the shot is produced here and what it runs into is the damage model's, which is the same split C3 drew between `EarthCrater` and the blast."
     },
     "throw": {
-      "status": "reserved",
+      "status": "partial",
       "milestone": "C4",
       "what": "Send an object on a ballistic arc from the hand rather than from a barrel.",
       "slots": [
         "explosive_thrown"
       ],
-      "note": "The flight is C4 and is the same ballistics as `fire` with a different launch. What it does when it lands is C5's blast model \u2014 the same split already drawn at C3, where `EarthCrater` is the earth's half of an explosion and not the explosion. A grenade in C4 flies, bounces and goes quiet. Reserved until `fire`'s ballistics exist, since the flight is the same maths with a different launch."
+      "note": "The flight is C4 and is the same ballistics as `fire` with a different launch. What it does when it lands is C5's blast model \u2014 the same split already drawn at C3, where `EarthCrater` is the earth's half of an explosion and not the explosion. A grenade in C4 flies, bounces and goes quiet. `partial` is the honest status and the only verb that uses it: the flight works and nothing explodes, and calling that either live or reserved would be a lie in one direction."
     },
     "dig": {
       "status": "live",
