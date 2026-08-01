@@ -56,7 +56,13 @@ static func perform(request: Dictionary) -> Dictionary:
 	var reach := float(stats["reach"])
 	var to := origin + aim.normalized() * reach
 
-	var ignore: Array[RID] = request.get("ignore", [] as Array[RID])
+	# Rebuilt rather than assigned. A `Dictionary` hands its values back untyped, and assigning a
+	# plain `Array` to an `Array[RID]` is a *runtime* abort in GDScript rather than a parse error —
+	# so this compiled, passed the suite (no test passed `ignore`), and died the first time Marissa
+	# pressed V. The type annotation was the bug, not the caller.
+	var ignore: Array[RID] = []
+	for rid in request.get("ignore", []):
+		ignore.append(rid)
 	var found := Projectile.sweep(request.get("space"), origin, to, ignore)
 
 	# A swing that connects with nothing still costs the time. Missing has to be punished or there

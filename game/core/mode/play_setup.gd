@@ -53,6 +53,8 @@ static func attach(world: Node3D, content: Module, earth: EarthTerrain) -> Playe
 	for problem in kit.errors:
 		push_warning("play: loadout: %s" % problem)
 
+	_put_it_in_his_hands(body, kit, content)
+
 	var rig := CameraRig.of([body.get_rid()])
 	world.add_child(rig)
 
@@ -60,6 +62,7 @@ static func attach(world: Node3D, content: Module, earth: EarthTerrain) -> Playe
 	player.earth = earth
 	world.add_child(player)
 	_control_hint(world, kit, set)
+	player.said_label = _said_label(world)
 	# Not captured on launch. A game that takes the mouse the instant its window opens is a game you
 	# cannot alt-tab away from before you have decided you wanted to play it, and `Esc` releasing the
 	# mouse is only half a round trip if nothing gives it back. Click to take it, Esc to give it up.
@@ -113,3 +116,86 @@ static func report(player: Player) -> Array[String]:
 			", ".join(carried) if not carried.is_empty() else "nothing"],
 		"  can: %s" % ", ".join(player.loadout.verbs(player.verbs)),
 	]
+
+
+## Hang the kit off the soldier. C4b.
+##
+## Marissa's first run: *"i dont see any tools so idk about the controls working."* The loadout was
+## real, the verbs read it, and the boot log listed all three items — and none of them existed as
+## anything you could look at, because `Loadout` is data and nothing had ever drawn it. A soldier
+## holding an invisible rifle is indistinguishable from a soldier holding nothing, which made every
+## key press unfalsifiable.
+##
+## Visual only, deliberately. `AssetBuilder` returns physics bodies, and a rigid body parented to a
+## moving bone fights the physics engine for control of its own transform — so the meshes are lifted
+## out and the bodies dropped. A held weapon does not need to be collided with; it needs to be seen.
+##
+## Where it sits on the hand is approximate and is meant to be. Grip alignment is an *animation*
+## problem — `ANIMATION-SPEC` reserves the hold poses, and C6's hands-on-controls IK is what puts a
+## hand somewhere precisely. Getting it exactly right here would be building that early and by eye.
+static func _put_it_in_his_hands(body: Walker, kit: Loadout, content: Module) -> void:
+	if body.rig == null:
+		return
+	# Right hand for the weapon he leads with, left for the next thing down. More than two carried
+	# items and the rest ride along invisibly, which is honest until there is a sling to put them on.
+	var hands := ["hand_r", "hand_l"]
+	for i in kit.slots.size():
+		if i >= hands.size():
+			return
+		var bone := body.rig.bone(hands[i])
+		if bone == null or bone.node == null:
+			continue
+		var asset: ResolvedAsset = content.resolver.get_asset(kit.item(String(kit.slots[i])))
+		if asset == null:
+			continue
+		var held := _meshes_of(asset, content)
+		if held == null:
+			continue
+		held.name = "held_%s" % kit.slots[i]
+		# Forward out of the fist and rotated to lie along the arm rather than across it. Both
+		# numbers are eyeballed; see above.
+		held.position = Vector3(0.0, -0.05, -0.12)
+		held.rotation = Vector3(deg_to_rad(-80.0), 0.0, 0.0)
+		bone.node.add_child(held)
+
+
+## An asset as geometry and nothing else: built the normal way, then stripped of everything that
+## would have made it a physical object.
+static func _meshes_of(asset: ResolvedAsset, content: Module) -> Node3D:
+	var built := AssetBuilder.new().build(asset, content.materials, content.palette)
+	if built == null:
+		return null
+	var holder := Node3D.new()
+	_lift_meshes(built, holder)
+	built.queue_free()
+	return holder if holder.get_child_count() > 0 else null
+
+
+static func _lift_meshes(from: Node, into: Node3D) -> void:
+	for child in from.get_children():
+		if child is MeshInstance3D:
+			var mesh := child as MeshInstance3D
+			var kept := MeshInstance3D.new()
+			kept.mesh = mesh.mesh
+			kept.material_override = mesh.material_override
+			kept.transform = mesh.transform
+			into.add_child(kept)
+		else:
+			_lift_meshes(child, into)
+
+
+## The line that says what just happened. One of `PRODUCTION.md`'s six steps a verb owes — input,
+## animation, sound, VFX, camera, UI — and the only one C4b can honestly deliver, but it is the one
+## that turns "the keys do not work" into "dig — that is bedrock".
+static func _said_label(world: Node3D) -> Label:
+	var label := Label.new()
+	label.name = "Said"
+	label.position = Vector2(16.0, 96.0)
+	label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.75))
+	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 0.8))
+	label.add_theme_constant_override("outline_size", 5)
+	var layer := CanvasLayer.new()
+	layer.name = "SaidUI"
+	layer.add_child(label)
+	world.add_child(layer)
+	return label

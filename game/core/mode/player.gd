@@ -47,7 +47,11 @@ var clock := 0.0
 ## UI — so this is one of six and the other five are later milestones'.
 var said := ""
 
+## Where `said` is shown. Set by `PlaySetup`; nothing breaks without one.
+var said_label: Label = null
+
 var _rng := RandomNumberGenerator.new()
+var _was_first_person := false
 var _thrown: Array[Dictionary] = []
 
 
@@ -72,6 +76,9 @@ func _physics_process(delta: float) -> void:
 	_drive()
 	camera.follow(walker.global_position)
 	_step_thrown(delta)
+	_show_or_hide_the_body()
+	if said_label != null:
+		said_label.text = said
 
 	var asked := Controls.verb_pressed()
 	if asked != "":
@@ -104,7 +111,12 @@ func _do(verb: String) -> void:
 	if verb == "dig":
 		_add_dig_target(request, aim)
 
-	var got := Verbs.dispatch(verbs, verb, request)
+	var got: Dictionary = Verbs.dispatch(verbs, verb, request)
+	# A verb that aborted mid-way returns null rather than a refusal, and reading `ok` off that is a
+	# second error on top of the first — which is how one bug filled the log with two.
+	if got == null or not got.has("ok"):
+		said = "%s — the verb itself failed; see the error above" % verb
+		return
 	if got.has("state") and slot != "":
 		loadout.state[slot] = got["state"]
 	if verb == "throw" and got["ok"]:
@@ -164,3 +176,21 @@ func _stats(slot: String) -> Dictionary:
 		return {}
 	var found := resolver.get_asset(loadout.item(slot))
 	return found.data.get("stats", {}) if found != null else {}
+
+
+## In first person, do not draw the man you are looking out of. Marissa asked for it after her first
+## run, and she is right: from behind the eyes his own shoulders and helmet fill the middle of the
+## screen, which reads as a bug rather than as a body.
+##
+## The whole body goes, including what is in his hands — so first person currently shows no weapon
+## either. That is the honest version of what C4b can do. A first-person **viewmodel** is a separate
+## thing: a second, differently-proportioned pair of arms and a weapon posed for the camera rather
+## than for the world, which is animation work `ANIMATION-SPEC` has states reserved for and which no
+## milestone has built. Half-doing it here would mean a weapon floating at the wrong scale in the
+## wrong place, which is worse than none.
+func _show_or_hide_the_body() -> void:
+	if camera.first_person == _was_first_person:
+		return
+	_was_first_person = camera.first_person
+	if walker.rig != null and walker.rig.root != null:
+		walker.rig.root.visible = not camera.first_person

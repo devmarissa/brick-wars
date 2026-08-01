@@ -96,6 +96,18 @@ func _swinging_costs_time_whether_or_not_it_lands(t: TestContext, set: VerbSet,
 	t.ok(not Verbs.dispatch(set, "melee", { "stats": {} })["ok"],
 		"and a weapon with no stat block is refused rather than read as zeroes")
 
+	# The one the suite did not have, and the reason it did not: no test ever passed `ignore`, so
+	# nothing exercised the line that read it. A `Dictionary` hands its values back untyped, and
+	# assigning a plain `Array` into an `Array[RID]` is a *runtime* abort rather than a parse error —
+	# it compiled, the gate was green, and it died the first time somebody pressed the key. Passed
+	# here exactly as a caller builds it: an array literal, straight into a dictionary.
+	var with_arms := swing.duplicate()
+	with_arms["ignore"] = [RID()]
+	var swung := Verbs.dispatch(set, "melee", with_arms)
+	t.ok(swung != null and swung.has("ok"),
+		"a swing that excludes the arm holding the tool survives being asked for")
+	t.ok(swung["ok"], "and happens: %s" % swung["why"])
+
 
 ## Real physics, real body, real sweep. A wall 1 m away is inside a 1.6 m reach; the same wall at
 ## 3 m is not, and nothing about that is arranged by the test beyond where the wall is.

@@ -144,6 +144,15 @@ func _it_bounces_off_what_it_meets(t: TestContext, set: VerbSet, grenade: Resolv
 	t.ok(Projectile.bounce(arriving, Vector3.ZERO, 0.42).is_equal_approx(arriving),
 		"and a contact with no normal is not a bounce at all")
 
+	# Same untyped-array trap as `melee`, on the other verb that takes an `ignore` list. Asserted
+	# here rather than assumed fixed, because the two were written from the same line.
+	var excluded: Dictionary = Verbs.dispatch(set, "throw", {
+		"stats": grenade.data.get("stats", {}), "origin": Vector3(0.0, 1.5, 0.0),
+		"aim": Vector3.FORWARD, "now": 0.0, "state": {} })["thrown"]
+	var flew := VerbThrow.fly(space, excluded, 1.0 / 60.0, [RID()])
+	t.ok(flew != null and flew.has("origin"),
+		"a grenade thrown past the thrower's own body survives being flown")
+
 	t.ok(int(thrown["bounces"]) > 0, "a thrown grenade bounces: %d time(s)" % thrown["bounces"])
 	t.ok(went_up_again, "coming back up off the floor rather than stopping dead where it landed")
 	t.ok(lowest > -1.0, "and it never ends up under the floor, which is the sweep doing its job")
