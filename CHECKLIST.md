@@ -303,11 +303,24 @@ Inheritance (`FORMAT-SPEC` §6, decided 30 Jul — full cross-pack, depth 3):
       not quietly require a gunpowder-shaped field. Ballistics is one formula: at 40 m a rifle
       round drops 0.7 m and an arrow 5.3 m, out of nothing but two numbers in two pack files.
       Spread is seeded, so a shot reproduces on a machine that did not roll it.
-- [ ] THROW · MELEE — declared, C4's, not yet dispatched. **A verb's status flips in the diff that
-      builds it, never ahead of it**, and `case_verbs.gd` asserts the live list as a literal so the
-      two cannot drift apart.
-- [ ] Damage and hit resolution — `fire` produces a shot and stops there, the same split C3 drew
-      between `EarthCrater` and the blast.
+- [~] **MELEE — live**, and `core:shovel` is the asset that makes the two-verbs-on-one-slot claim
+      real: one object, in `melee_light`, that digs a hole and hits people. It uses the **same
+      sweep a bullet does** — a melee system with its own hit detection is one that eventually
+      disagrees with the gun about what counts as cover. A swing that connects with nothing still
+      costs the recovery, because "the cycle only starts on a hit" turns melee into a held button.
+- [~] **Damage, hit detection and area falloff.** The line: **C4 works out how much damage
+      arrives, C5 decides what the thing on the receiving end does about it** — so nothing reads
+      `failure`, `fire`, `support_vertical` or `cohesion` yet. Damage types come from
+      `materials.json` rather than an `enum`, so a seventh is a data change. Falloff is linear, not
+      inverse-square: a metre of cover is worth the same wherever you take it, which is what makes
+      a blast radius learnable instead of a coin flip. A soldier's health is a core constant no
+      pack can raise (`infantry`'s own note); a vehicle's is in its stat block.
+- [~] **Flight is a sweep, not a position.** At 150 m/s a round covers 2.5 m per frame, so
+      moving-and-checking misses a brick wall most of the time — and misses it *intermittently*,
+      which reads as flaky netcode rather than as missing hit detection. Steps produce segments
+      that share endpoints, capped at 4 m so a hitched frame is not one 15 m question.
+- [ ] THROW — declared, C4's, not yet dispatched. **A verb's status flips in the diff that builds
+      it, never ahead of it**, and `case_verbs.gd` asserts the live list as a literal.
 - [ ] BUILD — declared, **reserved to C5** (`DEVIATIONS-C4.md` B3): a sandbag wall that does not
       yet topple sideways where a clay one slumps is a prop with a placement cost.
 - [ ] ENTER / MAN — declared, reserved to C6. CARRY / INTERACT / SIGNAL — declared, reserved to C7.

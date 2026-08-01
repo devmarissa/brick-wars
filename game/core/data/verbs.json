@@ -2,7 +2,7 @@
   "id": "core:verbs",
   "format": 1,
   "note": "The interaction vocabulary (CORE-SPEC \u00a72). Ten verbs, closed. Packs cannot define new ones \u2014 a pack that wants one is a core change request \u2014 because a finite verb list is what keeps the animation state machine and the netcode's action encoding finite. The names live in code (`VerbSet.VOCABULARY`) and this file supplies each one's detail, for the same reason `SlotSet.KINDS` is in code: a data file that could add a verb would imply packs may, and they may not.",
-  "status": "First cut, written at C4 when the verb system became real. `dig` and `fire` are live; the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
+  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire` and `melee` are live; the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
   "slot_note": "`slots` lists the archetype slots that can dispatch this verb. A slot may appear under more than one verb, and that is not a modelling failure: an entrenching tool is `melee_light` and it both digs a hole and hits people, which is exactly why it was issued. What a slot may NOT do is name a verb that is not in the vocabulary.",
   "verbs": {
     "fire": {
@@ -41,14 +41,14 @@
       "note": "Calls straight into C3's field \u2014 carve, deposit, the settle queue and the event log \u2014 and is here mainly because it proves the verb table is not weapon-shaped. A vocabulary whose only live members shot things would not have been tested for the thing it is for."
     },
     "melee": {
-      "status": "reserved",
+      "status": "live",
       "milestone": "C4",
       "what": "Strike at reach, resolved without a projectile.",
       "slots": [
         "melee_light",
         "melee_heavy"
       ],
-      "note": "C4's, alongside ballistics, because CORE-SPEC puts melee resolution in the combat module \u2014 and because it is the cheapest proof that damage is not a property of projectiles. Blocking, stamina and directional defence are not in scope: the slots list them optional and nothing supplies them yet. Reserved until damage resolution exists for it to call."
+      "note": "C4's, alongside ballistics, because CORE-SPEC puts melee resolution in the combat module \u2014 and because it is the cheapest proof that damage is not a property of projectiles. Blocking, stamina and directional defence are not in scope: the slots list them optional and nothing supplies them yet. Live: it uses the same sweep a bullet does, because a melee system with its own hit detection is one that disagrees with the gun about what counts as cover."
     },
     "build": {
       "status": "reserved",

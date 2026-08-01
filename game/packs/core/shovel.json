@@ -1,0 +1,121 @@
+{
+  "format": 1,
+  "id": "core:shovel",
+  "kind": "weapon",
+  "name": "Entrenching Tool",
+  "class": "weapon_world",
+  "slot": "melee_light",
+  "mass": 2,
+  "_note": "The asset that makes the two-verbs-on-one-slot claim real. `melee_light`'s own note has read `knife, shortsword, entrenching tool` since C1, and `verbs.json` puts that slot under both `melee` and `dig`. This is one object, in one slot, that digs a hole and hits people \u2014 which is why armies issued it and why a tidier one-verb-per-slot model would have had to invent a `tool` slot to hold it.",
+  "stats": {
+    "damage": 55,
+    "cycle": 0.9,
+    "reach": 1.6,
+    "stamina": 12
+  },
+  "anim": {
+    "fire": 0.25,
+    "cycle": 0.9,
+    "raise": 0.3
+  },
+  "parts": [
+    {
+      "name": "grip",
+      "offset": [
+        0,
+        0,
+        4
+      ],
+      "size": [
+        2,
+        2,
+        2
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "haft",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "size": [
+        1,
+        1,
+        7
+      ],
+      "material": "timber"
+    },
+    {
+      "name": "collar",
+      "offset": [
+        0,
+        0,
+        -4
+      ],
+      "size": [
+        2,
+        2,
+        1
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "blade",
+      "offset": [
+        0,
+        0,
+        -6
+      ],
+      "size": [
+        4,
+        1,
+        4
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "edge",
+      "offset": [
+        0,
+        0,
+        -8
+      ],
+      "size": [
+        4,
+        1,
+        1
+      ],
+      "material": "steel"
+    },
+    {
+      "name": "rib_l",
+      "offset": [
+        -1,
+        1,
+        -6
+      ],
+      "size": [
+        1,
+        1,
+        3
+      ],
+      "material": "iron"
+    },
+    {
+      "name": "rib_r",
+      "offset": [
+        1,
+        1,
+        -6
+      ],
+      "size": [
+        1,
+        1,
+        3
+      ],
+      "material": "iron"
+    }
+  ]
+}

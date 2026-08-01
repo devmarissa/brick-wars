@@ -28,6 +28,8 @@ const CASES := [
 	"res://tests/cases/case_verbs.gd",
 	"res://tests/cases/case_dig.gd",
 	"res://tests/cases/case_fire.gd",
+	"res://tests/cases/case_damage.gd",
+	"res://tests/cases/case_melee.gd",
 	"res://tests/cases/case_footing.gd",
 	"res://tests/cases/case_locomotion.gd",
 	"res://tests/cases/case_locomotion_rules.gd",
