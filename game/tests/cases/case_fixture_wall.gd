@@ -63,6 +63,8 @@ func run(t: TestContext) -> void:
 	await _a_wall_is_a_hundred_and_twenty_bricks(t, materials, palette)
 	await _and_left_alone_it_stands(t, materials, palette)
 	_the_same_wall_twice(t, materials, palette)
+	await _take_its_base_out(t, materials, palette)
+	_the_two_materials_differ(t, materials)
 
 
 ## The count, and the arithmetic behind it. 10 x 6 x 2 is the fixture's wall and 120 is what the
@@ -206,3 +208,90 @@ func _stage(t: TestContext) -> Node3D:
 ## precision floor of the measurement. Comparing the axes directly has no such amplification.
 func _basis_gap(a: Basis, b: Basis) -> float:
 	return maxf(maxf((a.x - b.x).length(), (a.y - b.y).length()), (a.z - b.z).length())
+
+
+## C5's done-condition: *"a wall collapses correctly when you take its base out."*
+##
+## The trap is that this looks like it should already work. The bricks are rigid bodies and gravity
+## is a solved problem — but **a sleeping body does not fall.** C0's sleep discipline is what makes
+## thousands of bricks affordable, and it means a settled wall with its bottom course deleted hangs
+## in the air over the hole, because nothing gave the physics engine a reason to reconsider.
+##
+## So the test is in two halves, and the first half is the one that matters: prove the wall *does*
+## hang when nothing tells it, then prove `Integrity.support_removed` brings it down. A test that
+## only did the second half would pass just as happily if Godot had woken the bricks by itself, and
+## would not be testing anything.
+func _take_its_base_out(t: TestContext, materials: MaterialSet, palette: Palette) -> void:
+	var stage := _stage(t)
+	var made := _wall(stage, Vector3.ZERO, materials, palette)
+	await t.ticks(90)
+
+	var asleep := 0
+	for brick in made:
+		if (brick as RigidBody3D).sleeping:
+			asleep += 1
+	t.ok(asleep > 100, "a settled wall is asleep: %d of %d bricks" % [asleep, made.size()])
+
+	# Take the bottom course out. `WALL_HIGH` courses of `WALL_WIDE * WALL_DEEP`, and the builder
+	# runs y innermost-but-one, so every brick whose y is in the lowest course goes.
+	var removed := 0
+	var lowest := 999.0
+	for brick in made:
+		lowest = minf(lowest, (brick as Node3D).global_position.y)
+	var standing: Array = []
+	for brick in made:
+		if (brick as Node3D).global_position.y < lowest + WALL_BRICK.y * 0.5:
+			(brick as Node).queue_free()
+			removed += 1
+		else:
+			standing.append(brick)
+	t.eq(removed, WALL_WIDE * WALL_DEEP, "the bottom course is %d bricks" % removed)
+	await t.ticks(20)
+
+	# The half that proves the problem is real. Nothing has been told, so nothing has moved.
+	var still_asleep := 0
+	for brick in standing:
+		if (brick as RigidBody3D).sleeping:
+			still_asleep += 1
+	t.ok(still_asleep > standing.size() / 2,
+		"and with nothing told, %d of %d are still asleep over the hole" % [
+			still_asleep, standing.size()])
+
+	# Now tell it. Sandbag is cohesion 5, so the news travels a long way — a stack with nothing
+	# holding it together has everything above the gap unsupported at once.
+	var woken := 0
+	for x in WALL_WIDE:
+		woken += Integrity.support_removed(t.host.get_tree(),
+			Vector3((x - 4.5) * WALL_BRICK.x, lowest, 0.0), WALL_MATERIAL, materials)
+	t.ok(woken > 0, "telling the wall its base is gone wakes %d brick(s)" % woken)
+
+	await t.ticks(120)
+	var fell := 0
+	for brick in standing:
+		if (brick as Node3D).global_position.y < lowest + WALL_BRICK.y * 2.0:
+			fell += 1
+	t.ok(fell > standing.size() / 3,
+		"and it comes down: %d of %d bricks ended up near the floor" % [fell, standing.size()])
+
+	stage.queue_free()
+
+
+## The other half of the done-condition's material pair: *"a sandbag parapet topples sideways where
+## a clay one slumps."* The number that decides it is `support_lateral` — sandbag 8, clay 35 — and
+## `cohesion` is what decides how far a collapse propagates.
+func _the_two_materials_differ(t: TestContext, materials: MaterialSet) -> void:
+	t.ok(Integrity.topples(&"sandbag", materials),
+		"a sandbag stack has no sideways strength, so it comes apart into bags")
+	t.ok(not Integrity.topples(&"clay", materials),
+		"and a clay bank holds together, so it slumps as a mass instead")
+	t.ok(not Integrity.topples(&"brick_masonry", materials), "masonry likewise")
+
+	# And the propagation rule, which reads backwards until it is said out loud: the *weaker* the
+	# material, the further the news of a removal travels, because it cannot carry the load around
+	# the gap itself.
+	var loose := Integrity.reach_for(&"sandbag", materials)
+	var solid := Integrity.reach_for(&"hard_stone", materials)
+	t.ok(loose > solid,
+		"a sandbag stack hears about a removal %.1f m up, hard stone only %.1f" % [loose, solid])
+	t.ok(solid >= Integrity.MIN_REACH,
+		"and even stone still tells the brick directly on top of it")

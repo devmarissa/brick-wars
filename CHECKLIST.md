@@ -495,9 +495,21 @@ Every item below is hers now rather than the gate's.
       *message* is the entire cost of tool gating. Ground tops out at chalk because the earth
       palette is earth-class only, so stone gating is a structure question rather than a digging
       one.
-- [ ] Structural integrity as a load calculation · failure modes (sandbag topples where clay
-      slumps) · tool gating · debris lifecycle. Fire propagation and `on_burnt` are in the spec
-      paragraph and **not** in the done-condition — they come last, with the medieval mining loop.
+- [~] **A wall collapses when you take its base out.** The trap: it looks like it should already
+      work, and it does not, because **a sleeping body does not fall.** C0's sleep discipline is
+      what makes thousands of bricks affordable, and it means a wall with its bottom course deleted
+      hangs in the air over the hole. `Integrity.support_removed` is the general case of the rule
+      the blast already had — anything that removes support has to tell what was resting on it. The
+      test proves the wall hangs *first*, then proves telling it brings it down.
+- [~] **Failure modes: sandbag topples where clay slumps.** `support_lateral` is the number —
+      sandbag 8, clay 35 — and `cohesion` decides how far a collapse propagates, **inversely**: the
+      weaker the material, the further the news travels, because it cannot carry load around the
+      gap itself.
+- [ ] Debris lifecycle and cleanup policy — the done-condition's *"back to zero awake bodies within
+      seconds"*. Fire propagation and `on_burnt` are in the spec paragraph and **not** in the
+      done-condition; they come last, with the medieval mining loop.
+- [ ] `build` flips live here (reserved to C5 at C4 on the argument that a sandbag wall which does
+      not topple sideways is a prop with a placement cost — that argument is now paid for).
 - [ ] **`check.sh` step 4 turns on in this milestone.** It has announced itself dormant on every
       run since C0; it goes live in the commit that first reproduces the fixture.
 
