@@ -33,6 +33,14 @@ func module_milestone() -> String:
 func module_ready() -> void:
 	sandbox = Sandbox.new()
 	sandbox.name = "Sandbox"
+	# C4b: playable unless somebody is photographing it or there is no screen to play on. A `--shot`
+	# capture keeps the fixed camera every previous milestone was judged in, and the headless suite
+	# has no input to read — so both get the sandbox exactly as it was before C4b, and only a human
+	# at a keyboard gets a soldier.
+	sandbox.playable = (CLI.shared().shot_path == "" or CLI.shared().play) \
+		and DisplayServer.get_name() != "headless"
+	if sandbox.playable:
+		Controls.install()
 	add_child(sandbox)
 	sandbox.build(use(&"content"))
 

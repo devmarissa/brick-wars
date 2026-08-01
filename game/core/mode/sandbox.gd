@@ -67,6 +67,14 @@ const LAYOUT := [
 ## the ramp on purpose — a creature walking across a slope is the whole of what foot planting buys,
 ## and on flat ground it is indistinguishable from a creature with no solver at all.
 const DEMO_TURN := 0.9
+
+## Who the player is. A class rather than a bare body — `core:rifleman` is `core:soldier` plus the
+## kit that decides which verbs do anything when a key is pressed.
+const PLAYER_CLASS := "core:rifleman"
+
+## Where they start: on the open ground east of the trench, facing it, so the first thing in view is
+## the thing C3 built and the second is somewhere to dig.
+const PLAYER_START := Vector2(3.0, 2.0)
 const WALKERS := [
 	{"id": "core:soldier", "around": Vector2(1.2, -4.2), "phase": 0.0},
 	{"id": "testpack:horse", "around": Vector2(5.8, -4.6), "phase": PI},
@@ -77,6 +85,12 @@ var walkers: Array[Walker] = []
 
 ## The ground, as of C3 — a real column field rather than a fixed surface.
 var earth: EarthTerrain = null
+
+## Whether somebody is going to play this rather than photograph it. C4b: the sandbox grows a
+## controllable soldier, and `main.gd` turns this off for `--shot` so the captured framing stays the
+## fixed one every previous milestone was judged in.
+var playable := false
+var player: Player = null
 
 var _earth_moved := 0
 
@@ -90,7 +104,8 @@ func build(content: Module) -> Array[BuiltAsset]:
 	_add_ground(content)
 	_add_light()
 	_add_environment()
-	_add_camera()
+	if not playable:
+		_add_camera()
 
 	spawned.clear()
 	for entry in LAYOUT:
@@ -103,6 +118,8 @@ func build(content: Module) -> Array[BuiltAsset]:
 		add_child(built)
 		spawned.append(built)
 	_add_walkers(content)
+	if playable:
+		player = PlaySetup.attach(self, content, earth)
 	return spawned
 
 
@@ -125,11 +142,11 @@ func _add_walkers(content: Module) -> void:
 	for entry in WALKERS:
 		var asset: ResolvedAsset = content.resolver.get_asset(String(entry["id"]))
 		if asset == null:
-			push_error("sandbox: no asset `%s` for a walker — its pack may be off" % entry["id"])
+			push_error("play: no asset `%s` for a walker — its pack may be off" % entry["id"])
 			continue
 		var walker := Walker.of(asset, content.materials, content.palette)
 		for problem in walker.warnings:
-			push_warning("sandbox: %s: %s" % [entry["id"], problem])
+			push_warning("play: %s: %s" % [entry["id"], problem])
 		var around: Vector2 = entry["around"]
 		walker.position = _on_ground(Vector3(around.x, DROP_HEIGHT, around.y - _radius()))
 		add_child(walker)
@@ -191,8 +208,11 @@ func report() -> String:
 		lines.append("  " + earth.report())
 		lines.append("  trench cut: %d column-cm of earth moved, and all of it is still in the field"
 			% _earth_moved)
-	return "sandbox: %d asset(s), %d walker(s)\n%s" % [
-		spawned.size(), walkers.size(), "\n".join(lines)]
+	lines.append_array(PlaySetup.report(player))
+	return "sandbox: %d asset(s), %d walker(s)%s\n%s" % [
+		spawned.size(), walkers.size(),
+		"" if player == null else ", playable", "\n".join(lines)]
+
 
 
 ## The real earth field, as of C3. `TestGround`'s shape — sampled from it rather than reinvented,

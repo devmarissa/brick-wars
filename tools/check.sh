@@ -176,18 +176,23 @@ else
   elif [ "$TEST_EXIT" -ne 0 ] || ! echo "$SUMMARY" | grep -q 'failed=0'; then
     fail "$SUMMARY"
     grep -E '^  FAIL|^          - ' "$TEST_LOG" | sed -e 's/^/      /'
-  elif grep -qE "Nonexistent function|Invalid call|Invalid access|Invalid get index|Trying to (call|assign)" "$TEST_LOG"; then
+  elif grep -qE "Parse Error|Nonexistent function|Invalid call|Invalid access|Invalid get index|Trying to (call|assign)" "$TEST_LOG"; then
     # A green suite is not the same as a suite that ran. When GDScript hits a runtime error it
     # prints, abandons the current function, and returns to the caller — so a case whose body dies
     # halfway through reports as PASSED with fewer checks than it should have had, and nothing says
     # so. That happened at C4: `case_fire.gd` called a method that does not exist on `ResolvedAsset`,
     # four of its five sections died on their first line, and the suite said `ok fire 9 checks`.
     #
+    # `Parse Error` is in the list because of a second way the suite can be green and wrong: a
+    # script the tests never touch can fail to compile entirely, and nothing notices. That happened
+    # at C4b to `play_setup.gd` — the whole file was broken, the gate was green, and the only
+    # symptom was the game not starting.
+    #
     # Only errors that are never deliberate are listed here. Cases that provoke `push_error` on
     # purpose — the module boundary refusals, the validator's — do not match, because those are
     # error *messages* rather than the engine reporting that the script itself is wrong.
     fail "the suite is green but a case crashed on its way through — a passing case that never ran"
-    grep -E "Nonexistent function|Invalid call|Invalid access|Invalid get index|Trying to (call|assign)" -A 2 "$TEST_LOG" \
+    grep -E "Parse Error|Nonexistent function|Invalid call|Invalid access|Invalid get index|Trying to (call|assign)" -A 2 "$TEST_LOG" \
       | sed -e 's/^/      /' | head -20
   else
     pass "$SUMMARY"

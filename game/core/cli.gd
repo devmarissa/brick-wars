@@ -25,6 +25,11 @@ extends RefCounted
 ## no-op, since a mistyped diagnostic that prints nothing looks identical to a clean result.
 const TAKES_VALUE := ["--resolve", "--part", "--rig", "--pack-root", "--shot", "--settle"]
 
+## Flags that are on or off rather than followed by a value. Kept as its own list so the parser can
+## tell "this flag needs a value and did not get one" from "this flag never wanted one", which are
+## different mistakes and deserve different messages.
+const BARE_FLAGS := ["--play"]
+
 static var _shared: CLI = null
 
 var resolve_id := ""                    ## `--resolve <pack:asset>`
@@ -40,6 +45,11 @@ var errors: Array[String] = []          ## problems with the arguments themselve
 ## file named `--rendering-driver`.
 var shot_path := ""                     ## `--shot <path>`, relative to `game/`
 var settle_seconds := 0.0               ## `--settle <seconds>`, 0 meaning the tool's default
+
+## `--play`. C4b: spawn a controllable soldier even while capturing a screenshot. Normally a `--shot`
+## run is deliberately *not* playable, so milestone captures keep the fixed framing they have been
+## compared in since C1 — this is how you photograph the game as somebody actually sees it.
+var play := false
 
 ## Whether the last `resolve_report()` found what it was asked for. A dump that reports "no
 ## such asset" is still a useful answer, but it is not a successful one, and a script driving
@@ -74,12 +84,18 @@ func parse(args: PackedStringArray) -> void:
 	errors.clear()
 	shot_path = ""
 	settle_seconds = 0.0
+	play = false
 
 	var i := 0
 	while i < args.size():
 		var flag := String(args[i])
 		if not flag.begins_with("--"):
 			errors.append("`%s` is not a flag and nothing was expecting a bare value there" % flag)
+			i += 1
+			continue
+		if BARE_FLAGS.has(flag):
+			if flag == "--play":
+				play = true
 			i += 1
 			continue
 		if not TAKES_VALUE.has(flag):
@@ -126,7 +142,7 @@ func wants_rig() -> bool:
 
 static func usage() -> String:
 	return ("Known: --resolve <pack:asset>, --part <name>, --rig <pack:asset>, "
-		+ "--pack-root <path>, --shot <path>, --settle <seconds>.")
+		+ "--pack-root <path>, --shot <path>, --settle <seconds>, --play.")
 
 
 ## The dump the flag asks for, or a refusal that says which of the two things went wrong —

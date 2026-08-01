@@ -16,6 +16,10 @@ cd "$ROOT"
 
 OUT="${1:-docs/latest.png}"
 SETTLE="${2:-4}"
+shift 2 2>/dev/null || shift $# 
+# Anything left over is passed straight through to the game, so `tools/screenshot.sh out.png 4
+# --play` photographs it as somebody playing rather than with the fixed milestone framing.
+EXTRA=("$@")
 
 GODOT="${GODOT:-}"
 if [ -z "$GODOT" ]; then
@@ -44,6 +48,6 @@ if [ -z "${DISPLAY:-}" ] && [ "$(uname)" != "Darwin" ] && command -v xvfb-run >/
 else
   RUN=("$GODOT" "${GODOT_ARGS[@]}")
 fi
-RUN+=(-- --shot "$OUT" --settle "$SETTLE")
+RUN+=(-- --shot "$OUT" --settle "$SETTLE" "${EXTRA[@]}")
 
 "${RUN[@]}"
