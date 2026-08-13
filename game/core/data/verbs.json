@@ -2,7 +2,7 @@
   "id": "core:verbs",
   "format": 1,
   "note": "The interaction vocabulary (CORE-SPEC \u00a72). Ten verbs, closed. Packs cannot define new ones \u2014 a pack that wants one is a core change request \u2014 because a finite verb list is what keeps the animation state machine and the netcode's action encoding finite. The names live in code (`VerbSet.VOCABULARY`) and this file supplies each one's detail, for the same reason `SlotSet.KINDS` is in code: a data file that could add a verb would imply packs may, and they may not.",
-  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire`, `melee` and `build` are live and `throw` is partial (it flies, it does not detonate); the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
+  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire`, `melee`, `build`, `enter` and `man` are live and `throw` is partial (it flies, it does not detonate); the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
   "slot_note": "`slots` lists the archetype slots that can dispatch this verb. A slot may appear under more than one verb, and that is not a modelling failure: an entrenching tool is `melee_light` and it both digs a hole and hits people, which is exactly why it was issued. What a slot may NOT do is name a verb that is not in the vocabulary.",
   "verbs": {
     "fire": {
@@ -71,7 +71,7 @@
       "note": "The loadout system in C4 decides what a soldier is holding. Carrying is the other thing \u2014 an ammunition crate walked forward from a dump \u2014 and it has no purpose until C7 builds the supply chain that makes the walk worth making. No slot dispatches it; the thing carried is cargo, not kit."
     },
     "enter": {
-      "status": "reserved",
+      "status": "live",
       "milestone": "C6",
       "what": "Take a seat in a vehicle or a mount, and leave it again.",
       "slots": [
@@ -83,10 +83,10 @@
         "watercraft",
         "aircraft"
       ],
-      "note": "C6 owns multi-crew seats and enter/exit animation by name. Declared now so the vocabulary is closed at C4 rather than growing later, which is the whole claim."
+      "note": "C6 owns multi-crew seats and enter/exit animation by name. Declared now so the vocabulary is closed at C4 rather than growing later, which is the whole claim. Live as of C6, which is the milestone that gave vehicles seats."
     },
     "man": {
-      "status": "reserved",
+      "status": "live",
       "milestone": "C6",
       "what": "Take a crew station on something that is not going anywhere.",
       "slots": [
@@ -94,7 +94,7 @@
         "gun_crewed",
         "observation"
       ],
-      "note": "Distinct from `enter` because a crew station is a role rather than a ride: two soldiers on one gun are loader and layer, and C6's hands-on-controls IK is what makes the distinction visible. The gun slots appear under `fire` too \u2014 manning it and firing it are different verbs on the same object."
+      "note": "Distinct from `enter` because a crew station is a role rather than a ride: two soldiers on one gun are loader and layer, and C6's hands-on-controls IK is what makes the distinction visible. The gun slots appear under `fire` too \u2014 manning it and firing it are different verbs on the same object. Live as of C6, sharing `enter`'s machinery \u2014 the difference is which slots each verb reaches, and that lives in this file rather than in the code."
     },
     "interact": {
       "status": "reserved",

@@ -1,48 +1,98 @@
 {
-	"id": "core_budgets",
-	"format": 1,
-	"note": "Part-count budgets, straight from ART-BIBLE §5. A budget is a performance contract and a style contract at once: consistent density across assets is a large part of what makes a world feel authored rather than assembled. FORMAT-SPEC §10 refuses an asset over budget. Under it is a warning, not a refusal — a two-part sign is minimal, not wrong.",
-	"class_field": "An asset may name its row in `class`. Without one, the widest envelope for its `kind` applies, which still catches the four-hundred-part crate and lets a nine-part prop through. Declaring a class is how an author gets the tight check.",
-	"rows": {
-		"small_prop": {
-			"min": 3, "max": 8, "kinds": ["prop", "buildable"],
-			"note": "crate, bucket, sign — one silhouette idea, no more"
-		},
-		"large_prop": {
-			"min": 10, "max": 25, "kinds": ["prop", "buildable"],
-			"note": "cart, gun limber, stretcher"
-		},
-		"soldier": {
-			"min": 14, "max": 18, "kinds": ["character"],
-			"note": "the player body is 15, and that is the standard"
-		},
-		"weapon_world": {
-			"min": 6, "max": 12, "kinds": ["weapon"],
-			"note": "the model everybody else sees"
-		},
-		"weapon_view": {
-			"min": 12, "max": 20, "kinds": ["weapon"],
-			"note": "more detail allowed — it is on screen constantly"
-		},
-		"vehicle_light": {
-			"min": 30, "max": 50, "kinds": ["vehicle"],
-			"note": "jeep, cart, boat"
-		},
-		"vehicle_heavy": {
-			"min": 50, "max": 90, "kinds": ["vehicle"],
-			"note": "tank, plane"
-		},
-		"emplacement": {
-			"min": 20, "max": 40, "kinds": ["emplacement"],
-			"note": "turret, artillery piece, MG nest"
-		},
-		"building_small": {
-			"min": 60, "max": 120, "kinds": ["structure"],
-			"note": "a house, a barn, a bunker"
-		},
-		"structure_large": {
-			"min": 150, "max": 350, "kinds": ["structure"],
-			"note": "church, castle keep — may need chunking"
-		}
-	}
+  "id": "core_budgets",
+  "format": 1,
+  "note": "Part-count budgets, straight from ART-BIBLE \u00a75. A budget is a performance contract and a style contract at once: consistent density across assets is a large part of what makes a world feel authored rather than assembled. FORMAT-SPEC \u00a710 refuses an asset over budget. Under it is a warning, not a refusal \u2014 a two-part sign is minimal, not wrong.",
+  "class_field": "An asset may name its row in `class`. Without one, the widest envelope for its `kind` applies, which still catches the four-hundred-part crate and lets a nine-part prop through. Declaring a class is how an author gets the tight check.",
+  "rows": {
+    "small_prop": {
+      "min": 3,
+      "max": 8,
+      "kinds": [
+        "prop",
+        "buildable"
+      ],
+      "note": "crate, bucket, sign \u2014 one silhouette idea, no more"
+    },
+    "large_prop": {
+      "min": 10,
+      "max": 25,
+      "kinds": [
+        "prop",
+        "buildable"
+      ],
+      "note": "cart, gun limber, stretcher"
+    },
+    "soldier": {
+      "min": 14,
+      "max": 18,
+      "kinds": [
+        "character"
+      ],
+      "note": "the player body is 15, and that is the standard"
+    },
+    "mount": {
+      "min": 12,
+      "max": 26,
+      "kinds": [
+        "vehicle"
+      ],
+      "note": "a horse, a mule, a camel \u2014 a vehicle built like an animal. Added at C6 when the horse became a mount and turned out to fit no row: `vehicle_light` starts at 30 because it was written for a jeep, and a quadruped that needed 30 parts would be a quadruped nobody could afford forty of"
+    },
+    "weapon_world": {
+      "min": 6,
+      "max": 12,
+      "kinds": [
+        "weapon"
+      ],
+      "note": "the model everybody else sees"
+    },
+    "weapon_view": {
+      "min": 12,
+      "max": 20,
+      "kinds": [
+        "weapon"
+      ],
+      "note": "more detail allowed \u2014 it is on screen constantly"
+    },
+    "vehicle_light": {
+      "min": 30,
+      "max": 50,
+      "kinds": [
+        "vehicle"
+      ],
+      "note": "jeep, cart, boat"
+    },
+    "vehicle_heavy": {
+      "min": 50,
+      "max": 90,
+      "kinds": [
+        "vehicle"
+      ],
+      "note": "tank, plane"
+    },
+    "emplacement": {
+      "min": 20,
+      "max": 40,
+      "kinds": [
+        "emplacement"
+      ],
+      "note": "turret, artillery piece, MG nest"
+    },
+    "building_small": {
+      "min": 60,
+      "max": 120,
+      "kinds": [
+        "structure"
+      ],
+      "note": "a house, a barn, a bunker"
+    },
+    "structure_large": {
+      "min": 150,
+      "max": 350,
+      "kinds": [
+        "structure"
+      ],
+      "note": "church, castle keep \u2014 may need chunking"
+    }
+  }
 }

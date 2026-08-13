@@ -50,6 +50,9 @@ static func dispatch(set: VerbSet, verb: String, request: Dictionary) -> Diction
 			return VerbThrow.perform(request)
 		"build":
 			return VerbBuild.perform(request)
+		"enter", "man":
+			# One mechanism, two verbs. Which slots each reaches is in `verbs.json` rather than here.
+			return VerbEnter.perform(verb, request)
 		_:
 			# Reachable only if a verb is marked live in `verbs.json` and nothing here carries it
 			# out — which is the exact drift the status field exists to prevent, so it is loud.

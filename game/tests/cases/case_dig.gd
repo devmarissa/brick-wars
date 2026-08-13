@@ -54,9 +54,6 @@ func _the_door(t: TestContext, set: VerbSet, materials: MaterialSet) -> void:
 	t.ok(String(later["why"]).contains("refusal rather than a no-op"),
 		"and saying why that is a refusal instead of silence")
 
-	var enter := Verbs.dispatch(set, "enter", { "field": field })
-	t.ok(String(enter["why"]).contains("C6"), "`enter` points at C6, which is the one that owns it")
-
 	t.ok(not Verbs.dispatch(set, "dig", {})["ok"], "and a live verb with nothing to work on refuses")
 
 

@@ -437,6 +437,31 @@ Every item below is hers now rather than the gate's.
 
 ## 7 · Vehicle core
 
+### C6 progress — vehicles & locomotion
+
+- [~] **Seats, and the horse keeping its C2 promise.** Its own file has said since C2: *"`prop`
+      rather than `vehicle`, and that is a deliberate under-claim... it changes kind at C6, when
+      there is something to sit on it."* There is now. `testpack:horse` is a `vehicle` in the
+      `mount` slot — a **pack** asset filling a core slot with no core change, which is the horse
+      test's actual claim. Its `max_speed` is the top of its own gallop band rather than an
+      invented number, or a rider could ask for a speed the legs have no gait for and the horse
+      would skate.
+- [~] **`enter` and `man` are live**, sharing one mechanism. Which slots each reaches is in
+      `verbs.json` rather than in either verb's code — a mount answers to `enter`, a crewed gun to
+      `man`, and the C4 distinction (*a crew station is a role rather than a ride*) is enforced by
+      data. Occupancy lives per-instance rather than on the asset, or every lorry of a type shares
+      one driver.
+- [~] **A hole in the budget check, found by the horse rather than looked for.** It wore
+      `large_prop` from C2, became a vehicle, and **nothing complained** — `budget_for` accepted any
+      named class without checking the row covered the kind, so a vehicle was being measured against
+      a limit written for props. Fixed, and a `mount` budget row added (12–26): `vehicle_light`
+      starts at 30 because it was written for a jeep, and a quadruped needing 30 parts is one nobody
+      could afford forty of.
+- [ ] The rest of C6: all five locomotion types · hands-on-controls IK · turret tracking ·
+      suspension via spring constraints · damage states · ragdoll conversion.
+- [ ] **Marissa's named gate:** turn radius and handling feel for one wheeled, one tracked and one
+      flying vehicle. BUILD-ORDER calls it out specifically because the old build never got it.
+
 > **Rebuilt, not ported** (BUILD-ORDER §1b). The prototype's handling was never signed
 > off — the verdict was *"the turn radius is shit on a lot of the vehicles"* — and the
 > model predates spring suspension, IK hands-on-controls and `legged` locomotion. It

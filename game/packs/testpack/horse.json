@@ -1,183 +1,609 @@
 {
   "format": 1,
   "id": "testpack:horse",
-  "kind": "prop",
+  "kind": "vehicle",
   "name": "Test Horse",
-  "class": "large_prop",
+  "class": "mount",
   "body": "single",
   "mass": 500,
-  "_note": "The four-legged test creature BUILD-ORDER C2's done-condition asks for, and it is in TESTPACK rather than in core on purpose. RIG-SPEC §5 argues that `legged` belongs in the locomotion type list beside `wheeled` and `tracked` because that is what makes a rideable horse a thing a modder writes rather than a thing core has to grow a system for. A quadruped that walks through the same `Walker` as the soldier, out of a non-core pack, with no core change to make it work, is that argument either being true or not. No horse art exists and none is needed: the horse test starts passing long before it.",
-  "_kind": "`prop` rather than `vehicle`, and that is a deliberate under-claim. A horse IS a fast transport vehicle with legs, and it should become one — but the `vehicle` slots require numbers about seats, drive and steering that mounts do not exist to give meaning to yet, and inventing them here would be authoring content against a system nobody has built. It changes kind at C6, when there is something to sit on it.",
-  "_bent_by_rest_angles": "Same method as `core:soldier`, and the same reason: `offset` must be whole modules and a bone pivots half its own length along its own axis, so the skeleton is authored axis-aligned and bent by `rest` angles at build time. The forelegs bend one way and the hind legs the other, which is the whole of the difference between a knee and a hock — and it costs no field, because `Leg._bend` reads the direction off the pose. Check it with `--rig testpack:horse`: the forelegs should say `(forward, like a knee)` and the hind legs `(backward, like a hock)`.",
+  "_note": "The four-legged test creature BUILD-ORDER C2's done-condition asks for, and it is in TESTPACK rather than in core on purpose. RIG-SPEC \u00a75 argues that `legged` belongs in the locomotion type list beside `wheeled` and `tracked` because that is what makes a rideable horse a thing a modder writes rather than a thing core has to grow a system for. A quadruped that walks through the same `Walker` as the soldier, out of a non-core pack, with no core change to make it work, is that argument either being true or not. No horse art exists and none is needed: the horse test starts passing long before it.",
+  "_kind": "`vehicle` in the `mount` slot as of **C6**, which is exactly what the C2 version of this note promised: *'It changes kind at C6, when there is something to sit on it.'* There is now. `mount`'s own note has said what this asset is since C1 \u2014 *the horse. A mount is a vehicle with a gait \u2014 RIG-SPEC \u00a71 is the whole reason this slot is in the first cut* \u2014 and this is a pack asset filling it with no core change, which is the horse test's actual claim.",
+  "_bent_by_rest_angles": "Same method as `core:soldier`, and the same reason: `offset` must be whole modules and a bone pivots half its own length along its own axis, so the skeleton is authored axis-aligned and bent by `rest` angles at build time. The forelegs bend one way and the hind legs the other, which is the whole of the difference between a knee and a hock \u2014 and it costs no field, because `Leg._bend` reads the direction off the pose. Check it with `--rig testpack:horse`: the forelegs should say `(forward, like a knee)` and the hind legs `(backward, like a hock)`.",
   "parts": [
     {
       "name": "body",
-      "offset": [0, 12, 0],
-      "size": [8, 8, 22],
+      "offset": [
+        0,
+        12,
+        0
+      ],
+      "size": [
+        8,
+        8,
+        22
+      ],
       "material": "hide",
       "colour": "tan"
     },
     {
       "name": "neck",
       "parent": "body",
-      "offset": [0, 5, -9],
-      "size": [4, 6, 6],
+      "offset": [
+        0,
+        5,
+        -9
+      ],
+      "size": [
+        4,
+        6,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "ball", "limits": [-60, 60], "rest": 0 }
+      "joint": {
+        "type": "ball",
+        "limits": [
+          -60,
+          60
+        ],
+        "rest": 0
+      }
     },
     {
       "name": "head",
       "parent": "neck",
-      "offset": [0, 4, -3],
-      "size": [4, 4, 8],
+      "offset": [
+        0,
+        4,
+        -3
+      ],
+      "size": [
+        4,
+        4,
+        8
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "ball", "limits": [-50, 50], "rest": 0 }
+      "joint": {
+        "type": "ball",
+        "limits": [
+          -50,
+          50
+        ],
+        "rest": 0
+      }
     },
-
     {
       "name": "foreleg_l_upper",
       "parent": "body",
-      "offset": [-3, -6, -8],
-      "rotation": [-90, 0, 0],
-      "size": [2, 2, 6],
+      "offset": [
+        -3,
+        -6,
+        -8
+      ],
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "size": [
+        2,
+        2,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 20, "pivot": [0, 0, 3] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -40,
+          120
+        ],
+        "rest": 20,
+        "pivot": [
+          0,
+          0,
+          3
+        ]
+      }
     },
     {
       "name": "foreleg_l_lower",
       "parent": "foreleg_l_upper",
-      "offset": [0, 0, -5],
-      "size": [2, 2, 4],
+      "offset": [
+        0,
+        0,
+        -5
+      ],
+      "size": [
+        2,
+        2,
+        4
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -40, "pivot": [0, 0, 2] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -150,
+          0
+        ],
+        "rest": -40,
+        "pivot": [
+          0,
+          0,
+          2
+        ]
+      }
     },
     {
       "name": "hoof_l",
       "parent": "foreleg_l_lower",
-      "offset": [0, 1, -2],
-      "rotation": [90, 0, 0],
-      "size": [3, 2, 2],
+      "offset": [
+        0,
+        1,
+        -2
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
       "material": "hide",
       "colour": "webbing",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": 20, "pivot": [0, 0, 1] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -40,
+          40
+        ],
+        "rest": 20,
+        "pivot": [
+          0,
+          0,
+          1
+        ]
+      }
     },
-
     {
       "name": "foreleg_r_upper",
       "parent": "body",
-      "offset": [3, -6, -8],
-      "rotation": [-90, 0, 0],
-      "size": [2, 2, 6],
+      "offset": [
+        3,
+        -6,
+        -8
+      ],
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "size": [
+        2,
+        2,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 120], "rest": 20, "pivot": [0, 0, 3] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -40,
+          120
+        ],
+        "rest": 20,
+        "pivot": [
+          0,
+          0,
+          3
+        ]
+      }
     },
     {
       "name": "foreleg_r_lower",
       "parent": "foreleg_r_upper",
-      "offset": [0, 0, -5],
-      "size": [2, 2, 4],
+      "offset": [
+        0,
+        0,
+        -5
+      ],
+      "size": [
+        2,
+        2,
+        4
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-150, 0], "rest": -40, "pivot": [0, 0, 2] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -150,
+          0
+        ],
+        "rest": -40,
+        "pivot": [
+          0,
+          0,
+          2
+        ]
+      }
     },
     {
       "name": "hoof_r",
       "parent": "foreleg_r_lower",
-      "offset": [0, 1, -2],
-      "rotation": [90, 0, 0],
-      "size": [3, 2, 2],
+      "offset": [
+        0,
+        1,
+        -2
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
       "material": "hide",
       "colour": "webbing",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": 20, "pivot": [0, 0, 1] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -40,
+          40
+        ],
+        "rest": 20,
+        "pivot": [
+          0,
+          0,
+          1
+        ]
+      }
     },
-
     {
       "name": "hindleg_l_upper",
       "parent": "body",
-      "offset": [-3, -4, 8],
-      "rotation": [-90, 0, 0],
-      "size": [2, 2, 6],
+      "offset": [
+        -3,
+        -4,
+        8
+      ],
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "size": [
+        2,
+        2,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-120, 40], "rest": -20, "pivot": [0, 0, 3] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -120,
+          40
+        ],
+        "rest": -20,
+        "pivot": [
+          0,
+          0,
+          3
+        ]
+      }
     },
     {
       "name": "hindleg_l_lower",
       "parent": "hindleg_l_upper",
-      "offset": [0, 0, -6],
-      "size": [2, 2, 6],
+      "offset": [
+        0,
+        0,
+        -6
+      ],
+      "size": [
+        2,
+        2,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [0, 150], "rest": 40, "pivot": [0, 0, 3] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          0,
+          150
+        ],
+        "rest": 40,
+        "pivot": [
+          0,
+          0,
+          3
+        ]
+      }
     },
     {
       "name": "hoof_bl",
       "parent": "hindleg_l_lower",
-      "offset": [0, 1, -3],
-      "rotation": [90, 0, 0],
-      "size": [3, 2, 2],
+      "offset": [
+        0,
+        1,
+        -3
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
       "material": "hide",
       "colour": "webbing",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": -20, "pivot": [0, 0, 1] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -40,
+          40
+        ],
+        "rest": -20,
+        "pivot": [
+          0,
+          0,
+          1
+        ]
+      }
     },
-
     {
       "name": "hindleg_r_upper",
       "parent": "body",
-      "offset": [3, -4, 8],
-      "rotation": [-90, 0, 0],
-      "size": [2, 2, 6],
+      "offset": [
+        3,
+        -4,
+        8
+      ],
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "size": [
+        2,
+        2,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-120, 40], "rest": -20, "pivot": [0, 0, 3] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -120,
+          40
+        ],
+        "rest": -20,
+        "pivot": [
+          0,
+          0,
+          3
+        ]
+      }
     },
     {
       "name": "hindleg_r_lower",
       "parent": "hindleg_r_upper",
-      "offset": [0, 0, -6],
-      "size": [2, 2, 6],
+      "offset": [
+        0,
+        0,
+        -6
+      ],
+      "size": [
+        2,
+        2,
+        6
+      ],
       "material": "hide",
       "colour": "tan",
-      "joint": { "type": "hinge", "axis": "x", "limits": [0, 150], "rest": 40, "pivot": [0, 0, 3] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          0,
+          150
+        ],
+        "rest": 40,
+        "pivot": [
+          0,
+          0,
+          3
+        ]
+      }
     },
     {
       "name": "hoof_br",
       "parent": "hindleg_r_lower",
-      "offset": [0, 1, -3],
-      "rotation": [90, 0, 0],
-      "size": [3, 2, 2],
+      "offset": [
+        0,
+        1,
+        -3
+      ],
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
       "material": "hide",
       "colour": "webbing",
-      "joint": { "type": "hinge", "axis": "x", "limits": [-40, 40], "rest": -20, "pivot": [0, 0, 1] }
+      "joint": {
+        "type": "hinge",
+        "axis": "x",
+        "limits": [
+          -40,
+          40
+        ],
+        "rest": -20,
+        "pivot": [
+          0,
+          0,
+          1
+        ]
+      }
     }
   ],
-  "_collider_reaches_the_ground": "The lower box goes down to y = 0 rather than stopping at the barrel, and that is load-bearing rather than cosmetic. A `Walker`'s body origin is what its feet are measured from — `Locomotion.step` plants against the transform it is handed — so a creature whose collision stops short of its soles settles that far into the ground, and then every foot is asked to reach *upward* for a surface above its own ideal position and fails. `Walker` warns about it now; this is the asset that taught it to.",
+  "_collider_reaches_the_ground": "The lower box goes down to y = 0 rather than stopping at the barrel, and that is load-bearing rather than cosmetic. A `Walker`'s body origin is what its feet are measured from \u2014 `Locomotion.step` plants against the transform it is handed \u2014 so a creature whose collision stops short of its soles settles that far into the ground, and then every foot is asked to reach *upward* for a surface above its own ideal position and fails. `Walker` warns about it now; this is the asset that taught it to.",
   "collider": [
-    { "offset": [0, 12, 0], "size": [8, 8, 22] },
-    { "offset": [0, 4, 0], "size": [6, 8, 16] }
+    {
+      "offset": [
+        0,
+        12,
+        0
+      ],
+      "size": [
+        8,
+        8,
+        22
+      ]
+    },
+    {
+      "offset": [
+        0,
+        4,
+        0
+      ],
+      "size": [
+        6,
+        8,
+        16
+      ]
+    }
   ],
   "locomotion": {
     "type": "legged",
-    "_speeds_agree_with_the_controller": "The walk reaches to 3.0 and not to 2.2, and that is not arbitrary. `Walker.WALK_SPEED` is 2.2 and `SPRINT_SPEED` is 5.4, and a gait band that *ends* where the controller's speed sits puts the creature permanently inside `Gait._band`'s blend — so it trotted whenever it was asked to walk. A pack's gait ranges and core's speeds are two halves of one tuning decision, and the seam between them is invisible until something walks. Retuning either means looking at both.",
-    "_note": "RIG-SPEC §5's own gait table, adapted to this animal's stride. Leg order is fore-left, fore-right, hind-left, hind-right, and every `phases` array is in that order: the walk is a four-beat, the trot fires the diagonal pairs together, and the gallop's duty of 0.35 is what takes the whole animal off the ground for part of the cycle.",
+    "_speeds_agree_with_the_controller": "The walk reaches to 3.0 and not to 2.2, and that is not arbitrary. `Walker.WALK_SPEED` is 2.2 and `SPRINT_SPEED` is 5.4, and a gait band that *ends* where the controller's speed sits puts the creature permanently inside `Gait._band`'s blend \u2014 so it trotted whenever it was asked to walk. A pack's gait ranges and core's speeds are two halves of one tuning decision, and the seam between them is invisible until something walks. Retuning either means looking at both.",
+    "_note": "RIG-SPEC \u00a75's own gait table, adapted to this animal's stride. Leg order is fore-left, fore-right, hind-left, hind-right, and every `phases` array is in that order: the walk is a four-beat, the trot fires the diagonal pairs together, and the gallop's duty of 0.35 is what takes the whole animal off the ground for part of the cycle.",
     "legs": [
-      { "root": "foreleg_l_upper", "foot": "hoof_l", "phase": 0.0 },
-      { "root": "foreleg_r_upper", "foot": "hoof_r", "phase": 0.5 },
-      { "root": "hindleg_l_upper", "foot": "hoof_bl", "phase": 0.5 },
-      { "root": "hindleg_r_upper", "foot": "hoof_br", "phase": 0.0 }
+      {
+        "root": "foreleg_l_upper",
+        "foot": "hoof_l",
+        "phase": 0.0
+      },
+      {
+        "root": "foreleg_r_upper",
+        "foot": "hoof_r",
+        "phase": 0.5
+      },
+      {
+        "root": "hindleg_l_upper",
+        "foot": "hoof_bl",
+        "phase": 0.5
+      },
+      {
+        "root": "hindleg_r_upper",
+        "foot": "hoof_br",
+        "phase": 0.0
+      }
     ],
     "gaits": [
-      { "name": "walk", "speed": [0, 3.0], "phases": [0.0, 0.5, 0.25, 0.75], "stride": 1.1, "lift": 0.14, "duty": 0.7 },
-      { "name": "trot", "speed": [3.0, 7.0], "phases": [0.0, 0.5, 0.5, 0.0], "stride": 1.9, "lift": 0.28, "duty": 0.5 },
-      { "name": "gallop", "speed": [7.0, 14.0], "phases": [0.0, 0.1, 0.5, 0.6], "stride": 3.2, "lift": 0.5, "duty": 0.35 }
+      {
+        "name": "walk",
+        "speed": [
+          0,
+          3.0
+        ],
+        "phases": [
+          0.0,
+          0.5,
+          0.25,
+          0.75
+        ],
+        "stride": 1.1,
+        "lift": 0.14,
+        "duty": 0.7
+      },
+      {
+        "name": "trot",
+        "speed": [
+          3.0,
+          7.0
+        ],
+        "phases": [
+          0.0,
+          0.5,
+          0.5,
+          0.0
+        ],
+        "stride": 1.9,
+        "lift": 0.28,
+        "duty": 0.5
+      },
+      {
+        "name": "gallop",
+        "speed": [
+          7.0,
+          14.0
+        ],
+        "phases": [
+          0.0,
+          0.1,
+          0.5,
+          0.6
+        ],
+        "stride": 3.2,
+        "lift": 0.5,
+        "duty": 0.35
+      }
     ],
     "body_bob": 0.08,
     "body_pitch": 0.1,
     "lean_into_turn": 0.25
-  }
+  },
+  "slot": "mount",
+  "_stats": "`max_speed` 14 is the top of the gallop band in the gait table below rather than a number invented for the stat block. If the two disagreed, the rider would be able to ask for a speed the legs have no gait for, and the horse would skate \u2014 which is the failure C2 spent a day on and is worth not reintroducing through a different door.",
+  "stats": {
+    "max_speed": 14.0,
+    "accel": 9.0,
+    "turn_rate": 2.2,
+    "health": 400,
+    "grip": 8,
+    "stamina": 60
+  },
+  "seats": [
+    {
+      "role": "driver",
+      "eye": [
+        0,
+        20,
+        2
+      ],
+      "controls": [
+        "neck",
+        "head"
+      ]
+    }
+  ],
+  "_seat": "One seat, and it is the `driver` \u2014 a rider steers. `eye` is 20 modules up and 2 forward, which is on the horse's back above the barrel rather than at its origin: the camera goes where the pack said, because no formula gets a saddle and a lorry cab both right. `controls` names the bones the rider's hands reach for, which C6's hands-on-controls IK reads \u2014 reins would be their own parts on a tacked horse, and neck and head are what this one has."
 }

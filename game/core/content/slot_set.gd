@@ -80,6 +80,12 @@ func budget_for(kind: String, declared: String) -> Dictionary:
 		if not rows.has(declared):
 			return {}
 		var row: Dictionary = rows[declared]
+		# The row also has to *cover this kind*. Without this a vehicle could declare `large_prop`
+		# and be measured against a prop's budget — which is not a near miss, it is being held to a
+		# limit written for a different category of thing entirely. Found at C6 when the horse became
+		# a mount and kept the prop class it had worn since C2, and nothing said a word.
+		if not (row["kinds"] as Array).has(kind):
+			return {}
 		return { "min": row["min"], "max": row["max"], "class": declared, "declared": true }
 
 	var lo := -1
