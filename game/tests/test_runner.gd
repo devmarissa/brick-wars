@@ -35,6 +35,7 @@ const CASES := [
 	"res://tests/cases/case_loadout.gd",
 	"res://tests/cases/case_fixture_wall.gd",
 	"res://tests/cases/case_debris.gd",
+	"res://tests/cases/case_mining.gd",
 	"res://tests/cases/case_footing.gd",
 	"res://tests/cases/case_locomotion.gd",
 	"res://tests/cases/case_locomotion_rules.gd",

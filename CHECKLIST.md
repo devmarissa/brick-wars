@@ -514,8 +514,19 @@ Every item below is hers now rather than the gate's.
       the clause — a brick wedged between two others jitters below visible movement and above
       Jolt's sleep threshold indefinitely. It only ever touches bodies handed to it: a wall
       somebody built is theirs.
-- [ ] Fire propagation and `on_burnt` — in the spec paragraph and **not** in the done-condition;
-      they come last, with the medieval mining loop.
+- [~] **Fire propagation and `on_burnt`.** A burning brick consumes its `fuel` at its `burn_rate`,
+      spreads within `spread_radius` on a roll against `flammability`, and when the fuel runs out
+      its `material_id` **becomes** something else — timber to `charred_timber`. That is the entire
+      consequence: fire does not weaken anything or collapse anything, and the support calculation
+      simply reads a different number than it did a minute ago. Spread rolls against a seeded
+      generator, because two clients watching the same fire must see the same props fail in the
+      same order. Chalk will not light — flammability 0, and no flag anywhere says so.
+- [~] **✅ THE MEDIEVAL MINING LOOP — C5's acceptance test, all six steps.** `MATERIAL-SPEC` §6
+      calls this *"the acceptance test for materials the way the horse test is for rigs"*: dig in
+      chalk (hardness 2, refuses a spade, holds a steep face) · prop with timber (`support_vertical`
+      70) · light it · fire consumes the props (flammability 0.70, `on_burnt: charred`) ·
+      `charred_timber` holds 20 · the wall above subsides. **No code was written for any of it.**
+      Nothing knows what a prop or a tunnel is; a burnt prop is a brick whose material changed.
 - [~] **`build` is live, and the cost is earth out of the ground under your feet.** C4 reserved it
       here on the argument that a sandbag wall which does not topple sideways is a prop with a
       placement cost; `support_lateral` 8 makes it topple, so the argument is paid. `cost.spoil` is
