@@ -505,9 +505,17 @@ Every item below is hers now rather than the gate's.
       sandbag 8, clay 35 — and `cohesion` decides how far a collapse propagates, **inversely**: the
       weaker the material, the further the news travels, because it cannot carry load around the
       gap itself.
-- [ ] Debris lifecycle and cleanup policy — the done-condition's *"back to zero awake bodies within
-      seconds"*. Fire propagation and `on_burnt` are in the spec paragraph and **not** in the
-      done-condition; they come last, with the medieval mining loop.
+- [~] **Debris lifecycle — the world goes quiet again.** The done-condition's last clause, and a
+      correctness claim rather than a performance one: a siege that never reaches zero spends its
+      frame budget on rubble nobody is looking at, and the failure is gradual rather than visible.
+      Three rules: a cap (oldest first, so the newest rubble — the rubble somebody is looking at —
+      survives); a lifetime counted from when a piece **stopped** rather than when it spawned, or
+      debris vanishes mid-flight; and a **forced sleep**, which is the rule that actually delivers
+      the clause — a brick wedged between two others jitters below visible movement and above
+      Jolt's sleep threshold indefinitely. It only ever touches bodies handed to it: a wall
+      somebody built is theirs.
+- [ ] Fire propagation and `on_burnt` — in the spec paragraph and **not** in the done-condition;
+      they come last, with the medieval mining loop.
 - [ ] `build` flips live here (reserved to C5 at C4 on the argument that a sandbag wall which does
       not topple sideways is a prop with a placement cost — that argument is now paid for).
 - [ ] **`check.sh` step 4 turns on in this milestone.** It has announced itself dormant on every
