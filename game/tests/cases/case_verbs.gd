@@ -62,7 +62,7 @@ func _the_ten(t: TestContext, set: VerbSet) -> void:
 ## verb works when nothing carries it out is the drift the status field exists to catch, and it is
 ## exactly the drift that nothing else would notice.
 func _which_ones_are_live(t: TestContext, set: VerbSet) -> void:
-	t.eq(",".join(set.live_names()), "fire,throw,dig,melee",
+	t.eq(",".join(set.live_names()), "fire,throw,dig,build,melee",
 		"exactly these verbs do something at HEAD")
 
 	# Everything else, against the milestone that owns it. C4's own three sit here too, and moving
@@ -71,8 +71,8 @@ func _which_ones_are_live(t: TestContext, set: VerbSet) -> void:
 		"`throw` is the one that is neither — it flies here and detonates in C5")
 	t.ok(set.is_live("throw"), "and partial counts as live, because the verb does happen")
 
-	for pair in [["build", "C5"],
-			["enter", "C6"], ["man", "C6"], ["carry", "C7"], ["interact", "C7"], ["signal", "C7"]]:
+	for pair in [["enter", "C6"], ["man", "C6"], ["carry", "C7"], ["interact", "C7"],
+			["signal", "C7"]]:
 		var verb: String = pair[0]
 		t.eq(set.status_of(verb), "reserved", "`%s` is declared and not built" % verb)
 		t.eq(set.milestone_of(verb), String(pair[1]), "and %s owns it" % pair[1])

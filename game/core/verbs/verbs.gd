@@ -48,6 +48,8 @@ static func dispatch(set: VerbSet, verb: String, request: Dictionary) -> Diction
 			return VerbMelee.perform(request)
 		"throw":
 			return VerbThrow.perform(request)
+		"build":
+			return VerbBuild.perform(request)
 		_:
 			# Reachable only if a verb is marked live in `verbs.json` and nothing here carries it
 			# out — which is the exact drift the status field exists to prevent, so it is loud.

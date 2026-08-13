@@ -1,0 +1,175 @@
+{
+  "format": 1,
+  "id": "core:sandbag_barrier",
+  "kind": "buildable",
+  "name": "Sandbag Barrier",
+  "class": "large_prop",
+  "slot": "barrier",
+  "mass": 900,
+  "_note": "The first buildable, and the asset C4 was arguing about when it reserved `build` to C5: *a sandbag wall that does not topple sideways where a clay one slumps is a prop with a placement cost.* It topples now \u2014 `support_lateral` on sandbag is 8, which is what makes a parapet come apart into bags rather than slump as a mass \u2014 so the argument is paid for and the verb can go live.",
+  "_cost": "`spoil: 4` is four spade-bites of earth, and it comes out of the ground you are standing on. That is the loop EARTH-SPEC \u00a74 has been building toward since C3: digging produces spoil, spoil is what a parapet is made of, and the hole and the wall are the same act seen from two sides.",
+  "cost": {
+    "spoil": 4
+  },
+  "stats": {
+    "build_time": 2.5,
+    "cover_height": 90,
+    "stack": 2
+  },
+  "parts": [
+    {
+      "name": "bag_0",
+      "offset": [
+        -4,
+        1,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_1",
+      "offset": [
+        -1,
+        1,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_2",
+      "offset": [
+        2,
+        1,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_3",
+      "offset": [
+        5,
+        1,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_4",
+      "offset": [
+        -3,
+        3,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_5",
+      "offset": [
+        0,
+        3,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_6",
+      "offset": [
+        3,
+        3,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_7",
+      "offset": [
+        -4,
+        5,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_8",
+      "offset": [
+        -1,
+        5,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_9",
+      "offset": [
+        2,
+        5,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    },
+    {
+      "name": "bag_10",
+      "offset": [
+        5,
+        5,
+        0
+      ],
+      "size": [
+        3,
+        2,
+        2
+      ],
+      "material": "sandbag"
+    }
+  ]
+}

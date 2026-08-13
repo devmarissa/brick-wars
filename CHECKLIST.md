@@ -516,8 +516,15 @@ Every item below is hers now rather than the gate's.
       somebody built is theirs.
 - [ ] Fire propagation and `on_burnt` — in the spec paragraph and **not** in the done-condition;
       they come last, with the medieval mining loop.
-- [ ] `build` flips live here (reserved to C5 at C4 on the argument that a sandbag wall which does
-      not topple sideways is a prop with a placement cost — that argument is now paid for).
+- [~] **`build` is live, and the cost is earth out of the ground under your feet.** C4 reserved it
+      here on the argument that a sandbag wall which does not topple sideways is a prop with a
+      placement cost; `support_lateral` 8 makes it topple, so the argument is paid. `cost.spoil` is
+      spade-bites of actual field, carved by the same `EarthField.carve` that `dig` calls — which
+      closes EARTH-SPEC §4's loop: *digging produces spoil, spoil is what a parapet is made of.*
+      The hole and the wall are one act seen from two sides. Self-limiting in a way no resource
+      counter would be: build on bedrock and there is nothing to fill the bags with.
+- [~] `core:sandbag_barrier` — the first buildable, distinct from `core:wall_sandbag`, which is
+      the scenery version of the same thing.
 - [ ] **`check.sh` step 4 turns on in this milestone.** It has announced itself dormant on every
       run since C0; it goes live in the commit that first reproduces the fixture.
 

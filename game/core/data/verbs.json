@@ -2,7 +2,7 @@
   "id": "core:verbs",
   "format": 1,
   "note": "The interaction vocabulary (CORE-SPEC \u00a72). Ten verbs, closed. Packs cannot define new ones \u2014 a pack that wants one is a core change request \u2014 because a finite verb list is what keeps the animation state machine and the netcode's action encoding finite. The names live in code (`VerbSet.VOCABULARY`) and this file supplies each one's detail, for the same reason `SlotSet.KINDS` is in code: a data file that could add a verb would imply packs may, and they may not.",
-  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire` and `melee` are live and `throw` is partial (it flies, it does not detonate); the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
+  "status": "First cut, written at C4 when the verb system became real. `dig`, `fire`, `melee` and `build` are live and `throw` is partial (it flies, it does not detonate); the rest are declared and reserved to a named milestone, the way ANIMATION-SPEC handles its 24 states. A verb reserved to a milestone is a promise with an owner; a verb nobody has thought about is a gap, and the difference should be visible here rather than in someone's memory. **The status of a verb flips in the same diff that builds it, never ahead of it** \u2014 a file claiming a verb works when nothing dispatches it is the exact drift this field exists to catch.",
   "slot_note": "`slots` lists the archetype slots that can dispatch this verb. A slot may appear under more than one verb, and that is not a modelling failure: an entrenching tool is `melee_light` and it both digs a hole and hits people, which is exactly why it was issued. What a slot may NOT do is name a verb that is not in the vocabulary.",
   "verbs": {
     "fire": {
@@ -52,7 +52,7 @@
       "note": "C4's, alongside ballistics, because CORE-SPEC puts melee resolution in the combat module \u2014 and because it is the cheapest proof that damage is not a property of projectiles. Blocking, stamina and directional defence are not in scope: the slots list them optional and nothing supplies them yet. Live: it uses the same sweep a bullet does, because a melee system with its own hit detection is one that disagrees with the gun about what counts as cover."
     },
     "build": {
-      "status": "reserved",
+      "status": "live",
       "milestone": "C5",
       "what": "Place a buildable, paying its cost, where the ground and the neighbours allow it.",
       "slots": [
@@ -61,7 +61,7 @@
         "shelter",
         "span"
       ],
-      "note": "Reserved rather than built, and the reason is a judgement call recorded in `DEVIATIONS-C4.md`: placing a sandbag wall is easy, and a sandbag wall that does not yet topple sideways where a clay one slumps is a prop rather than a buildable. C5 switches material behaviour on, and that is when placing one means something."
+      "note": "Live as of C5, which is the milestone the C4 reservation named: a sandbag wall that does not topple sideways where a clay one slumps is a prop with a placement cost, and `support_lateral` makes it topple now. The cost is **earth out of the ground under your feet** rather than an abstract resource \u2014 the same `carve` that `dig` calls \u2014 because EARTH-SPEC \u00a74's whole loop is that digging produces spoil and spoil is what a parapet is made of. The hole and the wall are one act seen from two sides."
     },
     "carry": {
       "status": "reserved",
