@@ -457,8 +457,18 @@ Every item below is hers now rather than the gate's.
       a limit written for props. Fixed, and a `mount` budget row added (12–26): `vehicle_light`
       starts at 30 because it was written for a jeep, and a quadruped needing 30 parts is one nobody
       could afford forty of.
-- [ ] The rest of C6: all five locomotion types · hands-on-controls IK · turret tracking ·
-      suspension via spring constraints · damage states · ragdoll conversion.
+- [~] **Suspension via real spring constraints — the first *physical* joint in the build.**
+      Everything articulated before this was kinematic; RIG-SPEC's table is what says suspension is
+      different. A wheel is a real body on a `Generic6DOFJoint3D` with a linear spring on its travel
+      axis, not a raycast — a raycast wheel cannot be torn off, jam, or throw the vehicle about when
+      it drops into a crater, and in a game whose premise is that the ground changes shape those are
+      the interesting cases. **The spring rate is derived from the load it carries**, so a corner
+      settles at a third of its travel and a laden lorry rides lower than an empty one without
+      anybody authoring two springs — which is BUILD-ORDER's *"honest mass distribution comes first,
+      handling is tuned on top"*. Verified: two corners compress while two droop over a kerb, and
+      the chassis rides the average.
+- [ ] The rest of C6: the remaining locomotion types (tracked · flying · floating) · hands-on-
+      controls IK · turret tracking · damage states · ragdoll conversion · the handling model.
 - [ ] **Marissa's named gate:** turn radius and handling feel for one wheeled, one tracked and one
       flying vehicle. BUILD-ORDER calls it out specifically because the old build never got it.
 
