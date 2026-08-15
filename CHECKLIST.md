@@ -467,8 +467,22 @@ Every item below is hers now rather than the gate's.
       anybody authoring two springs — which is BUILD-ORDER's *"honest mass distribution comes first,
       handling is tuned on top"*. Verified: two corners compress while two droop over a kerb, and
       the chassis rides the average.
+- [~] **✅ THE HORSE TEST PASSES IN FULL** — C6's first done-condition clause, and RIG-SPEC's whole
+      opening sentence: *"a modder, using only data files, can add a horse that walks, trots and
+      gallops with correctly articulated two-bone legs, plants its feet on dug-up uneven ground,
+      **can be mounted and ridden, and ragdolls when killed** — without a single line of core
+      code."* Walks/trots/gallops: C2. Plants its feet: C2 and C3. Mounted and ridden: this
+      milestone. Ragdolls: now. `testpack:horse` is a **pack** asset throughout.
+- [~] **Ragdoll conversion.** A conversion, not a mode — the creature is driven right up until it
+      is not, and then it is jointed bodies standing exactly where its last pose left them. Building
+      from the *rest* pose instead would snap to a T-pose for one frame and everybody would see it,
+      so every body is built at the bone's current world transform and the test measures that to
+      0.001 m. 14 constraints, which is precisely the number RIG-SPEC §2 said its cap of 20 was
+      reasoned from — *"what 14 bounds is what a ragdoll of the horse would cost"* — and the
+      conversion refuses to exceed the cap rather than discovering it at 100v100. Local-only per
+      §2's table, which is a licence: no determinism requirement, nothing on the wire.
 - [ ] The rest of C6: the remaining locomotion types (tracked · flying · floating) · hands-on-
-      controls IK · turret tracking · damage states · ragdoll conversion · the handling model.
+      controls IK · turret tracking · damage states · the handling model.
 - [ ] **Marissa's named gate:** turn radius and handling feel for one wheeled, one tracked and one
       flying vehicle. BUILD-ORDER calls it out specifically because the old build never got it.
 
