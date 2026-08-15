@@ -481,8 +481,15 @@ Every item below is hers now rather than the gate's.
       reasoned from — *"what 14 bounds is what a ragdoll of the horse would cost"* — and the
       conversion refuses to exceed the cap rather than discovering it at 100v100. Local-only per
       §2's table, which is a licence: no determinism requirement, nothing on the wire.
+- [~] **The handling model, tuned on top of the springs.** BUILD-ORDER is specific about the order
+      and it is the whole design: force goes in **at the wheels**, where they touch the ground, and
+      the chassis moves because its suspension is pushed. Nothing drives the chassis directly. The
+      property that only falls out of doing it this way: **a wheel touching nothing does nothing** —
+      drive off a crater lip and you coast, and nobody wrote that rule. `grip` *caps* sideways force
+      rather than scaling it, so a gentle corner is unaffected and a hard one breaks away, which is
+      what a grip limit means to a driver.
 - [ ] The rest of C6: the remaining locomotion types (tracked · flying · floating) · hands-on-
-      controls IK · turret tracking · damage states · the handling model.
+      controls IK · turret tracking · damage states.
 - [ ] **Marissa's named gate:** turn radius and handling feel for one wheeled, one tracked and one
       flying vehicle. BUILD-ORDER calls it out specifically because the old build never got it.
 

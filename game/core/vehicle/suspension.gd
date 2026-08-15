@@ -80,6 +80,7 @@ static func hang(chassis: RigidBody3D, at: Vector3, radius: float, width: float,
 	if wheel == null:
 		return null
 	wheel.name = "wheel"
+	_make_it_round(wheel, radius, width)
 	wheel.mass = maxf(Brick.MIN_MASS, chassis.mass * WHEEL_MASS_FRACTION)
 	# A wheel is not rubble: it must not be culled, put to sleep by the debris sweep, or counted as
 	# something a blast should launch on its own. Taking it out of the group is the cheapest way to
@@ -96,6 +97,32 @@ static func hang(chassis: RigidBody3D, at: Vector3, radius: float, width: float,
 	_lock_except_travel_and_spin(joint)
 	_spring(joint, carries)
 	return wheel
+
+
+## Give the wheel a cylinder instead of the box `Brick.spawn` makes, with its axis along the axle.
+##
+## This is not cosmetic, and it was not obvious. A box wheel with the brick friction of 0.8 does not
+## roll — it *drags*, and four of them are four brake pads. A 3000 N·s impulse on a 600 kg chassis
+## produced 0.1 m/s and half a metre of travel, which looks like a broken drive model and is
+## actually a vehicle sitting on its own skids. A wheel has to be round for the same reason it is
+## round in life.
+static func _make_it_round(wheel: RigidBody3D, radius: float, width: float) -> void:
+	for child in wheel.get_children():
+		if child is CollisionShape3D:
+			var barrel := CylinderShape3D.new()
+			barrel.radius = radius
+			barrel.height = width
+			(child as CollisionShape3D).shape = barrel
+			# Godot's cylinder stands on its end; a wheel lies on its side, so the axle runs along
+			# the chassis's X and the wheel turns about it.
+			(child as CollisionShape3D).rotation = Vector3(0.0, 0.0, deg_to_rad(90.0))
+		elif child is MeshInstance3D:
+			var mesh := CylinderMesh.new()
+			mesh.top_radius = radius
+			mesh.bottom_radius = radius
+			mesh.height = width
+			(child as MeshInstance3D).mesh = mesh
+			(child as MeshInstance3D).rotation = Vector3(0.0, 0.0, deg_to_rad(90.0))
 
 
 ## Everything locked but the two things a wheel is allowed to do: move along its travel axis, and

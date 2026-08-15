@@ -39,6 +39,7 @@ const CASES := [
 	"res://tests/cases/case_seats.gd",
 	"res://tests/cases/case_suspension.gd",
 	"res://tests/cases/case_ragdoll.gd",
+	"res://tests/cases/case_drive.gd",
 	"res://tests/cases/case_footing.gd",
 	"res://tests/cases/case_locomotion.gd",
 	"res://tests/cases/case_locomotion_rules.gd",
